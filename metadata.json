@@ -1,0 +1,8 @@
+{
+  "name": "NSD Creations",
+  "description": "World-class AI Creative Studio combining software engineering, AI automation, cinematic storytelling, branding, and digital experiences.",
+  "requestFramePermissions": [],
+  "majorCapabilities": [
+    "MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"
+  ]
+}
