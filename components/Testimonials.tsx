@@ -3,12 +3,13 @@
 import React, { useState, useEffect, useRef } from "react";
 import { motion, AnimatePresence } from "motion/react";
 import { ChevronLeft, ChevronRight, Quote } from "lucide-react";
+import { ImageWithNSDFallback } from "./ImageWithNSDFallback";
 
 interface Testimonial {
   text: string;
   author: string;
   role: string;
-  initials: string;
+  image: string;
 }
 
 const testimonials: Testimonial[] = [
@@ -16,13 +17,13 @@ const testimonials: Testimonial[] = [
     text: `"Sai Dheeraj created an incredibly professional Nutrition & Wellness Introduction Video for my practice. His ability to translate complex health concepts into engaging visual content is exceptional. The response from my clients has been outstanding, and the video has greatly enhanced my professional brand!"`,
     author: "Shilpa Palli",
     role: "Nutrition & Wellness Consultant",
-    initials: "SP"
+    image: "/shilpa.png"
   },
   {
     text: `"We commissioned NSD Creations for a custom AI Memorial Tribute Video to honor our family's heritage. Sai Dheeraj was exceptionally respectful, meticulously restored physical photographs from the 1970s, and edited an emotional storyline that brought tears to everyone who watched."`,
     author: "Santhosh Juluri",
     role: "Legacy Tribute Client",
-    initials: "SJ"
+    image: "/santhosh.png"
   }
 ];
 
@@ -158,8 +159,12 @@ export function Testimonials() {
 
                 {/* Author Info */}
                 <div className="flex items-center space-x-4 mt-8 pt-6 border-t border-zinc-200/50 dark:border-zinc-900/50">
-                  <div className="w-11 h-11 rounded-full bg-indigo-500/10 dark:bg-indigo-400/10 border border-indigo-500/10 dark:border-indigo-400/10 flex items-center justify-center font-bold text-indigo-600 dark:text-indigo-400 font-mono text-sm shadow-sm">
-                    {currentTestimonial.initials}
+                  <div className="w-11 h-11 rounded-full overflow-hidden relative shadow-sm border border-zinc-200/60 dark:border-zinc-800/60 shrink-0">
+                    <ImageWithNSDFallback
+                      src={currentTestimonial.image}
+                      alt={currentTestimonial.author}
+                      fill
+                    />
                   </div>
                   <div>
                     <h4 className="font-display font-bold text-sm text-zinc-900 dark:text-zinc-100">
