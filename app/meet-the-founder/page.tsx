@@ -1,9 +1,10 @@
 "use client";
 
-import React, { useState } from "react";
+import React from "react";
 import Link from "next/link";
 import { Navbar } from "@/components/Navbar";
 import { Footer } from "@/components/Footer";
+import { ImageWithNSDFallback } from "@/components/ImageWithNSDFallback";
 import { 
   Sparkles, 
   ArrowRight, 
@@ -25,16 +26,6 @@ import {
 import { motion } from "motion/react";
 
 export default function MeetTheFounder() {
-  const [imageError, setImageError] = useState(false);
-  const [founderSrc, setFounderSrc] = useState("/input_file_1.png");
-
-  const handleFounderError = () => {
-    if (founderSrc === "/input_file_1.png") {
-      setFounderSrc("/founder.png");
-    } else {
-      setImageError(true);
-    }
-  };
   const journeyTimeline = [
     {
       year: "2022",
@@ -128,36 +119,12 @@ export default function MeetTheFounder() {
               <div className="absolute -inset-1.5 bg-gradient-to-tr from-indigo-500/20 to-purple-500/20 rounded-3xl blur-md opacity-70 group-hover:opacity-100 transition-opacity duration-500" />
               
               <div className="relative w-full h-full rounded-2xl overflow-hidden bg-zinc-100 dark:bg-zinc-950/60 border border-zinc-200/50 dark:border-zinc-900/50">
-                {!imageError ? (
-                  <img
-                    src={founderSrc}
-                    alt="Sai Dheeraj Nalkari Portrait"
-                    className="w-full h-full object-cover object-center transition-all duration-700 ease-out group-hover:scale-104 group-hover:rotate-1"
-                    onError={handleFounderError}
-                    referrerPolicy="no-referrer"
-                  />
-                ) : (
-                  <div className="w-full h-full flex flex-col items-center justify-center bg-gradient-to-br from-zinc-950 via-indigo-950/40 to-zinc-900 p-6 relative overflow-hidden">
-                    {/* Decorative inner glow */}
-                    <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-48 h-48 bg-indigo-500/10 rounded-full blur-3xl" />
-                    
-                    {/* Initials badge */}
-                    <div className="relative w-28 h-28 rounded-full bg-gradient-to-tr from-indigo-500 to-purple-500 p-[2px] shadow-xl">
-                      <div className="w-full h-full rounded-full bg-zinc-950 flex items-center justify-center">
-                        <span className="font-display font-bold text-3xl tracking-wider text-transparent bg-clip-text bg-gradient-to-r from-indigo-200 to-purple-200">
-                          SDN
-                        </span>
-                      </div>
-                    </div>
-                    
-                    <div className="text-center mt-6 z-10">
-                      <span className="font-mono text-[10px] tracking-widest text-indigo-400 font-bold uppercase">
-                        Sai Dheeraj Nalkari
-                      </span>
-                      <p className="text-xs text-zinc-400 mt-1">Founder & Creative Technologist</p>
-                    </div>
-                  </div>
-                )}
+                <ImageWithNSDFallback
+                  src="/input_file_1.png"
+                  alt="Sai Dheeraj Nalkari Portrait"
+                  className="w-full h-full group-hover:scale-104 group-hover:rotate-1 transition-all duration-700 ease-out"
+                  fill
+                />
               </div>
             </div>
           </div>

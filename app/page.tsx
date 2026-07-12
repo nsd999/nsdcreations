@@ -2,10 +2,11 @@
 
 import React, { useState, useEffect } from "react";
 import Link from "next/link";
-import Image from "next/image";
 import { Navbar } from "@/components/Navbar";
 import { Footer } from "@/components/Footer";
 import { servicesData } from "@/lib/services-data";
+import { ImageWithNSDFallback } from "@/components/ImageWithNSDFallback";
+import { Testimonials } from "@/components/Testimonials";
 import { 
   Sparkles, 
   ArrowRight, 
@@ -38,16 +39,7 @@ import { motion, AnimatePresence } from "motion/react";
 export default function HomePage() {
   const [activeCategory, setActiveCategory] = useState<string>("all");
   const [faqOpen, setFaqOpen] = useState<number | null>(null);
-  const [imageError, setImageError] = useState(false);
-  const [founderSrc, setFounderSrc] = useState("/input_file_1.png");
-
-  const handleFounderError = () => {
-    if (founderSrc === "/input_file_1.png") {
-      setFounderSrc("/founder.png");
-    } else {
-      setImageError(true);
-    }
-  };
+  const [servicesTab, setServicesTab] = useState<"creative" | "technical">("creative");
   
   // Contact Form State
   const [formSubmitted, setFormSubmitted] = useState(false);
@@ -290,39 +282,16 @@ export default function HomePage() {
 
               {/* Founder image card */}
               <div className="relative w-full h-full rounded-2xl overflow-hidden bg-zinc-100 dark:bg-zinc-950/60 border border-zinc-200/50 dark:border-zinc-900/50">
-                {!imageError ? (
-                  <img
-                    src={founderSrc}
-                    alt="Sai Dheeraj Nalkari - Founder of NSD Creations"
-                    className="w-full h-full object-cover object-center transition-all duration-700 ease-out group-hover:scale-103"
-                    onError={handleFounderError}
-                    referrerPolicy="no-referrer"
-                  />
-                ) : (
-                  <div className="w-full h-full flex flex-col items-center justify-center bg-gradient-to-br from-zinc-950 via-indigo-950/40 to-zinc-900 p-6 relative overflow-hidden">
-                    {/* Decorative inner glow */}
-                    <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-48 h-48 bg-indigo-500/10 rounded-full blur-3xl" />
-                    
-                    {/* Initials badge */}
-                    <div className="relative w-28 h-28 rounded-full bg-gradient-to-tr from-indigo-500 to-purple-500 p-[2px] shadow-xl">
-                      <div className="w-full h-full rounded-full bg-zinc-950 flex items-center justify-center">
-                        <span className="font-display font-bold text-3xl tracking-wider text-transparent bg-clip-text bg-gradient-to-r from-indigo-200 to-purple-200">
-                          SDN
-                        </span>
-                      </div>
-                    </div>
-                    
-                    <div className="text-center mt-6 z-10">
-                      <span className="font-mono text-[10px] tracking-widest text-indigo-400 font-bold uppercase">
-                        Sai Dheeraj Nalkari
-                      </span>
-                      <p className="text-xs text-zinc-400 mt-1">Founder & Creative Technologist</p>
-                    </div>
-                  </div>
-                )}
+                <ImageWithNSDFallback
+                  src="/input_file_1.png"
+                  alt="Sai Dheeraj Nalkari - Founder of NSD Creations"
+                  className="w-full h-full"
+                  fill
+                  priority
+                />
                 
                 {/* Floating status label inside container */}
-                <div className="absolute bottom-4 left-4 right-4 bg-[#030303]/75 backdrop-blur-md rounded-2xl p-4 border border-zinc-800 text-left">
+                <div className="absolute bottom-4 left-4 right-4 bg-[#030303]/75 backdrop-blur-md rounded-2xl p-4 border border-zinc-800 text-left z-10">
                   <p className="text-xs font-mono font-bold tracking-wider text-indigo-400 uppercase">Sai Dheeraj Nalkari</p>
                   <p className="text-sm font-display font-semibold text-white mt-0.5">Creative Technologist & Founder</p>
                   <div className="flex items-center justify-between mt-3.5 pt-3.5 border-t border-zinc-800 text-[10px] text-zinc-400 font-mono">
@@ -434,43 +403,119 @@ export default function HomePage() {
       <section id="services" className="py-24 px-6 border-t border-zinc-200/50 dark:border-zinc-900/50 bg-zinc-50/40 dark:bg-[#050505]/20">
         <div className="max-w-7xl mx-auto flex flex-col space-y-12">
           {/* Header */}
-          <div className="max-w-xl flex flex-col space-y-4 text-left">
-            <span className="text-xs font-mono font-bold tracking-wider text-indigo-500 uppercase">
-              Our Agency Offerings
-            </span>
-            <h2 className="font-display font-bold text-3xl md:text-4xl text-zinc-900 dark:text-zinc-50 tracking-tight">
-              Bespoke Services Engineered for Fast Business Growth.
-            </h2>
-            <p className="text-zinc-500 dark:text-zinc-400 text-sm">
-              We leverage modern web frameworks, AI generation tools, and direct-response marketing copywriting to create stunning assets that capture clients.
-            </p>
+          <div className="flex flex-col md:flex-row items-start md:items-end justify-between gap-6">
+            <div className="max-w-xl flex flex-col space-y-4 text-left">
+              <span className="text-xs font-mono font-bold tracking-wider text-indigo-500 uppercase">
+                Our Agency Offerings
+              </span>
+              <h2 className="font-display font-bold text-3xl md:text-4xl text-zinc-900 dark:text-zinc-50 tracking-tight">
+                Bespoke Services Engineered for Fast Business Growth.
+              </h2>
+              <p className="text-zinc-500 dark:text-zinc-400 text-sm">
+                We leverage modern web frameworks, AI generation tools, and direct-response marketing copywriting to create stunning assets that capture clients.
+              </p>
+            </div>
+
+            {/* Custom Premium Animated Sliding Tabs */}
+            <div className="relative p-1 bg-zinc-100 dark:bg-zinc-900 rounded-full flex space-x-1 border border-zinc-200/50 dark:border-zinc-800/50 shadow-sm self-start md:self-auto shrink-0">
+              <button
+                onClick={() => setServicesTab("creative")}
+                className={`relative px-6 py-2 rounded-full text-xs font-bold tracking-wider uppercase transition-all duration-300 cursor-pointer ${
+                  servicesTab === "creative"
+                    ? "text-white z-10"
+                    : "text-zinc-500 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-zinc-200"
+                }`}
+              >
+                {servicesTab === "creative" && (
+                  <motion.span
+                    layoutId="active-services-tab"
+                    className="absolute inset-0 bg-indigo-500 rounded-full -z-10 shadow-md"
+                    transition={{ type: "spring", stiffness: 300, damping: 28 }}
+                  />
+                )}
+                Creative & Marketing
+              </button>
+              <button
+                onClick={() => setServicesTab("technical")}
+                className={`relative px-6 py-2 rounded-full text-xs font-bold tracking-wider uppercase transition-all duration-300 cursor-pointer ${
+                  servicesTab === "technical"
+                    ? "text-white z-10"
+                    : "text-zinc-500 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-zinc-200"
+                }`}
+              >
+                {servicesTab === "technical" && (
+                  <motion.span
+                    layoutId="active-services-tab"
+                    className="absolute inset-0 bg-indigo-500 rounded-full -z-10 shadow-md"
+                    transition={{ type: "spring", stiffness: 300, damping: 28 }}
+                  />
+                )}
+                Tech & Automation
+              </button>
+            </div>
           </div>
 
-          {/* Service Cards Grid */}
+          {/* Service Cards Grid with Staggered Transition */}
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-            {Object.values(servicesData).map((service) => (
-              <Link
-                key={service.slug}
-                href={`/services/${service.slug}`}
-                className="group p-6 rounded-3xl bg-white dark:bg-[#09090b] border border-zinc-200/60 dark:border-zinc-900/60 hover:border-indigo-500/50 dark:hover:border-indigo-400/50 transition-all duration-300 shadow-sm flex flex-col justify-between"
-              >
-                <div>
-                  <div className="w-11 h-11 rounded-2xl bg-zinc-50 dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 flex items-center justify-center mb-5 group-hover:scale-105 transition-transform duration-300">
-                    {getServiceIcon(service.slug)}
-                  </div>
-                  <h3 className="font-display font-bold text-base text-zinc-900 dark:text-zinc-100 mb-2 group-hover:text-indigo-600 dark:group-hover:text-indigo-400 transition-colors">
-                    {service.title}
-                  </h3>
-                  <p className="text-zinc-500 dark:text-zinc-400 text-xs leading-relaxed line-clamp-3">
-                    {service.description}
-                  </p>
-                </div>
-                <div className="mt-6 pt-4 border-t border-zinc-100 dark:border-zinc-900/80 flex items-center text-xs font-semibold text-indigo-500 dark:text-indigo-400 group-hover:translate-x-1 transition-transform">
-                  Learn more & deliverables
-                  <ChevronRight className="w-3.5 h-3.5 ml-1" />
-                </div>
-              </Link>
-            ))}
+            <AnimatePresence mode="wait">
+              {Object.values(servicesData)
+                .filter((service) => {
+                  const creativeSlugs = [
+                    "ai-video-advertisements",
+                    "ai-product-commercials",
+                    "ai-ugc-advertisements",
+                    "marketing-videos",
+                    "tribute-videos",
+                    "poster-designing",
+                    "graphic-designing",
+                    "branding",
+                    "social-media-management",
+                    "digital-marketing"
+                  ];
+                  const technicalSlugs = [
+                    "website-development",
+                    "custom-software-development",
+                    "mobile-app-development",
+                    "ai-automation",
+                    "whatsapp-automation",
+                    "business-automation"
+                  ];
+                  return servicesTab === "creative"
+                    ? creativeSlugs.includes(service.slug)
+                    : technicalSlugs.includes(service.slug);
+                })
+                .map((service, index) => (
+                  <motion.div
+                    key={service.slug}
+                    initial={{ opacity: 0, y: 15 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    exit={{ opacity: 0, y: -15 }}
+                    transition={{ duration: 0.3, delay: index * 0.04 }}
+                    className="flex flex-col h-full"
+                  >
+                    <Link
+                      href={`/services/${service.slug}`}
+                      className="group p-6 rounded-3xl bg-white dark:bg-[#09090b] border border-zinc-200/60 dark:border-zinc-900/60 hover:border-indigo-500/50 dark:hover:border-indigo-400/50 transition-all duration-300 shadow-sm flex flex-col justify-between h-full premium-glass-hover"
+                    >
+                      <div>
+                        <div className="w-11 h-11 rounded-2xl bg-zinc-50 dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 flex items-center justify-center mb-5 group-hover:scale-105 transition-transform duration-300">
+                          {getServiceIcon(service.slug)}
+                        </div>
+                        <h3 className="font-display font-bold text-base text-zinc-900 dark:text-zinc-100 mb-2 group-hover:text-indigo-600 dark:group-hover:text-indigo-400 transition-colors">
+                          {service.title}
+                        </h3>
+                        <p className="text-zinc-500 dark:text-zinc-400 text-xs leading-relaxed line-clamp-3">
+                          {service.description}
+                        </p>
+                      </div>
+                      <div className="mt-6 pt-4 border-t border-zinc-100 dark:border-zinc-900/80 flex items-center text-xs font-semibold text-indigo-500 dark:text-indigo-400 group-hover:translate-x-1 transition-transform">
+                        Learn more & deliverables
+                        <ChevronRight className="w-3.5 h-3.5 ml-1" />
+                      </div>
+                    </Link>
+                  </motion.div>
+                ))}
+            </AnimatePresence>
           </div>
         </div>
       </section>
@@ -538,12 +583,13 @@ export default function HomePage() {
                 >
                   {/* Card Image */}
                   <div className="relative aspect-[16/10] overflow-hidden bg-zinc-100 dark:bg-zinc-950">
-                    <img
+                    <ImageWithNSDFallback
                       src={work.image}
                       alt={work.title}
-                      className="w-full h-full object-cover group-hover:scale-103 transition-transform duration-500"
+                      className="w-full h-full group-hover:scale-103 transition-transform duration-500"
+                      fill
                     />
-                    <div className="absolute top-4 left-4 bg-[#030303]/80 backdrop-blur-md border border-zinc-800 text-[10px] font-mono font-bold tracking-widest text-indigo-400 px-3 py-1.5 rounded-full uppercase">
+                    <div className="absolute top-4 left-4 bg-[#030303]/80 backdrop-blur-md border border-zinc-800 text-[10px] font-mono font-bold tracking-widest text-indigo-400 px-3 py-1.5 rounded-full uppercase z-10">
                       {work.type}
                     </div>
                   </div>
@@ -617,23 +663,25 @@ export default function HomePage() {
               <div className="absolute inset-0 flex">
                 {/* Left side (Enhanced) */}
                 <div className="w-1/2 h-full relative overflow-hidden border-r border-indigo-500/30">
-                  <img
+                  <ImageWithNSDFallback
                     src="https://images.unsplash.com/photo-1544005313-94ddf0286df2?auto=format&fit=crop&w=800&q=80"
                     alt="Enhanced Portrait"
-                    className="absolute top-0 left-0 w-[200%] h-full object-cover"
+                    className="absolute top-0 left-0 w-[200%] h-full"
+                    fill
                   />
-                  <div className="absolute bottom-3 left-3 bg-indigo-600 text-white font-mono text-[9px] px-2.5 py-1 rounded-md font-bold uppercase tracking-widest">
+                  <div className="absolute bottom-3 left-3 bg-indigo-600 text-white font-mono text-[9px] px-2.5 py-1 rounded-md font-bold uppercase tracking-widest z-10">
                     AI Enhanced Restored
                   </div>
                 </div>
                 {/* Right side (Original) */}
                 <div className="w-1/2 h-full relative overflow-hidden bg-amber-950/20">
-                  <img
+                  <ImageWithNSDFallback
                     src="https://images.unsplash.com/photo-1544005313-94ddf0286df2?auto=format&fit=crop&w=800&q=80"
                     alt="Original legacy photo"
-                    className="absolute top-0 right-0 w-[200%] h-full object-cover filter sepia contrast-75 saturate-50 blur-[1.5px]"
+                    className="absolute top-0 right-0 w-[200%] h-full filter sepia contrast-75 saturate-50 blur-[1.5px]"
+                    fill
                   />
-                  <div className="absolute bottom-3 right-3 bg-[#030303]/80 border border-zinc-700 text-zinc-400 font-mono text-[9px] px-2.5 py-1 rounded-md uppercase tracking-widest">
+                  <div className="absolute bottom-3 right-3 bg-[#030303]/80 border border-zinc-700 text-zinc-400 font-mono text-[9px] px-2.5 py-1 rounded-md uppercase tracking-widest z-10">
                     Original Legacy
                   </div>
                 </div>
@@ -727,53 +775,7 @@ export default function HomePage() {
       </section>
 
       {/* Premium Testimonials Section */}
-      <section className="py-24 px-6 max-w-7xl mx-auto">
-        <div className="flex flex-col space-y-16">
-          {/* Header */}
-          <div className="max-w-xl flex flex-col space-y-3">
-            <span className="text-xs font-mono font-bold tracking-wider text-indigo-500 uppercase">
-              Client Feedback
-            </span>
-            <h2 className="font-display font-bold text-3xl md:text-4xl text-zinc-900 dark:text-zinc-50 tracking-tight">
-              Trusted by Ambitious Leaders.
-            </h2>
-          </div>
-
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-            {/* Testimonial 1 */}
-            <div className="p-8 rounded-3xl bg-zinc-50 dark:bg-[#09090b] border border-zinc-200/50 dark:border-zinc-900/50 shadow-sm flex flex-col justify-between">
-              <p className="text-zinc-600 dark:text-zinc-300 text-sm md:text-base leading-relaxed italic">
-                "Sai Dheeraj created an incredibly professional Nutrition & Wellness Introduction Video for my practice. His ability to translate complex health concepts into engaging visual content is exceptional. The response from my clients has been outstanding, and the video has greatly enhanced my professional brand!"
-              </p>
-              <div className="flex items-center space-x-4 mt-8 pt-6 border-t border-zinc-200 dark:border-zinc-900">
-                <div className="w-11 h-11 rounded-full bg-indigo-500/20 flex items-center justify-center font-bold text-indigo-600 dark:text-indigo-400">
-                  SP
-                </div>
-                <div>
-                  <h4 className="font-display font-bold text-sm text-zinc-900 dark:text-zinc-100">Shilpa Palli</h4>
-                  <p className="text-zinc-500 dark:text-zinc-400 text-xs font-mono">Nutrition & Wellness Consultant</p>
-                </div>
-              </div>
-            </div>
-
-            {/* Testimonial 2 */}
-            <div className="p-8 rounded-3xl bg-zinc-50 dark:bg-[#09090b] border border-zinc-200/50 dark:border-zinc-900/50 shadow-sm flex flex-col justify-between">
-              <p className="text-zinc-600 dark:text-zinc-300 text-sm md:text-base leading-relaxed italic">
-                "We commissioned NSD Creations for a custom AI Memorial Tribute Video to honor our family's heritage. Sai Dheeraj was exceptionally respectful, meticulously restored physical photographs from the 1970s, and edited an emotional storyline that brought tears to everyone who watched."
-              </p>
-              <div className="flex items-center space-x-4 mt-8 pt-6 border-t border-zinc-200 dark:border-zinc-900">
-                <div className="w-11 h-11 rounded-full bg-indigo-500/20 flex items-center justify-center font-bold text-indigo-600 dark:text-indigo-400">
-                  SJ
-                </div>
-                <div>
-                  <h4 className="font-display font-bold text-sm text-zinc-900 dark:text-zinc-100">Santhosh Juluri</h4>
-                  <p className="text-zinc-500 dark:text-zinc-400 text-xs font-mono">Legacy Tribute Client</p>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
+      <Testimonials />
 
       {/* Pricing Section */}
       <section className="py-24 px-6 border-t border-zinc-200/50 dark:border-zinc-900/50 bg-zinc-50/40 dark:bg-[#050505]/20">

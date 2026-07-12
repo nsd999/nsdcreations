@@ -1,6 +1,7 @@
 "use client";
 
 import React from "react";
+import { ImageWithNSDFallback } from "./ImageWithNSDFallback";
 
 interface NsdLogoProps {
   mode?: "tracing" | "final" | "navbar";
@@ -11,11 +12,11 @@ interface NsdLogoProps {
 
 export function NsdLogo({ className = "" }: NsdLogoProps) {
   return (
-    <img
+    <ImageWithNSDFallback
       src="/input_file_0.png"
       alt="NSD Creations Official Logo"
-      className={`object-contain ${className}`}
-      referrerPolicy="no-referrer"
+      className={className}
+      fill
     />
   );
 }
