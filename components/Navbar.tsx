@@ -14,16 +14,6 @@ export function Navbar() {
   const [isOpen, setIsOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
   const [showThemeMenu, setShowThemeMenu] = useState(false);
-  const [logoError, setLogoError] = useState(false);
-  const [logoSrc, setLogoSrc] = useState("/input_file_0.png");
-
-  const handleLogoError = () => {
-    if (logoSrc === "/input_file_0.png") {
-      setLogoSrc("/nsdlogo.png");
-    } else {
-      setLogoError(true);
-    }
-  };
 
   useEffect(() => {
     const handleScroll = () => {
@@ -74,17 +64,7 @@ export function Navbar() {
             }}
             className="w-11 h-11 relative flex items-center justify-center shrink-0 group-hover:scale-105 transition-transform duration-300"
           >
-            {!logoError ? (
-              <img
-                src={logoSrc}
-                alt="NSD Creations Logo"
-                className="w-full h-full object-contain"
-                onError={handleLogoError}
-                referrerPolicy="no-referrer"
-              />
-            ) : (
-              <NsdLogo mode="navbar" theme={resolvedTheme} className="w-full h-full" />
-            )}
+            <NsdLogo mode="navbar" theme={resolvedTheme} className="w-full h-full" />
           </motion.div>
           <div className="flex flex-col">
             <span className="font-display font-bold text-base tracking-wider bg-clip-text text-transparent bg-gradient-to-r from-zinc-800 to-zinc-500 dark:from-zinc-100 dark:to-zinc-400">

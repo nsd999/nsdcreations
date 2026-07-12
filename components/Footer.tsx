@@ -3,6 +3,7 @@
 import React from "react";
 import Link from "next/link";
 import { Mail, Phone, MessageSquare, Instagram, Youtube, ArrowRight, ShieldCheck, Heart } from "lucide-react";
+import { NsdLogo } from "./NsdLogo";
 
 export function Footer() {
   const currentYear = new Date().getFullYear();
@@ -72,8 +73,8 @@ export function Footer() {
         {/* Company Overview Block */}
         <div className="lg:col-span-4 flex flex-col space-y-6">
           <Link href="/" className="flex items-center space-x-3">
-            <div className="w-9 h-9 rounded-xl bg-gradient-to-br from-indigo-500 to-indigo-700 flex items-center justify-center font-bold text-white font-display text-lg shadow-[0_0_20px_rgba(99,102,241,0.25)]">
-              N
+            <div className="w-9 h-9 relative flex items-center justify-center shrink-0">
+              <NsdLogo className="w-full h-full" />
             </div>
             <div className="flex flex-col">
               <span className="font-display font-bold text-base tracking-wider text-zinc-900 dark:text-white">

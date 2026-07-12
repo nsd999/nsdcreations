@@ -120,9 +120,9 @@ export default function HomePage() {
       title: "Interactive E-Commerce Interface",
       category: "web",
       client: "NSD Labs",
-      type: "Next.js Web App",
+      type: "E-Commerce Website",
       image: "https://images.unsplash.com/photo-1460925895917-afdab827c52f?auto=format&fit=crop&w=800&q=80",
-      description: "Hand-coded, lightning-fast storefront styled with Tailwind and seamless page transitions.",
+      description: "Hand-coded, lightning-fast storefront styled with professional, sleek layout structures and seamless navigation.",
       link: "https://tinyurl.com/portfoliobynsd"
     },
     {
@@ -152,7 +152,7 @@ export default function HomePage() {
       client: "Local Retail Agency",
       type: "AI & API Automation",
       image: "https://images.unsplash.com/photo-1611162617213-7d7a39e9b1d7?auto=format&fit=crop&w=800&q=80",
-      description: "Automated direct customer query triggers linking WhatsApp Cloud API with Google Sheets.",
+      description: "Automated direct customer query triggers linking WhatsApp Business API with digital data sheets.",
       link: "https://tinyurl.com/portfoliobynsd"
     }
   ];
@@ -164,7 +164,7 @@ export default function HomePage() {
   const homeFaqs = [
     {
       q: "What services does NSD Creations provide?",
-      a: "We are an AI Creative Studio & Digital Agency. We specialize in producing premium AI-driven video advertisements, custom Next.js website and app development, corporate branding, professional graphic & poster designing, emotional tribute/legacy videos, and custom WhatsApp/business automation workflows."
+      a: "We are an AI Creative Studio & Digital Agency. We specialize in producing premium AI-driven video advertisements, custom professional websites and app development, corporate branding, professional graphic & poster designing, emotional tribute/legacy videos, and custom WhatsApp/business automation systems."
     },
     {
       q: "Do you require upfront setup or high enterprise licensing fees?",
@@ -176,7 +176,7 @@ export default function HomePage() {
     },
     {
       q: "What makes NSD Creations different from traditional marketing agencies?",
-      a: "Traditional agencies are slow, expensive, and rely on heavy production overheads. We integrate advanced AI visual generative tools with hand-crafted code (using Next.js and Tailwind) to complete high-quality projects up to 10x faster and with significantly lower costs, without compromising on premium quality."
+      a: "Traditional agencies are slow, expensive, and rely on heavy production overheads. We integrate advanced AI visual generative tools with fast, handcrafted code to complete high-quality projects up to 10x faster and with significantly lower costs, without compromising on premium quality."
     }
   ];
 
