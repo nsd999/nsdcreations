@@ -109,13 +109,15 @@ export default function ServicesPage() {
           <p className="text-zinc-500 dark:text-zinc-400 text-sm mt-3 max-w-xl">
             We understand every business operates on a unique model. Contact us directly to configure a custom multi-service retainer or long-term software support contract.
           </p>
-          <Link
-            href="/contact"
-            className="mt-6 inline-flex items-center justify-center px-6 py-3.5 rounded-full text-xs font-bold tracking-widest uppercase bg-indigo-600 hover:bg-indigo-700 text-white shadow-lg active:scale-95 transition-all"
+          <a
+            href="https://tinyurl.com/startwithNSD"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="mt-6 inline-flex items-center justify-center px-6 py-3.5 rounded-full text-xs font-bold tracking-widest uppercase bg-indigo-600 hover:bg-indigo-700 text-white shadow-lg active:scale-95 transition-all text-center"
           >
             Start Your Custom Quote
             <ArrowRight className="w-4 h-4 ml-2" />
-          </Link>
+          </a>
         </div>
       </section>
 

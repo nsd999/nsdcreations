@@ -44,7 +44,7 @@ export default function RootLayout({
       className={`${inter.variable} ${spaceGrotesk.variable} ${jetbrainsMono.variable} ${fredoka.variable}`}
       suppressHydrationWarning
     >
-      <body className="bg-[#030303] text-[#f5f5f5] dark:bg-[#030303] dark:text-[#f5f5f5] light:bg-[#fafafa] light:text-[#121212] antialiased min-h-screen flex flex-col">
+      <body className="antialiased min-h-screen flex flex-col">
         <ThemeProvider>
           <LoadingWrapper>
             {children}

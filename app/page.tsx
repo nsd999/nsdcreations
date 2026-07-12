@@ -39,6 +39,15 @@ export default function HomePage() {
   const [activeCategory, setActiveCategory] = useState<string>("all");
   const [faqOpen, setFaqOpen] = useState<number | null>(null);
   const [imageError, setImageError] = useState(false);
+  const [founderSrc, setFounderSrc] = useState("/input_file_1.png");
+
+  const handleFounderError = () => {
+    if (founderSrc === "/input_file_1.png") {
+      setFounderSrc("/founder.png");
+    } else {
+      setImageError(true);
+    }
+  };
   
   // Contact Form State
   const [formSubmitted, setFormSubmitted] = useState(false);
@@ -238,13 +247,15 @@ export default function HomePage() {
             </p>
 
             <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-4 pt-4">
-              <Link
-                href="#contact"
+              <a
+                href="https://tinyurl.com/startwithNSD"
+                target="_blank"
+                rel="noopener noreferrer"
                 className="inline-flex items-center justify-center px-7 py-4 rounded-full text-xs font-bold tracking-widest uppercase bg-indigo-600 hover:bg-indigo-700 text-white shadow-lg shadow-indigo-600/15 hover:shadow-indigo-600/25 active:scale-95 transition-all text-center"
               >
                 Start Your Project
                 <ArrowRight className="w-4 h-4 ml-2" />
-              </Link>
+              </a>
               <Link
                 href="#portfolio"
                 className="inline-flex items-center justify-center px-7 py-4 rounded-full text-xs font-bold tracking-widest uppercase bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 text-zinc-800 dark:text-zinc-200 hover:bg-zinc-100 dark:hover:bg-zinc-800 active:scale-95 transition-all text-center"
@@ -281,10 +292,10 @@ export default function HomePage() {
               <div className="relative w-full h-full rounded-2xl overflow-hidden bg-zinc-100 dark:bg-zinc-950/60 border border-zinc-200/50 dark:border-zinc-900/50">
                 {!imageError ? (
                   <img
-                    src="/founder.png"
+                    src={founderSrc}
                     alt="Sai Dheeraj Nalkari - Founder of NSD Creations"
                     className="w-full h-full object-cover object-center transition-all duration-700 ease-out group-hover:scale-103"
-                    onError={() => setImageError(true)}
+                    onError={handleFounderError}
                     referrerPolicy="no-referrer"
                   />
                 ) : (
@@ -797,13 +808,15 @@ export default function HomePage() {
               <li className="flex items-center"><CheckCircle className="w-4 h-4 text-emerald-500 mr-2.5" /> Fast 24-48 hours turnarounds</li>
               <li className="flex items-center"><CheckCircle className="w-4 h-4 text-emerald-500 mr-2.5" /> Full personal advisory consultation</li>
             </ul>
-            <Link
-              href="#contact"
-              className="mt-8 w-full inline-flex items-center justify-center px-6 py-4.5 rounded-full text-xs font-bold tracking-widest uppercase bg-indigo-600 hover:bg-indigo-700 text-white shadow-lg active:scale-97 transition-all"
+            <a
+              href="https://tinyurl.com/startwithNSD"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="mt-8 w-full inline-flex items-center justify-center px-6 py-4.5 rounded-full text-xs font-bold tracking-widest uppercase bg-indigo-600 hover:bg-indigo-700 text-white shadow-lg active:scale-97 transition-all text-center"
             >
               Request Custom Quote
               <ChevronRight className="w-4 h-4 ml-1" />
-            </Link>
+            </a>
           </div>
         </div>
       </section>
@@ -893,7 +906,7 @@ export default function HomePage() {
                 </div>
                 <div>
                   <p className="text-[10px] font-mono text-zinc-400 uppercase tracking-widest">Business Email</p>
-                  <p className="text-sm font-semibold text-zinc-950 dark:text-zinc-50 mt-0.5">nalkarisaidheeraj@gmail.com</p>
+                  <p className="text-sm font-semibold text-zinc-950 dark:text-zinc-50 mt-0.5">nsd.creations.official@gmail.com</p>
                 </div>
               </div>
 

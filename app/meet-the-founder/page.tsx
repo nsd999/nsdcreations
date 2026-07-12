@@ -26,6 +26,15 @@ import { motion } from "motion/react";
 
 export default function MeetTheFounder() {
   const [imageError, setImageError] = useState(false);
+  const [founderSrc, setFounderSrc] = useState("/input_file_1.png");
+
+  const handleFounderError = () => {
+    if (founderSrc === "/input_file_1.png") {
+      setFounderSrc("/founder.png");
+    } else {
+      setImageError(true);
+    }
+  };
   const journeyTimeline = [
     {
       year: "2022",
@@ -121,10 +130,10 @@ export default function MeetTheFounder() {
               <div className="relative w-full h-full rounded-2xl overflow-hidden bg-zinc-100 dark:bg-zinc-950/60 border border-zinc-200/50 dark:border-zinc-900/50">
                 {!imageError ? (
                   <img
-                    src="/founder.png"
+                    src={founderSrc}
                     alt="Sai Dheeraj Nalkari Portrait"
                     className="w-full h-full object-cover object-center transition-all duration-700 ease-out group-hover:scale-104 group-hover:rotate-1"
-                    onError={() => setImageError(true)}
+                    onError={handleFounderError}
                     referrerPolicy="no-referrer"
                   />
                 ) : (
@@ -201,13 +210,15 @@ export default function MeetTheFounder() {
             </div>
 
             <div className="flex flex-wrap gap-4 pt-4">
-              <Link
-                href="/contact"
+              <a
+                href="https://tinyurl.com/startwithNSD"
+                target="_blank"
+                rel="noopener noreferrer"
                 className="inline-flex items-center justify-center px-6 py-3.5 rounded-full text-xs font-bold tracking-widest uppercase bg-indigo-600 hover:bg-indigo-700 text-white shadow-lg shadow-indigo-600/10 active:scale-95 transition-all text-center"
               >
                 Start Your Project
                 <ArrowRight className="w-4 h-4 ml-2" />
-              </Link>
+              </a>
               <Link
                 href="/portfolio"
                 className="inline-flex items-center justify-center px-6 py-3.5 rounded-full text-xs font-bold tracking-widest uppercase bg-zinc-100 hover:bg-zinc-200 dark:bg-zinc-900 dark:hover:bg-zinc-800 text-zinc-800 dark:text-zinc-200 border border-zinc-200 dark:border-zinc-800 active:scale-95 transition-all text-center"
@@ -388,12 +399,14 @@ export default function MeetTheFounder() {
           </p>
           
           <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-4 pt-4">
-            <Link
-              href="/contact"
+            <a
+              href="https://tinyurl.com/startwithNSD"
+              target="_blank"
+              rel="noopener noreferrer"
               className="inline-flex items-center justify-center px-7 py-4 rounded-full text-xs font-bold tracking-widest uppercase bg-indigo-600 hover:bg-indigo-700 text-white shadow-lg shadow-indigo-600/10 active:scale-95 transition-all text-center"
             >
               Book Free Consultation
-            </Link>
+            </a>
             <Link
               href="https://wa.me/916303849852?text=Hello%20Sai%20Dheeraj!%20I%20saw%20your%20Meet%20the%20Founder%20page%20and%20want%20to%20start%20a%20project."
               target="_blank"

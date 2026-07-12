@@ -14,6 +14,15 @@ export function SignatureLoader({ onComplete }: SignatureLoaderProps) {
   const [phase, setPhase] = useState<"silence" | "tracing" | "completed">("silence");
   const [particles, setParticles] = useState<Array<{ id: number; x: number; y: number; size: number; delay: number; duration: number }>>([]);
   const [logoError, setLogoError] = useState(false);
+  const [logoSrc, setLogoSrc] = useState("/input_file_0.png");
+
+  const handleLogoError = () => {
+    if (logoSrc === "/input_file_0.png") {
+      setLogoSrc("/nsdlogo.png");
+    } else {
+      setLogoError(true);
+    }
+  };
 
   // Setup theme and background colors
   const isLight = resolvedTheme === "light";
@@ -171,10 +180,10 @@ export function SignatureLoader({ onComplete }: SignatureLoaderProps) {
               >
                 {!logoError ? (
                   <img
-                    src="/nsdlogo.png"
+                    src={logoSrc}
                     alt="NSD Creations Logo"
                     className="w-[180px] h-[180px] object-contain"
-                    onError={() => setLogoError(true)}
+                    onError={handleLogoError}
                     referrerPolicy="no-referrer"
                   />
                 ) : (

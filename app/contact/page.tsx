@@ -129,6 +129,21 @@ export default function ContactPage() {
               </div>
             )}
 
+            <div className="mb-6 p-5 rounded-2xl bg-indigo-500/5 dark:bg-indigo-400/5 border border-indigo-500/10 dark:border-indigo-400/10 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+              <div>
+                <h3 className="text-xs font-bold text-zinc-900 dark:text-zinc-100">Prefer our Express Booking?</h3>
+                <p className="text-[10px] text-zinc-500 dark:text-zinc-400 mt-1">Complete our official 1-minute Google Form instead.</p>
+              </div>
+              <a
+                href="https://tinyurl.com/startwithNSD"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-flex items-center justify-center px-4.5 py-2.5 rounded-full text-[11px] font-bold tracking-wider uppercase bg-indigo-600 hover:bg-indigo-700 text-white shrink-0 shadow-md transition-all duration-200"
+              >
+                Go to Google Form &rarr;
+              </a>
+            </div>
+
             <form onSubmit={handleSubmit} className="space-y-5">
               <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
                 <div>
@@ -280,7 +295,7 @@ export default function ContactPage() {
               <div>
                 <p className="text-[10px] font-mono text-zinc-400 uppercase">Inquiries Email</p>
                 <p className="text-xs md:text-sm font-semibold text-zinc-800 dark:text-zinc-200 mt-0.5">
-                  nsdcreations@gmail.com
+                  nsd.creations.official@gmail.com
                 </p>
               </div>
             </div>

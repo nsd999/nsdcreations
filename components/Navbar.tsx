@@ -15,6 +15,15 @@ export function Navbar() {
   const [scrolled, setScrolled] = useState(false);
   const [showThemeMenu, setShowThemeMenu] = useState(false);
   const [logoError, setLogoError] = useState(false);
+  const [logoSrc, setLogoSrc] = useState("/input_file_0.png");
+
+  const handleLogoError = () => {
+    if (logoSrc === "/input_file_0.png") {
+      setLogoSrc("/nsdlogo.png");
+    } else {
+      setLogoError(true);
+    }
+  };
 
   useEffect(() => {
     const handleScroll = () => {
@@ -67,10 +76,10 @@ export function Navbar() {
           >
             {!logoError ? (
               <img
-                src="/nsdlogo.png"
+                src={logoSrc}
                 alt="NSD Creations Logo"
                 className="w-full h-full object-contain"
-                onError={() => setLogoError(true)}
+                onError={handleLogoError}
                 referrerPolicy="no-referrer"
               />
             ) : (
@@ -166,13 +175,15 @@ export function Navbar() {
             </AnimatePresence>
           </div>
 
-          <Link
-            href="/contact"
+          <a
+            href="https://tinyurl.com/startwithNSD"
+            target="_blank"
+            rel="noopener noreferrer"
             className="inline-flex items-center justify-center px-4.5 py-2 rounded-full text-xs font-semibold tracking-wide uppercase bg-zinc-900 hover:bg-zinc-800 text-white dark:bg-white dark:hover:bg-zinc-100 dark:text-black hover:scale-[1.02] transition-all duration-200 shadow-md"
           >
             Start Project
             <ArrowRight className="w-3 h-3 ml-1.5" />
-          </Link>
+          </a>
         </div>
 
         {/* Mobile Nav Button */}
@@ -227,13 +238,15 @@ export function Navbar() {
                 );
               })}
               <div className="pt-4 border-t border-zinc-100 dark:border-zinc-900 flex flex-col gap-3">
-                <Link
-                  href="/contact"
+                <a
+                  href="https://tinyurl.com/startwithNSD"
+                  target="_blank"
+                  rel="noopener noreferrer"
                   className="w-full inline-flex items-center justify-center px-5 py-3 rounded-xl text-sm font-semibold tracking-wide uppercase bg-indigo-500 hover:bg-indigo-600 text-white text-center shadow-lg"
                 >
                   Start Your Project
                   <ArrowRight className="w-4 h-4 ml-1.5" />
-                </Link>
+                </a>
               </div>
             </div>
           </motion.div>

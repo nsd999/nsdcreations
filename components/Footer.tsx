@@ -45,13 +45,15 @@ export function Footer() {
             </p>
           </div>
           <div className="lg:col-span-5 flex flex-col sm:flex-row gap-4 lg:justify-end">
-            <Link
-              href="/contact"
+            <a
+              href="https://tinyurl.com/startwithNSD"
+              target="_blank"
+              rel="noopener noreferrer"
               className="inline-flex items-center justify-center px-6 py-3.5 rounded-full text-sm font-semibold tracking-wide uppercase bg-indigo-600 hover:bg-indigo-700 text-white shadow-lg shadow-indigo-600/10 hover:shadow-indigo-600/20 active:scale-95 transition-all text-center"
             >
               Start Your Project
               <ArrowRight className="w-4 h-4 ml-2" />
-            </Link>
+            </a>
             <Link
               href="https://wa.me/916303849852"
               target="_blank"
@@ -104,13 +106,13 @@ export function Footer() {
             >
               <Youtube className="w-4 h-4" />
             </Link>
-            <Link
-              href="mailto:nalkarisaidheeraj@gmail.com"
+            <a
+              href="mailto:nsd.creations.official@gmail.com"
               className="w-9 h-9 rounded-full bg-zinc-200/50 dark:bg-zinc-900 border border-zinc-300/30 dark:border-zinc-800 flex items-center justify-center text-zinc-600 dark:text-zinc-400 hover:bg-indigo-50 hover:text-indigo-600 dark:hover:bg-indigo-950/40 dark:hover:text-indigo-400 transition-colors"
               aria-label="Email"
             >
               <Mail className="w-4 h-4" />
-            </Link>
+            </a>
           </div>
           <div className="text-xs text-zinc-400 dark:text-zinc-500 font-mono">
             <p>Founder: Sai Dheeraj Nalkari</p>

@@ -125,8 +125,10 @@ export default function PricingPage() {
             </div>
 
             <div className="mt-8 pt-4 border-t border-zinc-50 dark:border-zinc-900/60">
-              <Link
-                href="/#contact"
+              <a
+                href="https://tinyurl.com/startwithNSD"
+                target="_blank"
+                rel="noopener noreferrer"
                 className={`w-full inline-flex items-center justify-center px-5 py-3.5 rounded-xl text-xs font-bold tracking-widest uppercase transition-all ${
                   plan.highlight
                     ? "bg-indigo-600 hover:bg-indigo-700 text-white shadow-lg"
@@ -135,7 +137,7 @@ export default function PricingPage() {
               >
                 {plan.cta}
                 <ArrowRight className="w-3.5 h-3.5 ml-2" />
-              </Link>
+              </a>
             </div>
           </div>
         ))}
@@ -150,9 +152,14 @@ export default function PricingPage() {
               * Starting pricing applies to simple standalone graphic assets. Comprehensive media deliverables or full-suite software require tailored contract specifications.
             </span>
           </span>
-          <Link href="/contact" className="text-indigo-600 dark:text-indigo-400 hover:underline font-bold shrink-0">
+          <a
+            href="https://tinyurl.com/startwithNSD"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="text-indigo-600 dark:text-indigo-400 hover:underline font-bold shrink-0"
+          >
             Learn More Specs &rarr;
-          </Link>
+          </a>
         </div>
       </section>
 
