@@ -68,10 +68,10 @@ export function Navbar() {
             <NsdLogo mode="navbar" theme={resolvedTheme} className="w-full h-full" />
           </motion.div>
           <div className="flex flex-col">
-            <span className="font-display font-bold text-base tracking-wider bg-clip-text text-transparent bg-gradient-to-r from-zinc-800 to-zinc-500 dark:from-zinc-100 dark:to-zinc-400">
+            <span className="font-display font-black text-base tracking-wider bg-clip-text text-transparent bg-gradient-to-r from-[#FF8A00] via-[#FFA726] to-[#FFB347]">
               NSD CREATIONS
             </span>
-            <span className="text-[9px] font-mono tracking-widest text-indigo-500 dark:text-indigo-400 uppercase -mt-1 font-bold">
+            <span className="text-[9px] font-semibold tracking-widest text-[#7C6BFF] uppercase -mt-0.5">
               Creative Tech Partner
             </span>
           </div>
@@ -110,10 +110,20 @@ export function Navbar() {
           <div className="relative">
             <button
               onClick={() => setShowThemeMenu(!showThemeMenu)}
-              className="p-2 rounded-full border border-zinc-200 dark:border-zinc-800 text-zinc-600 dark:text-zinc-400 hover:bg-zinc-100 dark:hover:bg-zinc-900 transition-colors"
+              className="p-2 rounded-full border border-zinc-200 dark:border-zinc-800 text-zinc-600 dark:text-zinc-400 hover:bg-zinc-100 dark:hover:bg-zinc-900 transition-all duration-300 hover:scale-105 active:scale-95 flex items-center justify-center"
               aria-label="Toggle theme"
             >
-              {getThemeIcon()}
+              <AnimatePresence mode="wait" initial={false}>
+                <motion.div
+                  key={theme}
+                  initial={{ opacity: 0, rotate: -45, scale: 0.8 }}
+                  animate={{ opacity: 1, rotate: 0, scale: 1 }}
+                  exit={{ opacity: 0, rotate: 45, scale: 0.8 }}
+                  transition={{ duration: 0.15 }}
+                >
+                  {getThemeIcon()}
+                </motion.div>
+              </AnimatePresence>
             </button>
             <AnimatePresence>
               {showThemeMenu && (
@@ -173,7 +183,7 @@ export function Navbar() {
           <button
             onClick={() => {
               const next: Record<string, string> = { light: "dark", dark: "system", system: "light" };
-              setTheme(next[theme] as any);
+              setTheme(next[theme || "dark"] as any);
             }}
             className="p-2 rounded-full border border-zinc-200 dark:border-zinc-800 text-zinc-600 dark:text-zinc-400"
             aria-label="Toggle theme mobile"

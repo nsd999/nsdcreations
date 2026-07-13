@@ -359,40 +359,29 @@ export default function HomePage() {
             </div>
 
             {/* Custom Premium Animated Sliding Tabs */}
-            <div className="relative p-1 bg-zinc-100 dark:bg-zinc-900 rounded-full flex space-x-1 border border-zinc-200/50 dark:border-zinc-800/50 shadow-sm self-start md:self-auto shrink-0">
+            <div className="flex items-center gap-4 flex-wrap shrink-0">
               <button
                 onClick={() => setServicesTab("creative")}
-                className={`relative px-6 py-2 rounded-full text-xs font-bold tracking-wider uppercase transition-all duration-300 cursor-pointer ${
+                className={`relative px-8 py-3.5 rounded-full text-xs font-black tracking-widest uppercase transition-all duration-300 ease-out cursor-pointer shadow-lg hover:scale-105 active:scale-95 flex items-center gap-2 ${
                   servicesTab === "creative"
-                    ? "text-white z-10"
-                    : "text-zinc-500 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-zinc-200"
-                }`}
+                    ? "bg-gradient-to-r from-[#FF8A00] to-[#FFA726] text-zinc-950 border border-[#FF8A00]/30 shadow-[#FF8A00]/20 dark:shadow-[#FF8A00]/10"
+                    : "bg-white/10 dark:bg-[#121214]/40 text-zinc-500 hover:text-zinc-800 dark:hover:text-zinc-200 border border-zinc-200/50 dark:border-zinc-800/50 backdrop-blur-md"
+                } hover:shadow-[0_0_25px_rgba(255,138,0,0.35)]`}
               >
-                {servicesTab === "creative" && (
-                  <motion.span
-                    layoutId="active-services-tab"
-                    className="absolute inset-0 bg-indigo-500 rounded-full -z-10 shadow-md"
-                    transition={{ type: "spring", stiffness: 300, damping: 28 }}
-                  />
-                )}
-                Creative & Marketing
+                <Sparkles className="w-3.5 h-3.5" />
+                Creative
               </button>
+              
               <button
                 onClick={() => setServicesTab("technical")}
-                className={`relative px-6 py-2 rounded-full text-xs font-bold tracking-wider uppercase transition-all duration-300 cursor-pointer ${
+                className={`relative px-8 py-3.5 rounded-full text-xs font-black tracking-widest uppercase transition-all duration-300 ease-out cursor-pointer shadow-lg hover:scale-105 active:scale-95 flex items-center gap-2 ${
                   servicesTab === "technical"
-                    ? "text-white z-10"
-                    : "text-zinc-500 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-zinc-200"
-                }`}
+                    ? "bg-gradient-to-r from-[#6D5BFF] to-[#8A6CFF] text-white border border-[#6D5BFF]/30 shadow-[#6D5BFF]/20 dark:shadow-[#6D5BFF]/10"
+                    : "bg-white/10 dark:bg-[#121214]/40 text-zinc-500 hover:text-zinc-800 dark:hover:text-zinc-200 border border-zinc-200/50 dark:border-zinc-800/50 backdrop-blur-md"
+                } hover:shadow-[0_0_25px_rgba(109,91,255,0.35)]`}
               >
-                {servicesTab === "technical" && (
-                  <motion.span
-                    layoutId="active-services-tab"
-                    className="absolute inset-0 bg-indigo-500 rounded-full -z-10 shadow-md"
-                    transition={{ type: "spring", stiffness: 300, damping: 28 }}
-                  />
-                )}
-                Tech & Automation
+                <Globe className="w-3.5 h-3.5" />
+                Web Development
               </button>
             </div>
           </div>

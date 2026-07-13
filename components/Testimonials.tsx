@@ -12,8 +12,7 @@ import {
   AlertCircle, 
   ShieldAlert, 
   Sparkles, 
-  ArrowRight,
-  Settings
+  ArrowRight
 } from "lucide-react";
 import { supabase } from "@/lib/supabase";
 import { GradientAvatar } from "./GradientAvatar";
@@ -363,9 +362,12 @@ export function Testimonials() {
                     <Check className="w-8 h-8" />
                   </div>
                   <div className="space-y-2">
-                    <h3 className="font-display font-bold text-xl md:text-2xl tracking-tight text-zinc-900 dark:text-zinc-50">Review Received.</h3>
-                    <p className="text-sm text-zinc-500 dark:text-zinc-400 leading-relaxed max-w-xs mx-auto">
-                      Thank you! Your review has been received and is awaiting approval.
+                    <h3 className="font-display font-bold text-2xl md:text-3xl tracking-tight text-zinc-900 dark:text-zinc-50">✓ Thank you!</h3>
+                    <p className="text-base text-zinc-600 dark:text-zinc-350 font-medium leading-relaxed max-w-xs mx-auto">
+                      Your review has been received successfully.
+                    </p>
+                    <p className="text-xs text-zinc-450 dark:text-zinc-450 leading-relaxed max-w-xs mx-auto">
+                      It will appear after approval.
                     </p>
                   </div>
                   <button
@@ -563,7 +565,7 @@ export function Testimonials() {
                         <div className="w-4 h-4 rounded-full border-2 border-zinc-500/50 border-t-zinc-500 animate-spin" />
                       ) : (
                         <>
-                          <span>Submit</span>
+                          <span>Submit Review</span>
                           <ArrowRight className="w-3.5 h-3.5" />
                         </>
                       )}

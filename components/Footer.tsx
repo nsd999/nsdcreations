@@ -77,10 +77,10 @@ export function Footer() {
               <NsdLogo className="w-full h-full" />
             </div>
             <div className="flex flex-col">
-              <span className="font-display font-bold text-base tracking-wider text-zinc-900 dark:text-white">
+              <span className="font-display font-black text-base tracking-wider bg-clip-text text-transparent bg-gradient-to-r from-[#FF8A00] via-[#FFA726] to-[#FFB347]">
                 NSD CREATIONS
               </span>
-              <span className="text-[9px] font-mono tracking-widest text-indigo-500 dark:text-indigo-400 uppercase -mt-1 font-bold">
+              <span className="text-[9px] font-semibold tracking-widest text-[#7C6BFF] uppercase -mt-0.5">
                 Creative Tech Partner
               </span>
             </div>

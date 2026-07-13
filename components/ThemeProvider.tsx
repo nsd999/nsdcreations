@@ -1,83 +1,32 @@
 "use client";
 
-import React, { createContext, useContext, useEffect, useState } from "react";
-
-type Theme = "dark" | "light" | "system";
-
-interface ThemeContextType {
-  theme: Theme;
-  setTheme: (theme: Theme) => void;
-  resolvedTheme: "dark" | "light";
-}
-
-const ThemeContext = createContext<ThemeContextType | undefined>(undefined);
+import React, { useEffect, useState } from "react";
+import { ThemeProvider as NextThemesProvider, useTheme as useNextTheme } from "next-themes";
 
 export function ThemeProvider({ children }: { children: React.ReactNode }) {
-  const [theme, setThemeState] = useState<Theme>("dark");
-  const [resolvedTheme, setResolvedTheme] = useState<"dark" | "light">("dark");
-
-  useEffect(() => {
-    // Read initial theme from localStorage on client mount
-    const savedTheme = localStorage.getItem("nsd-theme") as Theme | null;
-    if (savedTheme) {
-      setThemeState(savedTheme);
-    } else {
-      setThemeState("system");
-    }
-  }, []);
-
-  useEffect(() => {
-    const root = window.document.documentElement;
-    
-    const applyTheme = () => {
-      let currentTheme: "dark" | "light" = "dark";
-      
-      if (theme === "system") {
-        const systemPrefersDark = window.matchMedia("(prefers-color-scheme: dark)").matches;
-        currentTheme = systemPrefersDark ? "dark" : "light";
-      } else {
-        currentTheme = theme;
-      }
-      
-      if (currentTheme === "dark") {
-        root.classList.add("dark");
-        root.classList.remove("light");
-        root.style.colorScheme = "dark";
-      } else {
-        root.classList.add("light");
-        root.classList.remove("dark");
-        root.style.colorScheme = "light";
-      }
-      
-      setResolvedTheme(currentTheme);
-    };
-
-    applyTheme();
-
-    if (theme === "system") {
-      const mediaQuery = window.matchMedia("(prefers-color-scheme: dark)");
-      const handleChange = () => applyTheme();
-      mediaQuery.addEventListener("change", handleChange);
-      return () => mediaQuery.removeEventListener("change", handleChange);
-    }
-  }, [theme]);
-
-  const setTheme = (newTheme: Theme) => {
-    localStorage.setItem("nsd-theme", newTheme);
-    setThemeState(newTheme);
-  };
-
   return (
-    <ThemeContext.Provider value={{ theme, setTheme, resolvedTheme }}>
+    <NextThemesProvider
+      attribute="class"
+      defaultTheme="system"
+      enableSystem={true}
+      disableTransitionOnChange
+    >
       {children}
-    </ThemeContext.Provider>
+    </NextThemesProvider>
   );
 }
 
 export function useTheme() {
-  const context = useContext(ThemeContext);
-  if (!context) {
-    throw new Error("useTheme must be used within a ThemeProvider");
-  }
-  return context;
+  const { theme, setTheme, resolvedTheme } = useNextTheme();
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
+
+  return {
+    theme: mounted ? theme : "dark",
+    setTheme,
+    resolvedTheme: (mounted ? resolvedTheme : "dark") as "dark" | "light",
+  };
 }

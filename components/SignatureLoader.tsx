@@ -14,23 +14,24 @@ export function SignatureLoader({ onComplete }: SignatureLoaderProps) {
   const logoRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    // 1. Initial fade-in and scale of logo (starts 0.8 -> 1.1 scale, opacity 0 -> 1 over 600ms)
+    // 1. Black background with logo starting at scale 0.8 and opacity 0.
+    // Immediately trigger fade-in and scale up to 1.1 (duration 800ms)
     const startAnim = setTimeout(() => {
       setLogoTransform({ x: 0, y: 0, scale: 1.1, opacity: 1 });
     }, 50);
 
-    // 2. Hold for 0.8s (total elapsed: 1.4s), then fly to the Navbar position (duration: 450ms)
+    // 2. Pause on scale 1.1, then shrink and fly to the Navbar logo position (at 1450ms)
     const flyAnim = setTimeout(() => {
       const navbarLogo = document.getElementById("navbar-logo-container");
       let deltaX = 0;
       let deltaY = 0;
-      let scaleFactor = 0.2; // default fallback scale
+      let scaleFactor = 0.25; // elegant shrink scale factor
 
       if (navbarLogo && logoRef.current) {
         const navRect = navbarLogo.getBoundingClientRect();
         const loaderRect = logoRef.current.getBoundingClientRect();
 
-        // Calculate centers of both elements
+        // Calculate precise center difference to map position
         const navCenterX = navRect.left + navRect.width / 2;
         const navCenterY = navRect.top + navRect.height / 2;
         const loaderCenterX = loaderRect.left + loaderRect.width / 2;
@@ -39,29 +40,29 @@ export function SignatureLoader({ onComplete }: SignatureLoaderProps) {
         deltaX = navCenterX - loaderCenterX;
         deltaY = navCenterY - loaderCenterY;
         
-        // Calculate dynamic scale factor based on actual elements
+        // Calculate exact scale factor to match header logo size
         scaleFactor = navRect.width / loaderRect.width;
       } else {
-        // Fallback calculations in case navbar logo isn't rendered or is unreachable
+        // Safe robust responsive fallback coordinates
         deltaX = -window.innerWidth / 2 + 56;
         deltaY = -window.innerHeight / 2 + 56;
-        scaleFactor = 0.2;
+        scaleFactor = 0.22;
       }
 
-      // Animate the flying logo to the precise top-left coordinates and fade background to transparent
+      // Shrink and fly to the exact coordinates, fading background out simultaneously
       setLogoTransform({
         x: deltaX,
         y: deltaY,
         scale: scaleFactor,
-        opacity: 0.85 // fade slightly while moving
+        opacity: 0.9,
       });
       setBgOpacity(0);
-    }, 1400);
+    }, 1450);
 
-    // 3. Complete and unmount (total elapsed: 1.85s)
+    // 3. Complete animation sequence and merge seamlessly into the header at ~2 seconds
     const endAnim = setTimeout(() => {
       onComplete();
-    }, 1850);
+    }, 2000);
 
     return () => {
       clearTimeout(startAnim);
@@ -77,7 +78,7 @@ export function SignatureLoader({ onComplete }: SignatureLoaderProps) {
         opacity: bgOpacity,
       }}
       animate={{ opacity: bgOpacity }}
-      transition={{ duration: 0.45, ease: [0.16, 1, 0.3, 1] }}
+      transition={{ duration: 0.5, ease: [0.16, 1, 0.3, 1] }}
       className="fixed inset-0 z-[100] flex items-center justify-center overflow-hidden select-none pointer-events-none"
     >
       <div className="relative w-full h-full flex items-center justify-center">
@@ -91,9 +92,9 @@ export function SignatureLoader({ onComplete }: SignatureLoaderProps) {
             opacity: logoTransform.opacity,
           }}
           transition={{
-            // High-end cinematic spring-like feel
+            // Apple-quality cubic-bezier motion curves
             ease: [0.16, 1, 0.3, 1],
-            duration: logoTransform.x !== 0 || logoTransform.y !== 0 ? 0.45 : 0.6,
+            duration: logoTransform.x !== 0 || logoTransform.y !== 0 ? 0.55 : 0.8,
           }}
         >
           <ImageWithNSDFallback
