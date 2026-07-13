@@ -31,11 +31,11 @@ export function ImageWithNSDFallback({
 }: ImageWithNSDFallbackProps) {
   // Map specific images to their correct public path sources
   const getSourcesList = (initialSrc: string): string[] => {
-    if (initialSrc.includes("nsdlogo") || initialSrc.includes("input_file_0")) {
-      return ["/nsdlogo.png"];
+    if (initialSrc.includes("nsdlogo") || initialSrc.includes("logo") || initialSrc.includes("input_file_0")) {
+      return ["https://res.cloudinary.com/qmwu0cdg/image/upload/v1783939919/nsdlogo_zgnd8e.png"];
     }
     if (initialSrc.includes("founder") || initialSrc.includes("input_file_1")) {
-      return ["/founder.png"];
+      return ["https://res.cloudinary.com/qmwu0cdg/image/upload/v1783939920/founder_iccyy3.png"];
     }
     return [initialSrc];
   };
@@ -46,6 +46,8 @@ export function ImageWithNSDFallback({
 
   const [isLoading, setIsLoading] = useState(true);
   const [hasError, setHasError] = useState(false);
+
+  const isLogo = currentSrc.includes("nsdlogo");
 
   // Reset loading states when src changes
   useEffect(() => {
@@ -66,6 +68,10 @@ export function ImageWithNSDFallback({
       setHasError(true);
     }
   };
+
+  if (hasError && isLogo) {
+    return null;
+  }
 
   return (
     <div
@@ -100,7 +106,7 @@ export function ImageWithNSDFallback({
       )}
 
       {/* Pure, clean loading/missing skeleton loader (no broken icons, initials or placeholder logos) */}
-      {(isLoading || hasError) && (
+      {(isLoading || hasError) && !isLogo && (
         <div className="absolute inset-0 w-full h-full bg-zinc-200 dark:bg-zinc-900 animate-pulse flex items-center justify-center transition-all duration-300" />
       )}
     </div>

@@ -55,7 +55,7 @@ export function SignatureLoader({ onComplete }: SignatureLoaderProps) {
           className="w-full h-full relative"
         >
           <ImageWithNSDFallback
-            src="/nsdlogo.png"
+            src="https://res.cloudinary.com/qmwu0cdg/image/upload/v1783939919/nsdlogo_zgnd8e.png"
             alt="NSD Creations Official Logo"
             className="w-full h-full"
             fill
