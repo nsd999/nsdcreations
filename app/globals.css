@@ -30,9 +30,33 @@
   body {
     background-color: rgb(var(--background));
     color: rgb(var(--foreground));
-    transition: background-color 0.5s cubic-bezier(0.4, 0, 0.2, 1), color 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+    transition: background-color 0.4s cubic-bezier(0.16, 1, 0.3, 1), color 0.4s cubic-bezier(0.16, 1, 0.3, 1);
     overflow-x: hidden;
   }
+}
+
+/* Smooth, premium transitions for theme-dependent properties to avoid flashing or abrupt changes */
+body, 
+header, 
+footer, 
+section, 
+button, 
+a, 
+input, 
+textarea, 
+select, 
+.glass-card, 
+.premium-glass-hover, 
+.rounded-2xl, 
+.rounded-3xl, 
+[class*="bg-"], 
+[class*="border-"], 
+[class*="text-"] {
+  transition: 
+    background-color 0.4s cubic-bezier(0.16, 1, 0.3, 1),
+    border-color 0.4s cubic-bezier(0.16, 1, 0.3, 1),
+    color 0.4s cubic-bezier(0.16, 1, 0.3, 1),
+    box-shadow 0.4s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 /* Custom fonts styling */
@@ -110,10 +134,13 @@
 /* Glassmorphism effects */
 .glass-card {
   background: rgba(255, 255, 255, 0.75);
-  backdrop-filter: blur(20px);
-  -webkit-backdrop-filter: blur(20px);
-  border: 1px solid rgba(228, 228, 231, 0.6);
-  box-shadow: 0 4px 30px rgba(0, 0, 0, 0.02);
+  backdrop-filter: blur(24px);
+  -webkit-backdrop-filter: blur(24px);
+  border: 1px solid rgba(230, 232, 240, 0.8);
+  box-shadow: 
+    0 1px 2px rgba(0, 0, 0, 0.01),
+    0 8px 24px rgba(149, 157, 165, 0.04),
+    0 16px 32px rgba(149, 157, 165, 0.02);
 }
 
 .dark .glass-card {
@@ -186,4 +213,279 @@
 
 .dark .spotlight-card::before {
   background: radial-gradient(600px circle at var(--mouse-x, 0) var(--mouse-y, 0), rgba(168, 85, 247, 0.1), transparent 40%);
+}
+
+/* ==========================================================================
+   DEDICATED LIGHT THEME PREMIUM DESIGN SYSTEM
+   ========================================================================== */
+
+body:not(.dark) {
+  background-color: #FAFAFB !important;
+  background-image: 
+    radial-gradient(circle at 0% 0%, rgba(139, 92, 246, 0.04) 0%, transparent 40%),
+    radial-gradient(circle at 100% 0%, rgba(59, 130, 246, 0.05) 0%, transparent 40%),
+    radial-gradient(circle at 50% 50%, rgba(168, 85, 247, 0.02) 0%, transparent 50%),
+    radial-gradient(circle at 100% 100%, rgba(139, 92, 246, 0.04) 0%, transparent 40%) !important;
+  background-attachment: fixed !important;
+  color: #111827 !important;
+}
+
+/* Light Theme Grid Pattern */
+body:not(.dark) .grid-background {
+  background-image: radial-gradient(rgba(139, 92, 246, 0.06) 1.5px, transparent 1.5px) !important;
+  background-size: 24px 24px !important;
+  opacity: 0.75 !important;
+}
+
+/* Light Mode Typography & High Contrast Accessibilities */
+body:not(.dark) h1,
+body:not(.dark) h2,
+body:not(.dark) h3,
+body:not(.dark) h4,
+body:not(.dark) h5,
+body:not(.dark) h6 {
+  color: #111827 !important;
+  letter-spacing: -0.025em !important;
+}
+
+body:not(.dark) .text-zinc-900,
+body:not(.dark) .text-zinc-850,
+body:not(.dark) .text-zinc-800 {
+  color: #111827 !important;
+}
+
+body:not(.dark) .text-zinc-700,
+body:not(.dark) .text-zinc-600 {
+  color: #374151 !important;
+}
+
+body:not(.dark) .text-zinc-500 {
+  color: #4B5563 !important; /* Premium contrast gray */
+}
+
+body:not(.dark) .text-zinc-400 {
+  color: #6B7280 !important; /* Premium readable muted gray */
+}
+
+/* Prevent image darkening or dimming */
+body:not(.dark) img {
+  filter: brightness(1) contrast(1.02) !important;
+  opacity: 1 !important;
+  box-shadow: 
+    0 1px 3px rgba(0, 0, 0, 0.01),
+    0 10px 30px rgba(149, 157, 165, 0.04) !important;
+}
+
+/* Header & Floating Navigation */
+body:not(.dark) header {
+  background: rgba(255, 255, 255, 0.75) !important;
+  backdrop-filter: blur(24px) !important;
+  -webkit-backdrop-filter: blur(24px) !important;
+  border-bottom: 1px solid rgba(230, 232, 240, 0.8) !important;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.015) !important;
+}
+
+body:not(.dark) header a {
+  color: #4B5563 !important;
+}
+
+body:not(.dark) header a:hover {
+  color: #8b5cf6 !important; /* Purple hover accents */
+}
+
+/* Active indicator in Light Theme Navbar */
+body:not(.dark) span[layoutid="navbar-active-bg"] {
+  background-color: rgba(139, 92, 246, 0.06) !important;
+}
+
+/* Secondary Navigation / Static links active state */
+body:not(.dark) header .text-indigo-600 {
+  color: #6366f1 !important;
+  font-weight: 600;
+}
+
+/* Section Backgrounds (White canvas / soft greys) */
+body:not(.dark) section {
+  background-color: transparent !important;
+}
+
+body:not(.dark) .bg-zinc-50\/40,
+body:not(.dark) .bg-zinc-50\/50,
+body:not(.dark) .bg-zinc-50\/30,
+body:not(.dark) .bg-zinc-50 {
+  background-color: rgba(246, 247, 251, 0.6) !important; /* #F6F7FB */
+}
+
+/* Card Elements (Stripe/Apple inspired soft white card design) */
+body:not(.dark) .bg-white,
+body:not(.dark) .bg-white\/50 {
+  background-color: #FFFFFF !important;
+  border: 1px solid #E6E8F0 !important;
+  box-shadow: 
+    0 1px 2px rgba(0, 0, 0, 0.01),
+    0 12px 28px rgba(149, 157, 165, 0.03) !important;
+}
+
+/* Input Fields (Apple inspired) */
+body:not(.dark) input,
+body:not(.dark) textarea,
+body:not(.dark) select {
+  background-color: #FFFFFF !important;
+  border: 1px solid #E6E8F0 !important;
+  color: #111827 !important;
+}
+
+body:not(.dark) input:focus,
+body:not(.dark) textarea:focus,
+body:not(.dark) select:focus {
+  border-color: #8b5cf6 !important;
+  box-shadow: 0 0 0 3px rgba(139, 92, 246, 0.1) !important;
+}
+
+/* Primary buttons with gorgeous premium purple-blue gradient, elevated shadows, and hover lift */
+body:not(.dark) .bg-indigo-600,
+body:not(.dark) .bg-indigo-500,
+body:not(.dark) .bg-indigo-600\/90 {
+  background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 50%, #a855f7 100%) !important;
+  color: #FFFFFF !important;
+  box-shadow: 
+    0 4px 6px -1px rgba(139, 92, 246, 0.12),
+    0 10px 15px -3px rgba(139, 92, 246, 0.15),
+    0 0 15px rgba(168, 85, 247, 0.05) !important;
+}
+
+body:not(.dark) .bg-indigo-600:hover,
+body:not(.dark) .bg-indigo-500:hover,
+body:not(.dark) .bg-indigo-600\/90:hover {
+  transform: translateY(-2px) !important;
+  box-shadow: 
+    0 6px 12px -2px rgba(139, 92, 246, 0.15),
+    0 16px 24px -4px rgba(139, 92, 246, 0.2),
+    0 0 20px rgba(168, 85, 247, 0.15) !important;
+  filter: brightness(1.05) !important;
+}
+
+/* Secondary Button design (Stripe/Framer-inspired) */
+body:not(.dark) a[class*="border-zinc-200"],
+body:not(.dark) button[class*="border-zinc-200"],
+body:not(.dark) div[class*="border-zinc-200"] {
+  border-color: #E6E8F0 !important;
+  background-color: #FFFFFF !important;
+  color: #4B5563 !important;
+}
+
+body:not(.dark) a[class*="border-zinc-200"]:hover,
+body:not(.dark) button[class*="border-zinc-200"]:hover {
+  border-color: rgba(139, 92, 246, 0.4) !important;
+  color: #8b5cf6 !important;
+  background-color: rgba(139, 92, 246, 0.02) !important;
+  transform: translateY(-1.5px) !important;
+  box-shadow: 0 8px 16px rgba(139, 92, 246, 0.04) !important;
+}
+
+/* FAQ accordion style overrides in Light Mode */
+body:not(.dark) .space-y-4 .rounded-2xl.border {
+  background-color: #FFFFFF !important;
+  border-color: #E6E8F0 !important;
+  box-shadow: 
+    0 1px 2px rgba(0, 0, 0, 0.01),
+    0 8px 20px rgba(149, 157, 165, 0.02) !important;
+}
+
+/* Premium white glass panels for specific section elements (e.g. "About") */
+body:not(.dark) #about .rounded-3xl,
+body:not(.dark) #about .bg-white {
+  background: rgba(255, 255, 255, 0.8) !important;
+  backdrop-filter: blur(24px) !important;
+  -webkit-backdrop-filter: blur(24px) !important;
+  border: 1px solid #E6E8F0 !important;
+  box-shadow: 
+    0 1px 3px rgba(0, 0, 0, 0.01),
+    0 16px 36px rgba(149, 157, 165, 0.03) !important;
+}
+
+/* Floating white cards on "Services" in Light mode */
+body:not(.dark) #services .premium-glass-hover,
+body:not(.dark) .grid .group.p-6.rounded-3xl {
+  background: #FFFFFF !important;
+  border: 1px solid #E6E8F0 !important;
+  box-shadow: 
+    0 1px 2px rgba(0, 0, 0, 0.01),
+    0 12px 24px rgba(149, 157, 165, 0.03) !important;
+}
+
+body:not(.dark) #services .premium-glass-hover:hover,
+body:not(.dark) .grid .group.p-6.rounded-3xl:hover {
+  border-color: rgba(139, 92, 246, 0.35) !important;
+  box-shadow: 
+    0 16px 36px -10px rgba(139, 92, 246, 0.12),
+    0 0 12px rgba(139, 92, 246, 0.02) !important;
+}
+
+/* Testimonials: Soft luxurious gradient cards */
+body:not(.dark) .group.relative.overflow-hidden.rounded-2xl {
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.95) 0%, rgba(246, 247, 251, 0.95) 100%) !important;
+  border-color: #E6E8F0 !important;
+  box-shadow: 
+    0 1px 2px rgba(0, 0, 0, 0.01),
+    0 10px 24px rgba(149, 157, 165, 0.03) !important;
+}
+
+/* Portfolio: Elegant gallery cards */
+body:not(.dark) #portfolio .rounded-3xl {
+  background: #FFFFFF !important;
+  border-color: #E6E8F0 !important;
+  box-shadow: 
+    0 1px 2px rgba(0, 0, 0, 0.01),
+    0 16px 32px rgba(149, 157, 165, 0.03) !important;
+}
+
+body:not(.dark) #portfolio .absolute.top-4.left-4 {
+  background: rgba(255, 255, 255, 0.9) !important;
+  backdrop-filter: blur(10px) !important;
+  border: 1px solid #E6E8F0 !important;
+  color: #6366f1 !important;
+}
+
+/* Floating Status Box inside the Hero glass card container */
+body:not(.dark) .absolute.bottom-4.left-4.right-4 {
+  background: rgba(255, 255, 255, 0.85) !important;
+  backdrop-filter: blur(16px) !important;
+  border: 1px solid rgba(230, 232, 240, 0.9) !important;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.03) !important;
+}
+
+body:not(.dark) .absolute.bottom-4.left-4.right-4 p,
+body:not(.dark) .absolute.bottom-4.left-4.right-4 span,
+body:not(.dark) .absolute.bottom-4.left-4.right-4 div {
+  color: #111827 !important;
+  border-color: #E6E8F0 !important;
+}
+
+body:not(.dark) .absolute.bottom-4.left-4.right-4 a {
+  color: #6366f1 !important;
+}
+
+/* Footer Section - Soft grey background, Dark text, Purple highlights */
+body:not(.dark) footer {
+  background-color: #F3F4F6 !important; /* Soft grey background */
+  border-top: 1px solid #E5E7EB !important;
+}
+
+body:not(.dark) footer [class*="border-zinc-200"] {
+  border-color: #E5E7EB !important;
+}
+
+body:not(.dark) footer .text-zinc-500,
+body:not(.dark) footer .text-zinc-400 {
+  color: #4B5563 !important; /* Readable dark-grey text */
+}
+
+body:not(.dark) footer .text-zinc-900,
+body:not(.dark) footer .text-zinc-800 {
+  color: #111827 !important; /* Readable primary dark text */
+}
+
+body:not(.dark) footer a:hover {
+  color: #8b5cf6 !important; /* Purple highlights */
 }

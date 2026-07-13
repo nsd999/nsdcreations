@@ -1,8 +1,7 @@
 "use client";
 
-import React, { useEffect } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import { motion } from "motion/react";
-import { useTheme } from "./ThemeProvider";
 import { ImageWithNSDFallback } from "./ImageWithNSDFallback";
 
 interface SignatureLoaderProps {
@@ -10,54 +9,97 @@ interface SignatureLoaderProps {
 }
 
 export function SignatureLoader({ onComplete }: SignatureLoaderProps) {
-  const { resolvedTheme } = useTheme();
-  const isLight = resolvedTheme === "light";
-  const bgColor = isLight ? "#ffffff" : "#030303"; // pure white or deep obsidian
+  const [logoTransform, setLogoTransform] = useState({ x: 0, y: 0, scale: 0.8, opacity: 0 });
+  const [bgOpacity, setBgOpacity] = useState(1);
+  const logoRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    // Exactly 1.8 seconds total duration
-    const timer = setTimeout(() => {
-      onComplete();
-    }, 1800);
+    // 1. Initial fade-in and scale of logo (starts 0.8 -> 1.1 scale, opacity 0 -> 1 over 600ms)
+    const startAnim = setTimeout(() => {
+      setLogoTransform({ x: 0, y: 0, scale: 1.1, opacity: 1 });
+    }, 50);
 
-    return () => clearTimeout(timer);
+    // 2. Hold for 0.8s (total elapsed: 1.4s), then fly to the Navbar position (duration: 450ms)
+    const flyAnim = setTimeout(() => {
+      const navbarLogo = document.getElementById("navbar-logo-container");
+      let deltaX = 0;
+      let deltaY = 0;
+      let scaleFactor = 0.2; // default fallback scale
+
+      if (navbarLogo && logoRef.current) {
+        const navRect = navbarLogo.getBoundingClientRect();
+        const loaderRect = logoRef.current.getBoundingClientRect();
+
+        // Calculate centers of both elements
+        const navCenterX = navRect.left + navRect.width / 2;
+        const navCenterY = navRect.top + navRect.height / 2;
+        const loaderCenterX = loaderRect.left + loaderRect.width / 2;
+        const loaderCenterY = loaderRect.top + loaderRect.height / 2;
+
+        deltaX = navCenterX - loaderCenterX;
+        deltaY = navCenterY - loaderCenterY;
+        
+        // Calculate dynamic scale factor based on actual elements
+        scaleFactor = navRect.width / loaderRect.width;
+      } else {
+        // Fallback calculations in case navbar logo isn't rendered or is unreachable
+        deltaX = -window.innerWidth / 2 + 56;
+        deltaY = -window.innerHeight / 2 + 56;
+        scaleFactor = 0.2;
+      }
+
+      // Animate the flying logo to the precise top-left coordinates and fade background to transparent
+      setLogoTransform({
+        x: deltaX,
+        y: deltaY,
+        scale: scaleFactor,
+        opacity: 0.85 // fade slightly while moving
+      });
+      setBgOpacity(0);
+    }, 1400);
+
+    // 3. Complete and unmount (total elapsed: 1.85s)
+    const endAnim = setTimeout(() => {
+      onComplete();
+    }, 1850);
+
+    return () => {
+      clearTimeout(startAnim);
+      clearTimeout(flyAnim);
+      clearTimeout(endAnim);
+    };
   }, [onComplete]);
 
   return (
     <motion.div
-      initial={{ opacity: 1 }}
-      exit={{ 
-        opacity: 0,
-        filter: "blur(8px)",
-        transition: { duration: 0.4, ease: [0.16, 1, 0.3, 1] } 
+      style={{
+        backgroundColor: "#000000",
+        opacity: bgOpacity,
       }}
-      className="fixed inset-0 z-[100] flex flex-col items-center justify-center overflow-hidden"
-      style={{ backgroundColor: bgColor }}
+      animate={{ opacity: bgOpacity }}
+      transition={{ duration: 0.45, ease: [0.16, 1, 0.3, 1] }}
+      className="fixed inset-0 z-[100] flex items-center justify-center overflow-hidden select-none pointer-events-none"
     >
-      {/* Centered Logo Container */}
-      <div className="w-48 h-48 md:w-56 md:h-56 relative flex items-center justify-center">
+      <div className="relative w-full h-full flex items-center justify-center">
         <motion.div
-          layoutId="nsd-logo-brand"
-          initial={{ opacity: 0, scale: 0.85 }}
-          animate={{ 
-            opacity: 1, 
-            scale: 1,
+          ref={logoRef}
+          className="w-48 h-48 md:w-56 md:h-56 relative shrink-0 flex items-center justify-center"
+          animate={{
+            x: logoTransform.x,
+            y: logoTransform.y,
+            scale: logoTransform.scale,
+            opacity: logoTransform.opacity,
           }}
-          exit={{
-            scale: 0.85,
-            opacity: 0,
-            transition: { duration: 0.3, ease: "easeInOut" }
+          transition={{
+            // High-end cinematic spring-like feel
+            ease: [0.16, 1, 0.3, 1],
+            duration: logoTransform.x !== 0 || logoTransform.y !== 0 ? 0.45 : 0.6,
           }}
-          transition={{ 
-            duration: 0.8, 
-            ease: [0.16, 1, 0.3, 1] 
-          }}
-          className="w-full h-full relative"
         >
           <ImageWithNSDFallback
             src="https://res.cloudinary.com/qmwu0cdg/image/upload/v1783939919/nsdlogo_zgnd8e.png"
             alt="NSD Creations Official Logo"
-            className="w-full h-full"
+            className="w-full h-full object-contain"
             fill
             priority
           />

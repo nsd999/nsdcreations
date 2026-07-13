@@ -56,6 +56,7 @@ export function Navbar() {
         {/* Brand Logo */}
         <Link href="/" className="flex items-center space-x-2 group">
           <motion.div
+            id="navbar-logo-container"
             layoutId="nsd-logo-brand"
             transition={{
               type: "spring",

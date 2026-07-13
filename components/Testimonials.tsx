@@ -252,17 +252,8 @@ export function Testimonials() {
               className="inline-flex items-center space-x-2 px-5 py-3 rounded-full bg-zinc-900 dark:bg-zinc-50 hover:bg-orange-500 dark:hover:bg-amber-400 text-white dark:text-zinc-950 hover:text-white dark:hover:text-zinc-950 font-mono font-bold text-xs tracking-wider uppercase shadow-lg shadow-zinc-900/10 dark:shadow-none hover:shadow-orange-500/20 active:scale-95 transition-all duration-300"
             >
               <Plus className="w-4 h-4" />
-              <span>Submit Review</span>
+              <span>Submit Your Review</span>
             </button>
-
-            {/* Quick Admin Access Link */}
-            <a
-              href="/admin"
-              className="w-12 h-12 rounded-full border border-zinc-200 dark:border-zinc-800/80 hover:border-zinc-400 dark:hover:border-zinc-700/80 bg-zinc-50/50 dark:bg-zinc-900/50 hover:bg-zinc-100 dark:hover:bg-zinc-800 flex items-center justify-center text-zinc-500 hover:text-zinc-900 dark:text-zinc-400 dark:hover:text-zinc-100 transition-all active:scale-95 shadow-sm"
-              title="Admin Panel"
-            >
-              <Settings className="w-4 h-4" />
-            </a>
           </div>
         </div>
 
@@ -270,7 +261,7 @@ export function Testimonials() {
         {loading ? (
           <div className="flex flex-col items-center justify-center py-20 space-y-4">
             <div className="w-8 h-8 rounded-full border-2 border-orange-500/25 border-t-orange-500 animate-spin" />
-            <p className="text-xs font-mono tracking-wider text-zinc-400">CONNECTING TO STREAM...</p>
+            <p className="text-xs font-mono tracking-wider text-zinc-400">LOADING TESTIMONIALS...</p>
           </div>
         ) : testimonials.length === 0 ? (
           <div className="border border-dashed border-zinc-200 dark:border-zinc-800/60 rounded-3xl p-16 text-center max-w-xl mx-auto flex flex-col items-center space-y-4">
@@ -374,7 +365,7 @@ export function Testimonials() {
                   <div className="space-y-2">
                     <h3 className="font-display font-bold text-xl md:text-2xl tracking-tight text-zinc-900 dark:text-zinc-50">Review Received.</h3>
                     <p className="text-sm text-zinc-500 dark:text-zinc-400 leading-relaxed max-w-xs mx-auto">
-                      Thank you! Your testimonial has been submitted. It will be displayed on the platform once approved by our moderation team.
+                      Thank you! Your review has been received and is awaiting approval.
                     </p>
                   </div>
                   <button

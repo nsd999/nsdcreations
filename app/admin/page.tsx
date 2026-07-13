@@ -149,6 +149,38 @@ export default function AdminPage() {
 
   const filtered = testimonials.filter((t) => t.status === activeTab);
 
+  if (!SUPABASE_CONFIG_STATUS.isConfigured) {
+    return (
+      <div className="flex items-center justify-center min-h-screen px-6 bg-zinc-50 dark:bg-zinc-950 text-zinc-900 dark:text-zinc-50 font-sans">
+        <motion.div
+          initial={{ opacity: 0, scale: 0.95 }}
+          animate={{ opacity: 1, scale: 1 }}
+          transition={{ duration: 0.5, ease: [0.16, 1, 0.3, 1] }}
+          className="w-full max-w-md p-8 md:p-10 rounded-3xl bg-white dark:bg-zinc-900/40 border border-zinc-200/60 dark:border-zinc-900 shadow-xl text-center space-y-6"
+        >
+          <div className="w-12 h-12 rounded-full bg-red-500/10 flex items-center justify-center text-red-500 mx-auto">
+            <ShieldAlert className="w-6 h-6" />
+          </div>
+          <div className="space-y-2">
+            <h1 className="font-display font-bold text-2xl tracking-tight text-zinc-900 dark:text-zinc-50">
+              Admin services are currently unavailable.
+            </h1>
+            <p className="text-sm text-zinc-500 dark:text-zinc-400 leading-relaxed">
+              Secure cloud database connection has not been initialized. Please contact the system administrator to configure secure cloud database services.
+            </p>
+          </div>
+          <Link
+            href="/"
+            className="inline-flex w-full items-center justify-center px-5 py-3 rounded-xl bg-zinc-900 hover:bg-zinc-800 text-white dark:bg-white dark:hover:bg-zinc-100 dark:text-black font-mono font-bold text-xs tracking-wider uppercase transition-all duration-200 shadow-md"
+          >
+            <ArrowLeft className="w-4 h-4 mr-2" />
+            <span>Return Home</span>
+          </Link>
+        </motion.div>
+      </div>
+    );
+  }
+
   if (!isAuthenticated) {
     return (
       <div className="flex items-center justify-center min-h-screen px-6 bg-zinc-50 dark:bg-zinc-950 text-zinc-900 dark:text-zinc-50 font-sans">

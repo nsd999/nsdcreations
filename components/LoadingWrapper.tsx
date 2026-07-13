@@ -14,14 +14,10 @@ export function LoadingWrapper({ children }: { children: React.ReactNode }) {
 
   useEffect(() => {
     setMounted(true);
-    const hasLoaded = sessionStorage.getItem("nsd_has_loaded");
-    if (hasLoaded === "true") {
-      setLoading(false);
-    }
+    setLoading(true);
   }, []);
 
   const handleComplete = () => {
-    sessionStorage.setItem("nsd_has_loaded", "true");
     setLoading(false);
   };
 

@@ -7,6 +7,7 @@ import { Footer } from "@/components/Footer";
 import { servicesData } from "@/lib/services-data";
 import { ImageWithNSDFallback } from "@/components/ImageWithNSDFallback";
 import { Testimonials } from "@/components/Testimonials";
+import { AnimatedStats } from "@/components/AnimatedStats";
 import { 
   Sparkles, 
   ArrowRight, 
@@ -50,30 +51,6 @@ export default function HomePage() {
     service: "website-development",
     message: ""
   });
-
-  // Animated counters
-  const [counters, setCounters] = useState({ projects: 0, clients: 0, rating: 0 });
-  useEffect(() => {
-    const duration = 1500;
-    const steps = 60;
-    const stepTime = duration / steps;
-    let currentStep = 0;
-
-    const interval = setInterval(() => {
-      currentStep++;
-      setCounters({
-        projects: Math.min(Math.round((20 / steps) * currentStep), 20),
-        clients: Math.min(Math.round((30 / steps) * currentStep), 30),
-        rating: Math.min(parseFloat(((5.0 / steps) * currentStep).toFixed(1)), 5.0)
-      });
-
-      if (currentStep >= steps) {
-        clearInterval(interval);
-      }
-    }, stepTime);
-
-    return () => clearInterval(interval);
-  }, []);
 
   // Portfolio works array (actual high-quality client assets and real case designs)
   const portfolioWorks = [
@@ -309,42 +286,7 @@ export default function HomePage() {
       </section>
 
       {/* Stats Counter Section */}
-      <section className="py-12 border-y border-zinc-200/50 dark:border-zinc-900/50 bg-zinc-50/50 dark:bg-[#030303]/40">
-        <div className="max-w-7xl mx-auto px-6 grid grid-cols-2 md:grid-cols-4 gap-8 text-center">
-          <div>
-            <div className="text-3xl md:text-4xl font-bold font-display text-indigo-600 dark:text-indigo-400">
-              {counters.projects}+
-            </div>
-            <div className="text-xs font-mono tracking-wider text-zinc-500 dark:text-zinc-400 uppercase mt-1">
-              Projects Completed
-            </div>
-          </div>
-          <div>
-            <div className="text-3xl md:text-4xl font-bold font-display text-indigo-600 dark:text-indigo-400">
-              {counters.clients}+
-            </div>
-            <div className="text-xs font-mono tracking-wider text-zinc-500 dark:text-zinc-400 uppercase mt-1">
-              Happy Clients
-            </div>
-          </div>
-          <div>
-            <div className="text-3xl md:text-4xl font-bold font-display text-indigo-600 dark:text-indigo-400">
-              Since 2022
-            </div>
-            <div className="text-xs font-mono tracking-wider text-zinc-500 dark:text-zinc-400 uppercase mt-1">
-              Pioneering Tech agency
-            </div>
-          </div>
-          <div>
-            <div className="text-3xl md:text-4xl font-bold font-display text-indigo-600 dark:text-indigo-400">
-              End-to-End
-            </div>
-            <div className="text-xs font-mono tracking-wider text-zinc-500 dark:text-zinc-400 uppercase mt-1">
-              Dedicated Support
-            </div>
-          </div>
-        </div>
-      </section>
+      <AnimatedStats />
 
       {/* Company Story Section (Emotional Origin) */}
       <section id="about" className="py-24 px-6 max-w-7xl mx-auto">
