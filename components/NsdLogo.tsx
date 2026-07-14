@@ -13,7 +13,7 @@ interface NsdLogoProps {
 export function NsdLogo({ className = "" }: NsdLogoProps) {
   return (
     <ImageWithNSDFallback
-      src="https://res.cloudinary.com/qmwu0cdg/image/upload/v1783939919/nsdlogo_zgnd8e.png"
+      src="/images/nsdlogo.png"
       alt="NSD Creations Official Logo"
       className={className}
       fill

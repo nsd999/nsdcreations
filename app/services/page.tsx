@@ -105,7 +105,7 @@ export default function ServicesPage() {
       {/* CTA Box */}
       <section className="py-20 px-6 max-w-4xl mx-auto text-center">
         <div className="p-8 md:p-12 rounded-3xl bg-indigo-500/5 dark:bg-indigo-400/5 border border-indigo-500/10 dark:border-indigo-400/10 shadow-sm flex flex-col items-center">
-          <h2 className="font-display font-bold text-2xl text-zinc-900 dark:text-zinc-50">Need a bespoke package?</h2>
+          <h2 className="font-display font-bold text-2xl text-zinc-900 dark:text-zinc-50">Need a custom solution?</h2>
           <p className="text-zinc-500 dark:text-zinc-400 text-sm mt-3 max-w-xl">
             We understand every business operates on a unique model. Contact us directly to configure a custom multi-service retainer or long-term software support contract.
           </p>

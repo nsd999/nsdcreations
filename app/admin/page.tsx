@@ -195,7 +195,7 @@ export default function AdminPage() {
               <Key className="w-5 h-5" />
             </div>
             <span className="text-[10px] font-mono font-bold tracking-widest text-zinc-400 dark:text-zinc-500 uppercase">
-              // ADMINISTRATIVE PORTAL
+              {"// ADMINISTRATIVE PORTAL"}
             </span>
             <h1 className="font-display font-bold text-2xl tracking-tight">Admin Gate</h1>
             <p className="text-xs text-zinc-500 dark:text-zinc-400 max-w-xs leading-relaxed">
@@ -262,7 +262,7 @@ export default function AdminPage() {
               >
                 <ArrowLeft className="w-4 h-4" />
               </Link>
-              <span className="text-xs font-mono font-bold text-orange-500 dark:text-amber-400 uppercase tracking-widest">// DEPLOYMENT CONSOLE</span>
+              <span className="text-xs font-mono font-bold text-orange-500 dark:text-amber-400 uppercase tracking-widest">{"// DEPLOYMENT CONSOLE"}</span>
             </div>
             <h1 className="font-display font-bold text-3xl md:text-4xl tracking-tight text-zinc-900 dark:text-zinc-50">Review Moderation</h1>
           </div>
@@ -317,7 +317,7 @@ export default function AdminPage() {
             ) : filtered.length === 0 ? (
               <div className="border border-dashed border-zinc-200 dark:border-zinc-800 rounded-2xl p-16 text-center text-zinc-400 space-y-3 bg-white/40 dark:bg-zinc-900/10">
                 <Clock className="w-8 h-8 text-zinc-300 dark:text-zinc-700 mx-auto stroke-[1.5]" />
-                <p className="text-sm">No testimonials in the "{activeTab}" queue.</p>
+                <p className="text-sm">No testimonials in the &quot;{activeTab}&quot; queue.</p>
               </div>
             ) : (
               <div className="space-y-4">
@@ -360,7 +360,7 @@ export default function AdminPage() {
 
                           {/* Review */}
                           <p className="text-sm text-zinc-600 dark:text-zinc-300 leading-relaxed font-sans italic">
-                            "{testimonial.review}"
+                            &quot;{testimonial.review}&quot;
                           </p>
 
                           <div className="text-[10px] text-zinc-400 font-mono">

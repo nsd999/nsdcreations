@@ -230,7 +230,7 @@ export function Testimonials() {
         <div className="flex flex-col md:flex-row items-start md:items-end justify-between gap-8 max-w-5xl">
           <div className="flex flex-col space-y-4">
             <span className="text-xs font-mono font-bold tracking-widest text-orange-500 dark:text-amber-400 uppercase">
-              // Studio Feedback
+              {"// Studio Feedback"}
             </span>
             <h2 className="font-display font-bold text-4xl md:text-5xl text-zinc-900 dark:text-zinc-50 tracking-tight leading-none">
               Client Testimonials.
@@ -299,7 +299,7 @@ export function Testimonials() {
 
                     {/* Review text */}
                     <p className="text-sm md:text-base text-zinc-600 dark:text-zinc-300 leading-relaxed font-sans italic flex-1 pr-4">
-                      "{testimonial.review}"
+                      &quot;{testimonial.review}&quot;
                     </p>
                   </div>
 
@@ -380,7 +380,7 @@ export function Testimonials() {
               ) : (
                 <form onSubmit={handleSubmit} className="space-y-6">
                   <div className="space-y-2">
-                    <span className="text-[10px] font-mono font-bold text-orange-500 dark:text-amber-400 uppercase tracking-widest">// Co-Create Success</span>
+                    <span className="text-[10px] font-mono font-bold text-orange-500 dark:text-amber-400 uppercase tracking-widest">{"// Co-Create Success"}</span>
                     <h3 className="font-display font-bold text-2xl tracking-tight text-zinc-900 dark:text-zinc-50">Share Your Experience</h3>
                     <p className="text-xs text-zinc-500 dark:text-zinc-400">
                       We value your partnership. Submissions go through brief moderation before going live.

@@ -34,7 +34,7 @@ export default function PricingPage() {
         "Premium copywriting script and voice synthesis",
         "Priority revisions cycle"
       ],
-      cta: "Schedule Free Consultation",
+      cta: "Book a Free Consultation",
       highlight: true
     },
     {

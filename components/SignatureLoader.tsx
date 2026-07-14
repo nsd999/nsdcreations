@@ -9,18 +9,18 @@ interface SignatureLoaderProps {
 }
 
 export function SignatureLoader({ onComplete }: SignatureLoaderProps) {
-  const [logoTransform, setLogoTransform] = useState({ x: 0, y: 0, scale: 0.8, opacity: 0 });
+  const [logoTransform, setLogoTransform] = useState({ x: 0, y: 0, scale: 0.85, opacity: 0 });
   const [bgOpacity, setBgOpacity] = useState(1);
   const logoRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    // 1. Black background with logo starting at scale 0.8 and opacity 0.
-    // Immediately trigger fade-in and scale up to 1.1 (duration 800ms)
+    // 1. Black background with logo starting at scale 0.85 and opacity 0.
+    // Immediately trigger fade-in and scale up to 1.0 (duration 600ms)
     const startAnim = setTimeout(() => {
-      setLogoTransform({ x: 0, y: 0, scale: 1.1, opacity: 1 });
-    }, 50);
+      setLogoTransform({ x: 0, y: 0, scale: 1.0, opacity: 1 });
+    }, 100);
 
-    // 2. Pause on scale 1.1, then shrink and fly to the Navbar logo position (at 1450ms)
+    // 2. Pause on scale 1.0, then shrink and fly to the Navbar logo position (at 1100ms)
     const flyAnim = setTimeout(() => {
       const navbarLogo = document.getElementById("navbar-logo-container");
       let deltaX = 0;
@@ -57,12 +57,12 @@ export function SignatureLoader({ onComplete }: SignatureLoaderProps) {
         opacity: 0.9,
       });
       setBgOpacity(0);
-    }, 1450);
+    }, 1100);
 
-    // 3. Complete animation sequence and merge seamlessly into the header at ~2 seconds
+    // 3. Complete animation sequence and merge seamlessly into the header at 1.8 seconds
     const endAnim = setTimeout(() => {
       onComplete();
-    }, 2000);
+    }, 1800);
 
     return () => {
       clearTimeout(startAnim);
@@ -98,7 +98,7 @@ export function SignatureLoader({ onComplete }: SignatureLoaderProps) {
           }}
         >
           <ImageWithNSDFallback
-            src="https://res.cloudinary.com/qmwu0cdg/image/upload/v1783939919/nsdlogo_zgnd8e.png"
+            src="/images/nsdlogo.png"
             alt="NSD Creations Official Logo"
             className="w-full h-full object-contain"
             fill

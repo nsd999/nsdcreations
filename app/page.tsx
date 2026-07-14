@@ -260,7 +260,7 @@ export default function HomePage() {
               {/* Founder image card */}
               <div className="relative w-full h-full rounded-2xl overflow-hidden bg-zinc-100 dark:bg-zinc-950/60 border border-zinc-200/50 dark:border-zinc-900/50">
                 <ImageWithNSDFallback
-                  src="https://res.cloudinary.com/qmwu0cdg/image/upload/v1783939920/founder_iccyy3.png"
+                  src="/images/founder.png"
                   alt="Sai Dheeraj Nalkari - Founder of NSD Creations"
                   className="w-full h-full"
                   fill
@@ -299,7 +299,7 @@ export default function HomePage() {
               Started with a simple idea of helping local brands.
             </h2>
             <p className="text-zinc-600 dark:text-zinc-400 text-sm leading-relaxed">
-              NSD Creations started by creating promotional and marketing videos for our founder's mother's business, Keerthy's Daycare & Kindergarten. After seeing the incredible results, his mother encouraged him to help other businesses that could not afford expensive marketing agencies. That became the foundation of NSD Creations.
+              NSD Creations started by creating promotional and marketing videos for our founder&apos;s mother&apos;s business, Keerthy&apos;s Daycare & Kindergarten. After seeing the incredible results, his mother encouraged him to help other businesses that could not afford expensive marketing agencies. That became the foundation of NSD Creations.
             </p>
             <p className="text-zinc-600 dark:text-zinc-400 text-sm leading-relaxed">
               Later, NSD Creations expanded to serve clients across diverse industries—including nutrition, wellness, AI memorial tribute videos, branding, hand-coded websites, AI automation, and digital marketing.
@@ -334,7 +334,7 @@ export default function HomePage() {
               </div>
               <h3 className="font-display font-bold text-lg text-zinc-900 dark:text-zinc-50">Our Vision</h3>
               <p className="text-zinc-500 dark:text-zinc-400 text-xs md:text-sm leading-relaxed">
-                To build India's most trusted creative technology studio by consistently matching the execution quality of global brands while protecting client affordability and offering personal, dedicated attention.
+                To build India&apos;s most trusted creative technology studio by consistently matching the execution quality of global brands while protecting client affordability and offering personal, dedicated attention.
               </p>
             </div>
           </div>
@@ -812,7 +812,7 @@ export default function HomePage() {
           <div className="lg:col-span-5 flex flex-col space-y-8">
             <div className="flex flex-col space-y-3">
               <span className="text-xs font-mono font-bold tracking-wider text-indigo-500 uppercase">
-                Let's Partner Up
+                Let&apos;s Partner Up
               </span>
               <h2 className="font-display font-bold text-3xl md:text-4xl text-zinc-900 dark:text-zinc-50 tracking-tight">
                 Start your premium digital project today.

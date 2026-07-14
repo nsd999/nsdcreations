@@ -120,7 +120,7 @@ export default function MeetTheFounder() {
               
               <div className="relative w-full h-full rounded-2xl overflow-hidden bg-zinc-100 dark:bg-zinc-950/60 border border-zinc-200/50 dark:border-zinc-900/50">
                 <ImageWithNSDFallback
-                  src="https://res.cloudinary.com/qmwu0cdg/image/upload/v1783939920/founder_iccyy3.png"
+                  src="/images/founder.png"
                   alt="Sai Dheeraj Nalkari Portrait"
                   className="w-full h-full group-hover:scale-104 group-hover:rotate-1 transition-all duration-700 ease-out"
                   fill
@@ -203,7 +203,7 @@ export default function MeetTheFounder() {
         <div className="max-w-4xl mx-auto text-center flex flex-col items-center space-y-4">
           <Quote className="w-10 h-10 text-indigo-500/20 dark:text-indigo-400/20" />
           <h2 className="font-display font-medium text-xl md:text-2xl text-zinc-800 dark:text-zinc-200 italic leading-relaxed max-w-3xl">
-            "I believe every business deserves world-class digital experiences and high-end creative storytelling, regardless of its size or current scale."
+            &quot;I believe every business deserves world-class digital experiences and high-end creative storytelling, regardless of its size or current scale.&quot;
           </h2>
           <span className="text-xs font-mono tracking-wider text-indigo-500 uppercase font-bold mt-4">&mdash; Sai Dheeraj Nalkari</span>
         </div>
@@ -256,7 +256,7 @@ export default function MeetTheFounder() {
               </div>
               <h3 className="font-display font-bold text-xl text-zinc-900 dark:text-zinc-50">My Core Vision</h3>
               <p className="text-zinc-500 dark:text-zinc-400 text-xs md:text-sm leading-relaxed mt-3">
-                To scale NSD Creations into one of India's most highly trusted digital agencies—known for reliable execution speed, absolute financial transparency, and delivering robust, customized client software services.
+                To scale NSD Creations into one of India&apos;s most highly trusted digital agencies—known for reliable execution speed, absolute financial transparency, and delivering robust, customized client software services.
               </p>
             </div>
           </div>
@@ -342,12 +342,12 @@ export default function MeetTheFounder() {
       <section className="py-24 px-6 max-w-4xl mx-auto text-left">
         <div className="p-8 md:p-12 rounded-3xl bg-white dark:bg-[#09090b] border border-zinc-200/60 dark:border-zinc-900/60 shadow-xl relative overflow-hidden">
           <div className="absolute top-0 right-0 w-44 h-44 bg-indigo-500/5 rounded-full blur-3xl pointer-events-none" />
-          <h3 className="font-display font-bold text-2xl text-zinc-900 dark:text-zinc-50 mb-4">Let's Build Something Extraordinary Together.</h3>
+          <h3 className="font-display font-bold text-2xl text-zinc-900 dark:text-zinc-50 mb-4">Let&apos;s Build Something Extraordinary Together.</h3>
           <p className="text-zinc-600 dark:text-zinc-400 text-sm md:text-base leading-relaxed mb-6">
             Every business has a narrative that deserves to be heard, and every product has details that deserve to be beautifully presented. By hiring NSD Creations, you secure absolute creative devotion, optimized code architectures, and my 100% focused attention.
           </p>
           <p className="text-zinc-600 dark:text-zinc-400 text-sm md:text-base leading-relaxed font-semibold italic">
-            If you have an idea, let's turn it into something remarkable.
+            If you have an idea, let&apos;s turn it into something remarkable.
           </p>
         </div>
       </section>
@@ -362,7 +362,7 @@ export default function MeetTheFounder() {
             Ready to Start Your Next Project?
           </h2>
           <p className="text-zinc-400 max-w-xl text-sm leading-relaxed">
-            Let's hop on a brief audio call or WhatsApp chat to discuss your customized quote deliverables. No pressure, just raw digital planning.
+            Let&apos;s hop on a brief audio call or WhatsApp chat to discuss your customized quote deliverables. No pressure, just raw digital planning.
           </p>
           
           <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-4 pt-4">
@@ -372,7 +372,7 @@ export default function MeetTheFounder() {
               rel="noopener noreferrer"
               className="inline-flex items-center justify-center px-7 py-4 rounded-full text-xs font-bold tracking-widest uppercase bg-indigo-600 hover:bg-indigo-700 text-white shadow-lg shadow-indigo-600/10 active:scale-95 transition-all text-center"
             >
-              Book Free Consultation
+              Book a Free Consultation
             </a>
             <Link
               href="https://wa.me/916303849852?text=Hello%20Sai%20Dheeraj!%20I%20saw%20your%20Meet%20the%20Founder%20page%20and%20want%20to%20start%20a%20project."

@@ -156,7 +156,7 @@ export default function ProcessPage() {
         <div className="p-8 md:p-12 rounded-3xl bg-indigo-500/5 dark:bg-indigo-400/5 border border-indigo-500/10 dark:border-indigo-400/10 shadow-sm flex flex-col items-center">
           <h2 className="font-display font-bold text-2xl text-zinc-900 dark:text-zinc-50">Ready to witness our process in action?</h2>
           <p className="text-zinc-500 dark:text-zinc-400 text-sm mt-3 max-w-lg">
-            Let's organize a quick consultation to define your custom Stage 01 Discovery plan.
+            Let&apos;s organize a quick consultation to define your custom Stage 01 Discovery plan.
           </p>
           <a
             href="https://tinyurl.com/startwithNSD"

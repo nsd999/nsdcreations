@@ -97,7 +97,7 @@ export default function ContactPage() {
       <section className="pt-24 pb-16 px-6 max-w-7xl mx-auto w-full text-left">
         <div className="max-w-2xl flex flex-col space-y-4">
           <span className="text-xs font-mono font-bold tracking-wider text-indigo-500 uppercase">
-            Let's Construct Your Launch
+            Let&apos;s Construct Your Launch
           </span>
           <h1 className="font-display font-bold text-4xl sm:text-5xl text-zinc-900 dark:text-zinc-50 tracking-tight leading-tight">
             Connect With Us <br />
@@ -119,7 +119,7 @@ export default function ContactPage() {
           <div className="p-8 rounded-3xl bg-white dark:bg-[#09090b] border border-zinc-200/60 dark:border-zinc-900/60 shadow-sm relative">
             <h2 className="font-display font-bold text-xl text-zinc-900 dark:text-zinc-100 mb-6 flex items-center">
               <Sparkles className="w-5 h-5 text-indigo-500 mr-2" />
-              Project Intake Form
+              Project Enquiry Form
             </h2>
 
             {submitted && (
@@ -332,7 +332,7 @@ export default function ContactPage() {
             </div>
 
             <p className="text-[11px] text-zinc-400 leading-relaxed">
-              Submissions are preserved directly inside your browser cache. This satisfies the requested "Not Configured" offline-first local sandbox mode safely.
+              Submissions are preserved directly inside your browser cache. This satisfies the requested &quot;Not Configured&quot; offline-first local sandbox mode safely.
             </p>
 
             <div className="space-y-3 max-h-[220px] overflow-y-auto pr-1">

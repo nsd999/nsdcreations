@@ -39,7 +39,7 @@ export function Footer() {
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 items-center">
           <div className="lg:col-span-7">
             <h2 className="font-display font-bold text-2xl md:text-3xl text-zinc-900 dark:text-zinc-50 tracking-tight leading-tight">
-              Let's craft something remarkable together.
+              Let&apos;s craft something remarkable together.
             </h2>
             <p className="text-zinc-500 dark:text-zinc-400 mt-3 max-w-xl text-sm md:text-base">
               Have an idea, video commercial, website, or custom automation project? Get in touch today for a free personal consultation and tailored pricing quote.

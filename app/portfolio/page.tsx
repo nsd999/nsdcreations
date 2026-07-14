@@ -4,6 +4,7 @@ import React, { useState } from "react";
 import Link from "next/link";
 import { Navbar } from "@/components/Navbar";
 import { Footer } from "@/components/Footer";
+import { ImageWithNSDFallback } from "@/components/ImageWithNSDFallback";
 import { 
   Sparkles, 
   ExternalLink, 
@@ -171,12 +172,13 @@ export default function PortfolioPage() {
                 className="group flex flex-col bg-white dark:bg-[#09090b] rounded-3xl overflow-hidden border border-zinc-200/60 dark:border-zinc-900/60 shadow-sm hover:shadow-md transition-all duration-300"
               >
                 <div className="relative aspect-[16/10] overflow-hidden bg-zinc-100 dark:bg-zinc-950">
-                  <img
+                  <ImageWithNSDFallback
                     src={work.image}
                     alt={work.title}
+                    fill
                     className="w-full h-full object-cover group-hover:scale-103 transition-transform duration-500"
                   />
-                  <div className="absolute top-4 left-4 bg-[#030303]/85 backdrop-blur-md border border-zinc-800 text-[10px] font-mono font-bold tracking-widest text-indigo-400 px-3 py-1.5 rounded-full uppercase">
+                  <div className="absolute top-4 left-4 bg-[#030303]/85 backdrop-blur-md border border-zinc-800 text-[10px] font-mono font-bold tracking-widest text-indigo-400 px-3 py-1.5 rounded-full uppercase z-10">
                     {work.type}
                   </div>
                 </div>
