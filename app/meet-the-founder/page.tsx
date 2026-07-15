@@ -23,7 +23,126 @@ import {
   ExternalLink,
   MessageSquare
 } from "lucide-react";
-import { motion } from "motion/react";
+import { motion, useScroll, useSpring, useReducedMotion } from "motion/react";
+
+interface TimelineItemProps {
+  item: {
+    year: string;
+    title: string;
+    description: string;
+  };
+  idx: number;
+  isLast: boolean;
+  shouldReduceMotion: boolean;
+}
+
+function TimelineItem({ item, idx, isLast, shouldReduceMotion }: TimelineItemProps) {
+  const initial = shouldReduceMotion ? "visible" : "hidden";
+
+  // Sequence delays:
+  // For idx === 0, display point immediately, then animate badge and content with standard delays
+  const dotDelay = idx === 0 ? 0 : 0.6;
+  const badgeDelay = idx === 0 ? 0.2 : 0.8;
+  const contentDelay = idx === 0 ? 0.5 : 1.1;
+
+  const dotVariants = {
+    hidden: { 
+      scale: 0.8,
+      backgroundColor: "#a1a1aa", // zinc-400
+      boxShadow: "0 0 0 rgba(99, 102, 241, 0)"
+    },
+    visible: { 
+      scale: [0.8, 1.25, 1.0],
+      backgroundColor: "#6366f1", // indigo-500
+      boxShadow: [
+        "0 0 0 rgba(99, 102, 241, 0)",
+        "0 0 20px rgba(99, 102, 241, 0.6)",
+        "0 0 4px rgba(99, 102, 241, 0.2)"
+      ],
+      transition: { 
+        delay: dotDelay,
+        duration: 0.6, 
+        ease: "easeOut",
+        times: [0, 0.5, 1]
+      }
+    }
+  };
+
+  const badgeVariants = {
+    hidden: { 
+      opacity: 0, 
+      y: 24,
+      filter: "blur(6px)"
+    },
+    visible: { 
+      opacity: 1, 
+      y: 0,
+      filter: "blur(0px)",
+      transition: { 
+        delay: badgeDelay,
+        duration: 0.55, 
+        ease: [0.215, 0.610, 0.355, 1.000] // easeOutCubic
+      }
+    }
+  };
+
+  const contentVariants = {
+    hidden: { 
+      opacity: 0, 
+      y: 16,
+      filter: "blur(4px)"
+    },
+    visible: { 
+      opacity: 1, 
+      y: 0,
+      filter: "blur(0px)",
+      transition: { 
+        delay: contentDelay,
+        duration: 0.55, 
+        ease: [0.215, 0.610, 0.355, 1.000] // easeOutCubic
+      }
+    }
+  };
+
+  return (
+    <div className="relative">
+      {/* Node indicator */}
+      <motion.div 
+        className="absolute -left-[31px] md:-left-[47px] top-1.5 w-4 h-4 rounded-full border-4 border-white dark:border-[#030303] shadow-md z-10"
+        initial={initial}
+        whileInView="visible"
+        viewport={{ once: false, margin: "-20% 0px -25% 0px" }}
+        variants={dotVariants}
+      />
+      
+      {/* Year Badge */}
+      <div className="mb-3">
+        <motion.div
+          className="inline-block"
+          initial={initial}
+          whileInView="visible"
+          viewport={{ once: false, margin: "-20% 0px -25% 0px" }}
+          variants={badgeVariants}
+        >
+          <span className="text-xs font-mono font-bold text-indigo-600 dark:text-indigo-400 bg-indigo-500/5 dark:bg-indigo-400/5 px-2.5 py-1 rounded-md border border-indigo-500/10 dark:border-indigo-400/10">
+            {item.year}
+          </span>
+        </motion.div>
+      </div>
+
+      {/* Content */}
+      <motion.div
+        initial={initial}
+        whileInView="visible"
+        viewport={{ once: false, margin: "-20% 0px -25% 0px" }}
+        variants={contentVariants}
+      >
+        <h3 className="font-display font-bold text-lg text-zinc-900 dark:text-zinc-100 mt-1 mb-1.5">{item.title}</h3>
+        <p className="text-zinc-500 dark:text-zinc-400 text-xs md:text-sm leading-relaxed max-w-2xl">{item.description}</p>
+      </motion.div>
+    </div>
+  );
+}
 
 export default function MeetTheFounder() {
   const journeyTimeline = [
@@ -97,6 +216,20 @@ export default function MeetTheFounder() {
       size: "col-span-1"
     }
   ];
+
+  const containerRef = React.useRef<HTMLDivElement>(null);
+  const shouldReduceMotion = useReducedMotion() ?? false;
+
+  const { scrollYProgress } = useScroll({
+    target: containerRef,
+    offset: ["start 65%", "end 60%"]
+  });
+
+  const scaleY = useSpring(scrollYProgress, {
+    stiffness: 80,
+    damping: 25,
+    restDelta: 0.001
+  });
 
   return (
     <div className="flex-1 flex flex-col relative overflow-x-hidden">
@@ -217,18 +350,21 @@ export default function MeetTheFounder() {
             <h2 className="font-display font-bold text-3xl text-zinc-900 dark:text-zinc-50 tracking-tight">The Entrepreneurial Journey</h2>
           </div>
 
-          <div className="relative border-l border-zinc-200 dark:border-zinc-800 ml-3 md:ml-6 pl-6 md:pl-10 space-y-12 py-4">
+          <div ref={containerRef} className="relative border-l border-zinc-200 dark:border-zinc-800 ml-3 md:ml-6 pl-6 md:pl-10 space-y-12 py-4">
+            {/* Active Drawing Line Overlay */}
+            <motion.div 
+              className="absolute -left-[1px] top-0 bottom-0 w-[2px] bg-indigo-500 origin-top pointer-events-none"
+              style={{ scaleY: shouldReduceMotion ? 1 : scaleY }}
+            />
+
             {journeyTimeline.map((item, idx) => (
-              <div key={idx} className="relative">
-                {/* Node indicator */}
-                <div className="absolute -left-[31px] md:-left-[47px] top-1.5 w-4 h-4 rounded-full bg-indigo-500 border-4 border-white dark:border-[#030303] shadow-md" />
-                
-                <span className="text-xs font-mono font-bold text-indigo-600 dark:text-indigo-400 bg-indigo-500/5 dark:bg-indigo-400/5 px-2.5 py-1 rounded-md border border-indigo-500/10 dark:border-indigo-400/10">
-                  {item.year}
-                </span>
-                <h3 className="font-display font-bold text-lg text-zinc-900 dark:text-zinc-100 mt-3 mb-1.5">{item.title}</h3>
-                <p className="text-zinc-500 dark:text-zinc-400 text-xs md:text-sm leading-relaxed max-w-2xl">{item.description}</p>
-              </div>
+              <TimelineItem 
+                key={idx}
+                item={item}
+                idx={idx}
+                isLast={idx === journeyTimeline.length - 1}
+                shouldReduceMotion={shouldReduceMotion}
+              />
             ))}
           </div>
         </div>
