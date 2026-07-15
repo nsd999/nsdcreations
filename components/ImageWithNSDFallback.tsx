@@ -29,13 +29,19 @@ export function ImageWithNSDFallback({
   onClick,
   style,
 }: ImageWithNSDFallbackProps) {
-  // Map specific images to their correct public path sources
+  // Map specific images to their correct public path sources and back up with official Cloudinary fallbacks
   const getSourcesList = (initialSrc: string): string[] => {
     if (initialSrc.includes("nsdlogo") || initialSrc.includes("logo") || initialSrc.includes("input_file_0")) {
-      return ["/images/nsdlogo.png"];
+      return [
+        "/nsdlogo.png",
+        "https://res.cloudinary.com/qmwu0cdg/image/upload/v1783939919/nsdlogo_zgnd8e.png"
+      ];
     }
     if (initialSrc.includes("founder") || initialSrc.includes("input_file_1")) {
-      return ["/images/founder.png"];
+      return [
+        "/founder.png",
+        "https://res.cloudinary.com/qmwu0cdg/image/upload/v1783939920/founder_iccyy3.png"
+      ];
     }
     return [initialSrc];
   };

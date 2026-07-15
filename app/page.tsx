@@ -260,7 +260,7 @@ export default function HomePage() {
               {/* Founder image card */}
               <div className="relative w-full h-full rounded-2xl overflow-hidden bg-zinc-100 dark:bg-zinc-950/60 border border-zinc-200/50 dark:border-zinc-900/50">
                 <ImageWithNSDFallback
-                  src="/images/founder.png"
+                  src="/founder.png"
                   alt="Sai Dheeraj Nalkari - Founder of NSD Creations"
                   className="w-full h-full"
                   fill

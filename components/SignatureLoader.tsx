@@ -98,7 +98,7 @@ export function SignatureLoader({ onComplete }: SignatureLoaderProps) {
           }}
         >
           <ImageWithNSDFallback
-            src="/images/nsdlogo.png"
+            src="/nsdlogo.png"
             alt="NSD Creations Official Logo"
             className="w-full h-full object-contain"
             fill
