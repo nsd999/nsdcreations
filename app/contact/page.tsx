@@ -87,7 +87,7 @@ export default function ContactPage() {
   const whatsappUrl = `https://wa.me/916303849852?text=Hello%20Sai%20Dheeraj!%20I%20want%20to%20discuss%20a%20project.%20Name:%20${encodeURIComponent(formData.name || "Visitor")}%20Email:%20${encodeURIComponent(formData.email || "Not specified")}%20Service:%20${encodeURIComponent(formData.service)}`;
 
   return (
-    <div className="flex-1 flex flex-col relative">
+    <div className="flex-1 flex flex-col relative overflow-x-hidden">
       <Navbar />
 
       {/* Grid Overlay background */}

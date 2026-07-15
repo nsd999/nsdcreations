@@ -99,7 +99,7 @@ export default function MeetTheFounder() {
   ];
 
   return (
-    <div className="flex-1 flex flex-col relative">
+    <div className="flex-1 flex flex-col relative overflow-x-hidden">
       <Navbar />
 
       {/* Grid Overlay background */}
