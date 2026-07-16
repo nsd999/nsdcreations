@@ -34,26 +34,39 @@ interface TimelineItemProps {
   idx: number;
   isLast: boolean;
   shouldReduceMotion: boolean;
+  isCompleted: boolean;
+  onVisible: (idx: number) => void;
+  innerRef: (el: HTMLDivElement | null) => void;
 }
 
-function TimelineItem({ item, idx, isLast, shouldReduceMotion }: TimelineItemProps) {
-  const [isActive, setIsActive] = React.useState(false);
-  const ref = React.useRef<HTMLDivElement>(null);
+function TimelineItem({ item, idx, isLast, shouldReduceMotion, isCompleted, onVisible, innerRef }: TimelineItemProps) {
+  const localRef = React.useRef<HTMLDivElement | null>(null);
+
+  const setRefs = React.useCallback(
+    (node: HTMLDivElement | null) => {
+      localRef.current = node;
+      innerRef(node);
+    },
+    [innerRef]
+  );
 
   React.useEffect(() => {
     if (shouldReduceMotion) {
-      setIsActive(true);
+      onVisible(idx);
       return;
     }
 
+    if (isCompleted) return;
+
     const handleScroll = () => {
-      if (!ref.current) return;
-      const rect = ref.current.getBoundingClientRect();
-      const triggerPoint = window.innerHeight * 0.65; // 35% from the bottom of the viewport
-      setIsActive(rect.top <= triggerPoint);
+      if (!localRef.current) return;
+      const rect = localRef.current.getBoundingClientRect();
+      const triggerPoint = window.innerHeight * 0.65; // triggers when top of section crosses 65% of screen height from the top (35% from bottom of viewport)
+      if (rect.top <= triggerPoint) {
+        onVisible(idx);
+      }
     };
 
-    // Initial check
     handleScroll();
 
     window.addEventListener("scroll", handleScroll, { passive: true });
@@ -62,24 +75,22 @@ function TimelineItem({ item, idx, isLast, shouldReduceMotion }: TimelineItemPro
       window.removeEventListener("scroll", handleScroll);
       window.removeEventListener("resize", handleScroll);
     };
-  }, [shouldReduceMotion]);
+  }, [idx, shouldReduceMotion, isCompleted, onVisible]);
 
-  const animateState = shouldReduceMotion ? "visible" : (isActive ? "visible" : "hidden");
+  const animateState = shouldReduceMotion ? "visible" : (isCompleted ? "visible" : "hidden");
 
   // Sequence delays
-  const dotDelay = 0;
-  const badgeDelay = 0.15;
-  const contentDelay = 0.35;
+  // For idx === 0, display point immediately
+  // For other points, introduce a smooth delay allowing the vertical progress line to draw first
+  const dotDelay = idx === 0 ? 0 : 0.2;
+  const badgeDelay = idx === 0 ? 0.15 : 0.35;
+  const contentDelay = idx === 0 ? 0.35 : 0.55;
 
   const dotVariants = {
     hidden: { 
       scale: 0.8,
       backgroundColor: "#a1a1aa", // zinc-400
       boxShadow: "0 0 0 rgba(99, 102, 241, 0)",
-      transition: {
-        duration: 0.4,
-        ease: "easeInOut"
-      }
     },
     visible: { 
       scale: [0.8, 1.25, 1.0],
@@ -103,10 +114,6 @@ function TimelineItem({ item, idx, isLast, shouldReduceMotion }: TimelineItemPro
       opacity: 0, 
       y: 24,
       filter: "blur(6px)",
-      transition: {
-        duration: 0.4,
-        ease: "easeInOut"
-      }
     },
     visible: { 
       opacity: 1, 
@@ -125,10 +132,6 @@ function TimelineItem({ item, idx, isLast, shouldReduceMotion }: TimelineItemPro
       opacity: 0, 
       y: 16,
       filter: "blur(4px)",
-      transition: {
-        duration: 0.4,
-        ease: "easeInOut"
-      }
     },
     visible: { 
       opacity: 1, 
@@ -143,7 +146,7 @@ function TimelineItem({ item, idx, isLast, shouldReduceMotion }: TimelineItemPro
   };
 
   return (
-    <div ref={ref} className="relative">
+    <div ref={setRefs} className="relative">
       {/* Node indicator */}
       <motion.div 
         className="absolute -left-[31px] md:-left-[47px] top-1.5 w-4 h-4 rounded-full border-4 border-white dark:border-[#030303] shadow-md z-10"
@@ -255,16 +258,47 @@ export default function MeetTheFounder() {
   const containerRef = React.useRef<HTMLDivElement>(null);
   const shouldReduceMotion = useReducedMotion() ?? false;
 
-  const { scrollYProgress } = useScroll({
-    target: containerRef,
-    offset: ["start 65%", "end 60%"]
-  });
+  const [completed, setCompleted] = React.useState<boolean[]>([true, false, false, false, false]);
+  const [lineHeight, setLineHeight] = React.useState<number>(14);
+  const itemRefs = React.useRef<(HTMLDivElement | null)[]>([]);
 
-  const scaleY = useSpring(scrollYProgress, {
-    stiffness: 80,
-    damping: 25,
-    restDelta: 0.001
-  });
+  const handleVisible = React.useCallback((idx: number) => {
+    setCompleted(prev => {
+      if (prev[idx]) return prev;
+      const next = [...prev];
+      for (let i = 0; i <= idx; i++) {
+        next[i] = true;
+      }
+      return next;
+    });
+  }, []);
+
+  const updateLineHeight = React.useCallback(() => {
+    const highestIdx = completed.lastIndexOf(true);
+    if (highestIdx === -1) {
+      setLineHeight(0);
+      return;
+    }
+    
+    const el = itemRefs.current[highestIdx];
+    if (el) {
+      setLineHeight(el.offsetTop + 14);
+    }
+  }, [completed]);
+
+  React.useEffect(() => {
+    updateLineHeight();
+    
+    const handle = requestAnimationFrame(() => {
+      requestAnimationFrame(updateLineHeight);
+    });
+
+    window.addEventListener("resize", updateLineHeight);
+    return () => {
+      cancelAnimationFrame(handle);
+      window.removeEventListener("resize", updateLineHeight);
+    };
+  }, [completed, updateLineHeight]);
 
   return (
     <div className="flex-1 flex flex-col relative overflow-x-hidden">
@@ -388,8 +422,14 @@ export default function MeetTheFounder() {
           <div ref={containerRef} className="relative border-l border-zinc-200 dark:border-zinc-800 ml-3 md:ml-6 pl-6 md:pl-10 space-y-12 py-4">
             {/* Active Drawing Line Overlay */}
             <motion.div 
-              className="absolute -left-[1px] top-0 bottom-0 w-[2px] bg-indigo-500 origin-top pointer-events-none"
-              style={{ scaleY: shouldReduceMotion ? 1 : scaleY }}
+              className="absolute -left-[1px] top-0 w-[2px] bg-indigo-500 origin-top pointer-events-none"
+              animate={{ height: shouldReduceMotion ? "100%" : lineHeight }}
+              transition={{
+                type: "spring",
+                stiffness: 70,
+                damping: 20,
+                restDelta: 0.001
+              }}
             />
 
             {journeyTimeline.map((item, idx) => (
@@ -399,6 +439,11 @@ export default function MeetTheFounder() {
                 idx={idx}
                 isLast={idx === journeyTimeline.length - 1}
                 shouldReduceMotion={shouldReduceMotion}
+                isCompleted={completed[idx]}
+                onVisible={handleVisible}
+                innerRef={(el) => {
+                  itemRefs.current[idx] = el;
+                }}
               />
             ))}
           </div>
