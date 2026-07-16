@@ -37,19 +37,49 @@ interface TimelineItemProps {
 }
 
 function TimelineItem({ item, idx, isLast, shouldReduceMotion }: TimelineItemProps) {
-  const initial = shouldReduceMotion ? "visible" : "hidden";
+  const [isActive, setIsActive] = React.useState(false);
+  const ref = React.useRef<HTMLDivElement>(null);
 
-  // Sequence delays:
-  // For idx === 0, display point immediately, then animate badge and content with standard delays
-  const dotDelay = idx === 0 ? 0 : 0.6;
-  const badgeDelay = idx === 0 ? 0.2 : 0.8;
-  const contentDelay = idx === 0 ? 0.5 : 1.1;
+  React.useEffect(() => {
+    if (shouldReduceMotion) {
+      setIsActive(true);
+      return;
+    }
+
+    const handleScroll = () => {
+      if (!ref.current) return;
+      const rect = ref.current.getBoundingClientRect();
+      const triggerPoint = window.innerHeight * 0.65; // 35% from the bottom of the viewport
+      setIsActive(rect.top <= triggerPoint);
+    };
+
+    // Initial check
+    handleScroll();
+
+    window.addEventListener("scroll", handleScroll, { passive: true });
+    window.addEventListener("resize", handleScroll, { passive: true });
+    return () => {
+      window.removeEventListener("scroll", handleScroll);
+      window.removeEventListener("resize", handleScroll);
+    };
+  }, [shouldReduceMotion]);
+
+  const animateState = shouldReduceMotion ? "visible" : (isActive ? "visible" : "hidden");
+
+  // Sequence delays
+  const dotDelay = 0;
+  const badgeDelay = 0.15;
+  const contentDelay = 0.35;
 
   const dotVariants = {
     hidden: { 
       scale: 0.8,
       backgroundColor: "#a1a1aa", // zinc-400
-      boxShadow: "0 0 0 rgba(99, 102, 241, 0)"
+      boxShadow: "0 0 0 rgba(99, 102, 241, 0)",
+      transition: {
+        duration: 0.4,
+        ease: "easeInOut"
+      }
     },
     visible: { 
       scale: [0.8, 1.25, 1.0],
@@ -72,7 +102,11 @@ function TimelineItem({ item, idx, isLast, shouldReduceMotion }: TimelineItemPro
     hidden: { 
       opacity: 0, 
       y: 24,
-      filter: "blur(6px)"
+      filter: "blur(6px)",
+      transition: {
+        duration: 0.4,
+        ease: "easeInOut"
+      }
     },
     visible: { 
       opacity: 1, 
@@ -90,7 +124,11 @@ function TimelineItem({ item, idx, isLast, shouldReduceMotion }: TimelineItemPro
     hidden: { 
       opacity: 0, 
       y: 16,
-      filter: "blur(4px)"
+      filter: "blur(4px)",
+      transition: {
+        duration: 0.4,
+        ease: "easeInOut"
+      }
     },
     visible: { 
       opacity: 1, 
@@ -105,13 +143,12 @@ function TimelineItem({ item, idx, isLast, shouldReduceMotion }: TimelineItemPro
   };
 
   return (
-    <div className="relative">
+    <div ref={ref} className="relative">
       {/* Node indicator */}
       <motion.div 
         className="absolute -left-[31px] md:-left-[47px] top-1.5 w-4 h-4 rounded-full border-4 border-white dark:border-[#030303] shadow-md z-10"
-        initial={initial}
-        whileInView="visible"
-        viewport={{ once: false, margin: "-20% 0px -25% 0px" }}
+        initial={shouldReduceMotion ? "visible" : "hidden"}
+        animate={animateState}
         variants={dotVariants}
       />
       
@@ -119,9 +156,8 @@ function TimelineItem({ item, idx, isLast, shouldReduceMotion }: TimelineItemPro
       <div className="mb-3">
         <motion.div
           className="inline-block"
-          initial={initial}
-          whileInView="visible"
-          viewport={{ once: false, margin: "-20% 0px -25% 0px" }}
+          initial={shouldReduceMotion ? "visible" : "hidden"}
+          animate={animateState}
           variants={badgeVariants}
         >
           <span className="text-xs font-mono font-bold text-indigo-600 dark:text-indigo-400 bg-indigo-500/5 dark:bg-indigo-400/5 px-2.5 py-1 rounded-md border border-indigo-500/10 dark:border-indigo-400/10">
@@ -132,9 +168,8 @@ function TimelineItem({ item, idx, isLast, shouldReduceMotion }: TimelineItemPro
 
       {/* Content */}
       <motion.div
-        initial={initial}
-        whileInView="visible"
-        viewport={{ once: false, margin: "-20% 0px -25% 0px" }}
+        initial={shouldReduceMotion ? "visible" : "hidden"}
+        animate={animateState}
         variants={contentVariants}
       >
         <h3 className="font-display font-bold text-lg text-zinc-900 dark:text-zinc-100 mt-1 mb-1.5">{item.title}</h3>
