@@ -40,42 +40,13 @@ interface TimelineItemProps {
 }
 
 function TimelineItem({ item, idx, isLast, shouldReduceMotion, isCompleted, onVisible, innerRef }: TimelineItemProps) {
-  const localRef = React.useRef<HTMLDivElement | null>(null);
-
-  const setRefs = React.useCallback(
-    (node: HTMLDivElement | null) => {
-      localRef.current = node;
-      innerRef(node);
-    },
-    [innerRef]
-  );
+  const [hasPlayed, setHasPlayed] = React.useState(isCompleted);
 
   React.useEffect(() => {
-    if (shouldReduceMotion) {
-      onVisible(idx);
-      return;
+    if (isCompleted) {
+      setHasPlayed(true);
     }
-
-    if (isCompleted) return;
-
-    const handleScroll = () => {
-      if (!localRef.current) return;
-      const rect = localRef.current.getBoundingClientRect();
-      const triggerPoint = window.innerHeight * 0.65; // triggers when top of section crosses 65% of screen height from the top (35% from bottom of viewport)
-      if (rect.top <= triggerPoint) {
-        onVisible(idx);
-      }
-    };
-
-    handleScroll();
-
-    window.addEventListener("scroll", handleScroll, { passive: true });
-    window.addEventListener("resize", handleScroll, { passive: true });
-    return () => {
-      window.removeEventListener("scroll", handleScroll);
-      window.removeEventListener("resize", handleScroll);
-    };
-  }, [idx, shouldReduceMotion, isCompleted, onVisible]);
+  }, [isCompleted]);
 
   const animateState = shouldReduceMotion ? "visible" : (isCompleted ? "visible" : "hidden");
 
@@ -93,13 +64,15 @@ function TimelineItem({ item, idx, isLast, shouldReduceMotion, isCompleted, onVi
       boxShadow: "0 0 0 rgba(99, 102, 241, 0)",
     },
     visible: { 
-      scale: [0.8, 1.25, 1.0],
+      scale: hasPlayed ? 1.0 : [0.8, 1.25, 1.0],
       backgroundColor: "#6366f1", // indigo-500
-      boxShadow: [
-        "0 0 0 rgba(99, 102, 241, 0)",
-        "0 0 20px rgba(99, 102, 241, 0.6)",
-        "0 0 4px rgba(99, 102, 241, 0.2)"
-      ],
+      boxShadow: hasPlayed 
+        ? "0 0 4px rgba(99, 102, 241, 0.2)"
+        : [
+            "0 0 0 rgba(99, 102, 241, 0)",
+            "0 0 20px rgba(99, 102, 241, 0.6)",
+            "0 0 4px rgba(99, 102, 241, 0.2)"
+          ],
       transition: { 
         delay: dotDelay,
         duration: 0.6, 
@@ -146,20 +119,25 @@ function TimelineItem({ item, idx, isLast, shouldReduceMotion, isCompleted, onVi
   };
 
   return (
-    <div ref={setRefs} className="relative">
+    <div ref={innerRef} data-idx={idx} className="relative">
       {/* Node indicator */}
       <motion.div 
         className="absolute -left-[31px] md:-left-[47px] top-1.5 w-4 h-4 rounded-full border-4 border-white dark:border-[#030303] shadow-md z-10"
-        initial={shouldReduceMotion ? "visible" : "hidden"}
+        initial={shouldReduceMotion ? "visible" : (isCompleted ? "visible" : "hidden")}
         animate={animateState}
         variants={dotVariants}
+        onAnimationComplete={(definition) => {
+          if (definition === "visible") {
+            setHasPlayed(true);
+          }
+        }}
       />
       
       {/* Year Badge */}
       <div className="mb-3">
         <motion.div
           className="inline-block"
-          initial={shouldReduceMotion ? "visible" : "hidden"}
+          initial={shouldReduceMotion ? "visible" : (isCompleted ? "visible" : "hidden")}
           animate={animateState}
           variants={badgeVariants}
         >
@@ -171,7 +149,7 @@ function TimelineItem({ item, idx, isLast, shouldReduceMotion, isCompleted, onVi
 
       {/* Content */}
       <motion.div
-        initial={shouldReduceMotion ? "visible" : "hidden"}
+        initial={shouldReduceMotion ? "visible" : (isCompleted ? "visible" : "hidden")}
         animate={animateState}
         variants={contentVariants}
       >
@@ -299,6 +277,43 @@ export default function MeetTheFounder() {
       window.removeEventListener("resize", updateLineHeight);
     };
   }, [completed, updateLineHeight]);
+
+  React.useEffect(() => {
+    if (shouldReduceMotion) {
+      setCompleted([true, true, true, true, true]);
+      return;
+    }
+
+    const observerOptions = {
+      root: null,
+      rootMargin: "0px 0px -40% 0px", // triggers when 40% of the viewport from the bottom is crossed
+      threshold: 0,
+    };
+
+    const observerCallback = (entries: IntersectionObserverEntry[]) => {
+      entries.forEach((entry) => {
+        if (entry.isIntersecting) {
+          const idxAttr = entry.target.getAttribute("data-idx");
+          if (idxAttr !== null) {
+            const idx = parseInt(idxAttr, 10);
+            if (!isNaN(idx)) {
+              handleVisible(idx);
+            }
+          }
+        }
+      });
+    };
+
+    const observer = new IntersectionObserver(observerCallback, observerOptions);
+
+    itemRefs.current.forEach((el) => {
+      if (el) observer.observe(el);
+    });
+
+    return () => {
+      observer.disconnect();
+    };
+  }, [shouldReduceMotion, handleVisible]);
 
   return (
     <div className="flex-1 flex flex-col relative overflow-x-hidden">
