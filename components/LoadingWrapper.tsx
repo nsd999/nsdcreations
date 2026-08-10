@@ -34,11 +34,11 @@ export function LoadingWrapper({ children }: { children: React.ReactNode }) {
         )}
       </AnimatePresence>
       
-      {/* Cinematic page fade-in and blur-reveal when loading finishes (Phase 8) */}
+      {/* Page reveal when loading finishes */}
       <motion.div
-        initial={loading ? { opacity: 0, filter: "blur(12px)" } : { opacity: 1, filter: "blur(0px)" }}
-        animate={loading ? {} : { opacity: 1, filter: "blur(0px)" }}
-        transition={{ duration: 1.0, ease: [0.25, 1, 0.5, 1], delay: 0.1 }}
+        initial={loading ? { opacity: 0.4, filter: "blur(4px)" } : { opacity: 1, filter: "blur(0px)" }}
+        animate={loading ? { opacity: 0.4, filter: "blur(4px)" } : { opacity: 1, filter: "blur(0px)" }}
+        transition={{ duration: 0.4, ease: [0.25, 1, 0.5, 1] }}
         className="flex-1 flex flex-col min-h-screen"
       >
         {children}

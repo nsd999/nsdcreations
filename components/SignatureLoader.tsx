@@ -9,29 +9,24 @@ interface SignatureLoaderProps {
 }
 
 export function SignatureLoader({ onComplete }: SignatureLoaderProps) {
-  const [logoTransform, setLogoTransform] = useState({ x: 0, y: 0, scale: 0.85, opacity: 0 });
+  const [logoTransform, setLogoTransform] = useState({ x: 0, y: 0, scale: 1.0, opacity: 1 });
   const [bgOpacity, setBgOpacity] = useState(1);
   const logoRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    // 1. Black background with logo starting at scale 0.85 and opacity 0.
-    // Immediately trigger fade-in and scale up to 1.0 (duration 600ms)
-    const startAnim = setTimeout(() => {
-      setLogoTransform({ x: 0, y: 0, scale: 1.0, opacity: 1 });
-    }, 100);
-
-    // 2. Pause on scale 1.0, then shrink and fly to the Navbar logo position (at 1100ms)
+    // 1. Logo is immediately visible at scale 1.0 on load.
+    
+    // 2. Shrink and fly to the Navbar logo position (at 450ms)
     const flyAnim = setTimeout(() => {
       const navbarLogo = document.getElementById("navbar-logo-container");
       let deltaX = 0;
       let deltaY = 0;
-      let scaleFactor = 0.25; // elegant shrink scale factor
+      let scaleFactor = 0.25;
 
       if (navbarLogo && logoRef.current) {
         const navRect = navbarLogo.getBoundingClientRect();
         const loaderRect = logoRef.current.getBoundingClientRect();
 
-        // Calculate precise center difference to map position
         const navCenterX = navRect.left + navRect.width / 2;
         const navCenterY = navRect.top + navRect.height / 2;
         const loaderCenterX = loaderRect.left + loaderRect.width / 2;
@@ -40,32 +35,28 @@ export function SignatureLoader({ onComplete }: SignatureLoaderProps) {
         deltaX = navCenterX - loaderCenterX;
         deltaY = navCenterY - loaderCenterY;
         
-        // Calculate exact scale factor to match header logo size
         scaleFactor = navRect.width / loaderRect.width;
       } else {
-        // Safe robust responsive fallback coordinates
         deltaX = -window.innerWidth / 2 + 56;
         deltaY = -window.innerHeight / 2 + 56;
         scaleFactor = 0.22;
       }
 
-      // Shrink and fly to the exact coordinates, fading background out simultaneously
       setLogoTransform({
         x: deltaX,
         y: deltaY,
         scale: scaleFactor,
-        opacity: 0.9,
+        opacity: 0.95,
       });
       setBgOpacity(0);
-    }, 1100);
+    }, 450);
 
-    // 3. Complete animation sequence and merge seamlessly into the header at 1.8 seconds
+    // 3. Complete animation sequence and merge into header smoothly at 900ms
     const endAnim = setTimeout(() => {
       onComplete();
-    }, 1800);
+    }, 900);
 
     return () => {
-      clearTimeout(startAnim);
       clearTimeout(flyAnim);
       clearTimeout(endAnim);
     };

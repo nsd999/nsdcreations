@@ -161,8 +161,9 @@ export function ImageWithNSDFallback({
           priority={priority}
           sizes={sizes}
           className={`w-full h-full object-cover transition-all duration-500 ${
-            isLoading ? "opacity-0 scale-95" : "opacity-100 scale-100"
+            (isLoading && !priority && !isLogo && !isFounder) ? "opacity-0 scale-95" : "opacity-100 scale-100"
           }`}
+          loading={priority || isLogo || isFounder ? "eager" : undefined}
           onLoad={handleLoad}
           onError={handleError}
           referrerPolicy="no-referrer"

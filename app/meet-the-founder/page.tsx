@@ -341,6 +341,7 @@ export default function MeetTheFounder() {
                   alt="Sai Dheeraj Nalkari Portrait"
                   className="w-full h-full group-hover:scale-104 group-hover:rotate-1 transition-all duration-700 ease-out"
                   fill
+                  priority
                 />
               </div>
             </div>

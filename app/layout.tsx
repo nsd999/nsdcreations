@@ -31,6 +31,15 @@ const fredoka = Fredoka({
 export const metadata = {
   title: "NSD Creations | AI Creative Studio & Digital Agency",
   description: "A world-class AI Creative Studio & Digital Agency combining software engineering, AI automation, cinematic storytelling, and branding.",
+  icons: {
+    icon: [
+      { url: "/icon.png", type: "image/png" },
+      { url: "/favicon.ico" },
+    ],
+    apple: [
+      { url: "/apple-icon.png", type: "image/png" },
+    ],
+  },
 };
 
 export default function RootLayout({
@@ -44,6 +53,10 @@ export default function RootLayout({
       className={`${inter.variable} ${spaceGrotesk.variable} ${jetbrainsMono.variable} ${fredoka.variable}`}
       suppressHydrationWarning
     >
+      <head>
+        <link rel="preload" href="/nsdlogo.png" as="image" type="image/png" />
+        <link rel="preload" href="/founder.png" as="image" type="image/png" />
+      </head>
       <body className="antialiased min-h-screen flex flex-col">
         <ThemeProvider>
           <LoadingWrapper>
