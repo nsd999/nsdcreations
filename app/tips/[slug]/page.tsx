@@ -177,7 +177,7 @@ export default function TipDetailsPage({ params }: { params: Promise<{ slug: str
                 <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-6 mb-8 border-b border-white/10 pb-6">
                   <div>
                     <span className="text-xs font-mono font-bold text-indigo-400 uppercase tracking-widest block mb-1">
-                      // Partner With NSD Creations
+                      {"// Partner With NSD Creations"}
                     </span>
                     <h3 className="text-2xl md:text-3xl font-bold">Let Our Experts Handle This Strategy</h3>
                   </div>
@@ -196,7 +196,7 @@ export default function TipDetailsPage({ params }: { params: Promise<{ slug: str
                 </div>
 
                 <p className="text-gray-300 text-sm md:text-base leading-relaxed mb-8 max-w-3xl">
-                  Don't waste months trying to master this yourself. Collaborate directly with NSD Creations to get custom software engineering, AI video production, and high-conversion branding executed seamlessly.
+                  Don&apos;t waste months trying to master this yourself. Collaborate directly with NSD Creations to get custom software engineering, AI video production, and high-conversion branding executed seamlessly.
                 </p>
 
                 {/* 3 Side-By-Side Action Buttons */}
