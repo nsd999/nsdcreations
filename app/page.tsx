@@ -1027,9 +1027,12 @@ export default function HomePage() {
                       </p>
                     </div>
                     <Link
-                      href={`https://wa.me/916303849852?text=${encodeURIComponent(
-                        `Hello! This is ${formData.name}. I am interested in ${formData.service}. Message: ${formData.message}`
-                      )}`}
+                      href={
+                        "https://wa.me/916303849852?text=" +
+                        encodeURIComponent(
+                          "Hello! This is " + formData.name + ". I am interested in " + formData.service + ". Message: " + formData.message
+                        )
+                      }
                       target="_blank"
                       rel="noopener noreferrer"
                       className="inline-flex items-center px-5 py-3 rounded-full text-xs font-bold tracking-wide uppercase bg-emerald-500 hover:bg-emerald-600 text-white shadow-lg"
