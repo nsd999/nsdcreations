@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, use } from "react";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { Navbar } from "@/components/Navbar";
@@ -23,9 +23,10 @@ import {
 } from "lucide-react";
 import { tipsData } from "@/lib/tips-data";
 
-export default function TipDetailsPage({ params }: { params: { slug: string } }) {
+export default function TipDetailsPage({ params }: { params: Promise<{ slug: string }> }) {
+  const { slug } = use(params);
   const [copied, setCopied] = useState(false);
-  const tip = tipsData.find((t) => t.slug === params.slug);
+  const tip = tipsData.find((t) => t.slug === slug);
 
   if (!tip) {
     notFound();

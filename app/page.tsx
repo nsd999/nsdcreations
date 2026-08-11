@@ -450,6 +450,8 @@ export default function HomePage() {
             </AnimatePresence>
           </div>
         </div>
+      </section>
+
       {/* Secret Tips & Business Growth Playbook Section (Between Services & Portfolio) */}
       <section className="py-20 px-6 bg-gradient-to-r from-indigo-950/80 via-zinc-950 to-black border-y border-indigo-500/20 relative overflow-hidden my-8">
         <div className="max-w-7xl mx-auto flex flex-col lg:flex-row items-center justify-between gap-10 relative z-10">
@@ -464,10 +466,10 @@ export default function HomePage() {
               </span>
             </div>
             <h2 className="font-display font-bold text-3xl md:text-5xl text-white tracking-tight leading-tight">
-              Want 50 Secret Growth Tips Competitors Wish You Didn't Know?
+              Want 50 Secret Growth Tips Competitors Wish You Didn&apos;t Know?
             </h2>
             <p className="text-zinc-300 text-sm md:text-base leading-relaxed">
-              From color psychology and AI automation to high-converting landing pages and cash flow models—we've decoded the 50 pillars of building a market leader. Read the full strategy guide or collaborate with NSD Creations to execute it.
+              From color psychology and AI automation to high-converting landing pages and cash flow models—we&apos;ve decoded the 50 pillars of building a market leader. Read the full strategy guide or collaborate with NSD Creations to execute it.
             </p>
           </div>
           <div className="flex flex-col sm:flex-row items-center gap-4 w-full lg:w-auto">
