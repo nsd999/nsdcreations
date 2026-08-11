@@ -36,6 +36,7 @@ export function Navbar() {
     { name: "Our Process", href: "/process" },
     { name: "Pricing", href: "/pricing" },
     { name: "Contact", href: "/contact" },
+    { name: "Tips", href: "/tips" },
   ];
 
   const getThemeIcon = () => {
