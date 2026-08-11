@@ -450,6 +450,36 @@ export default function HomePage() {
             </AnimatePresence>
           </div>
         </div>
+      {/* Secret Tips & Business Growth Playbook Section (Between Services & Portfolio) */}
+      <section className="py-20 px-6 bg-gradient-to-r from-indigo-950/80 via-zinc-950 to-black border-y border-indigo-500/20 relative overflow-hidden my-8">
+        <div className="max-w-7xl mx-auto flex flex-col lg:flex-row items-center justify-between gap-10 relative z-10">
+          <div className="max-w-2xl flex flex-col space-y-4">
+            <div className="flex items-center space-x-3">
+              <div className="w-10 h-10 rounded-xl bg-white/5 border border-white/10 p-1.5 flex items-center justify-center shrink-0">
+                <img src="/nsdlogo.png" alt="NSD Logo" className="w-full h-full object-contain" />
+              </div>
+              <span className="inline-flex items-center space-x-2 text-xs font-mono font-bold tracking-wider text-indigo-400 uppercase bg-indigo-500/10 px-3 py-1 rounded-full border border-indigo-500/20">
+                <Sparkles className="w-3.5 h-3.5" />
+                <span>NSD Growth Playbook</span>
+              </span>
+            </div>
+            <h2 className="font-display font-bold text-3xl md:text-5xl text-white tracking-tight leading-tight">
+              Want 50 Secret Growth Tips Competitors Wish You Didn't Know?
+            </h2>
+            <p className="text-zinc-300 text-sm md:text-base leading-relaxed">
+              From color psychology and AI automation to high-converting landing pages and cash flow models—we've decoded the 50 pillars of building a market leader. Read the full strategy guide or collaborate with NSD Creations to execute it.
+            </p>
+          </div>
+          <div className="flex flex-col sm:flex-row items-center gap-4 w-full lg:w-auto">
+            <Link
+              href="/tips"
+              className="w-full sm:w-auto inline-flex items-center justify-center px-8 py-4 rounded-full text-sm font-bold tracking-wide uppercase bg-gradient-to-r from-indigo-500 to-indigo-600 hover:from-indigo-600 hover:to-indigo-700 text-white shadow-lg shadow-indigo-500/25 hover:scale-[1.02] transition-all"
+            >
+              Explore 50 Secret Tips
+              <ArrowRight className="w-4 h-4 ml-2" />
+            </Link>
+          </div>
+        </div>
       </section>
 
       {/* Portfolio Grid & Case Studies Section */}
@@ -710,33 +740,6 @@ export default function HomePage() {
                 </div>
               </div>
             ))}
-          </div>
-        </div>
-      </section>
-
-      {/* Secret Tips & Business Growth Playbook Section */}
-      <section className="py-20 px-6 bg-gradient-to-r from-indigo-950/60 via-zinc-950 to-black border-y border-indigo-500/20 relative overflow-hidden">
-        <div className="max-w-7xl mx-auto flex flex-col lg:flex-row items-center justify-between gap-10 relative z-10">
-          <div className="max-w-2xl flex flex-col space-y-4">
-            <span className="inline-flex items-center space-x-2 text-xs font-mono font-bold tracking-wider text-indigo-400 uppercase bg-indigo-500/10 px-3 py-1 rounded-full border border-indigo-500/20 w-fit">
-              <Sparkles className="w-3.5 h-3.5" />
-              <span>Exclusive Business Playbook</span>
-            </span>
-            <h2 className="font-display font-bold text-3xl md:text-5xl text-white tracking-tight leading-tight">
-              Want 50 Secret Growth Tips Competitors Wish You Didn't Know?
-            </h2>
-            <p className="text-zinc-300 text-sm md:text-base leading-relaxed">
-              From color psychology and AI automation to high-converting landing pages and cash flow models—we've decoded the 50 pillars of building a market leader. Read the full strategy guide or collaborate with NSD Creations to execute it.
-            </p>
-          </div>
-          <div className="flex flex-col sm:flex-row items-center gap-4 w-full lg:w-auto">
-            <Link
-              href="/tips"
-              className="w-full sm:w-auto inline-flex items-center justify-center px-8 py-4 rounded-full text-sm font-bold tracking-wide uppercase bg-gradient-to-r from-indigo-500 to-indigo-600 hover:from-indigo-600 hover:to-indigo-700 text-white shadow-lg shadow-indigo-500/25 hover:scale-[1.02] transition-all"
-            >
-              Explore 50 Secret Tips
-              <ArrowRight className="w-4 h-4 ml-2" />
-            </Link>
           </div>
         </div>
       </section>
