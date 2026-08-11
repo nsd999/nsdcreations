@@ -101,72 +101,31 @@ export default function TipDetailsClient({ slug }: { slug: string }) {
               </p>
             </ScrollReveal>
 
-            {/* Structured Content Sections */}
-            <div className="space-y-10 mb-16">
-              
-              {/* Section 1: Simple Explanation */}
-              <ScrollReveal delay={0.1}>
-                <div className="bg-white/5 border border-white/10 rounded-3xl p-8 md:p-10 relative overflow-hidden group hover:border-indigo-500/30 transition-colors">
-                  <div className="absolute top-0 right-0 p-8 opacity-10 group-hover:opacity-20 transition-opacity">
-                    <Lightbulb className="w-24 h-24 text-indigo-400" />
+            {/* Blog-Style Content Sections */}
+            <div className="space-y-12 mb-16">
+              {tip.content.map((section, index) => (
+                <ScrollReveal key={index} delay={index * 0.1}>
+                  <div className="prose prose-invert prose-lg max-w-none">
+                    {section.heading && (
+                      <h2 className="text-2xl md:text-3xl font-bold mb-6 text-indigo-300 flex items-center">
+                        <span className="w-2 h-2 rounded-full bg-indigo-400 mr-4 inline-block" />
+                        {section.heading}
+                      </h2>
+                    )}
+                    {Array.isArray(section.text) ? (
+                      <div className="space-y-6 text-gray-300 leading-relaxed text-lg">
+                        {section.text.map((paragraph, pIndex) => (
+                          <p key={pIndex}>{paragraph}</p>
+                        ))}
+                      </div>
+                    ) : (
+                      <p className="text-gray-300 leading-relaxed text-lg">
+                        {section.text}
+                      </p>
+                    )}
                   </div>
-                  <h2 className="text-xl md:text-2xl font-bold mb-4 text-indigo-300 flex items-center">
-                    <span className="w-2 h-2 rounded-full bg-indigo-400 mr-3 inline-block" />
-                    The Concept, Explained Simply
-                  </h2>
-                  <p className="text-gray-300 text-base md:text-lg leading-relaxed relative z-10">
-                    {tip.simpleExplanation}
-                  </p>
-                </div>
-              </ScrollReveal>
-
-              {/* Section 2: Why it Matters */}
-              <ScrollReveal delay={0.2}>
-                <div className="bg-white/5 border border-white/10 rounded-3xl p-8 md:p-10 relative overflow-hidden group hover:border-indigo-500/30 transition-colors">
-                  <div className="absolute top-0 right-0 p-8 opacity-10 group-hover:opacity-20 transition-opacity">
-                    <Target className="w-24 h-24 text-indigo-400" />
-                  </div>
-                  <h2 className="text-xl md:text-2xl font-bold mb-4 text-indigo-300 flex items-center">
-                    <span className="w-2 h-2 rounded-full bg-indigo-400 mr-3 inline-block" />
-                    Why It Matters For Your Business
-                  </h2>
-                  <p className="text-gray-300 text-base md:text-lg leading-relaxed relative z-10">
-                    {tip.whyItMatters}
-                  </p>
-                </div>
-              </ScrollReveal>
-
-              {/* Section 3: How it Works */}
-              <ScrollReveal delay={0.3}>
-                <div className="bg-white/5 border border-white/10 rounded-3xl p-8 md:p-10 relative overflow-hidden group hover:border-indigo-500/30 transition-colors">
-                  <div className="absolute top-0 right-0 p-8 opacity-10 group-hover:opacity-20 transition-opacity">
-                    <Settings className="w-24 h-24 text-indigo-400" />
-                  </div>
-                  <h2 className="text-xl md:text-2xl font-bold mb-4 text-indigo-300 flex items-center">
-                    <span className="w-2 h-2 rounded-full bg-indigo-400 mr-3 inline-block" />
-                    How It Works In Practice
-                  </h2>
-                  <p className="text-gray-300 text-base md:text-lg leading-relaxed relative z-10">
-                    {tip.howItWorks}
-                  </p>
-                </div>
-              </ScrollReveal>
-
-              {/* Section 4: The Hard Reality */}
-              <ScrollReveal delay={0.4}>
-                <div className="bg-gradient-to-br from-red-950/40 to-black border border-red-500/20 rounded-3xl p-8 md:p-10 relative overflow-hidden">
-                  <div className="absolute top-0 right-0 p-8 opacity-5">
-                    <AlertTriangle className="w-32 h-32 text-red-500" />
-                  </div>
-                  <h2 className="text-xl md:text-2xl font-bold mb-4 text-red-400 flex items-center">
-                    <span className="w-2 h-2 rounded-full bg-red-400 mr-3 inline-block" />
-                    The Brutal Truth
-                  </h2>
-                  <p className="text-gray-300 text-base md:text-lg leading-relaxed relative z-10 font-medium">
-                    {tip.theHardReality}
-                  </p>
-                </div>
-              </ScrollReveal>
+                </ScrollReveal>
+              ))}
             </div>
 
             {/* Credentials & 3 Side-By-Side Action Buttons Section */}

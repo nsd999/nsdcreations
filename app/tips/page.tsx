@@ -45,6 +45,48 @@ export default function TipsPage({ initialCategory = "All" }: TipsPageProps) {
     ? []
     : tipsData.filter(tip => tip.category.toLowerCase() !== activeCategory.toLowerCase());
 
+  const getCategoryHero = (category: string) => {
+    switch (category) {
+      case "Branding":
+        return {
+          title: <>The <span className="text-transparent bg-clip-text bg-gradient-to-r from-indigo-400 via-purple-400 to-cyan-400">Visual Identity</span> Playbook.</>,
+          subtitle: "Stop bleeding trust. Discover the rigorous design and messaging frameworks that turn chaotic businesses into premium, magnetic brands."
+        };
+      case "Marketing":
+        return {
+          title: <>The <span className="text-transparent bg-clip-text bg-gradient-to-r from-indigo-400 via-purple-400 to-cyan-400">Growth & Acquisition</span> Playbook.</>,
+          subtitle: "Stop guessing with your ad budget. Execute the exact omnipresent, data-driven marketing systems used to scale modern digital empires."
+        };
+      case "Development":
+        return {
+          title: <>The <span className="text-transparent bg-clip-text bg-gradient-to-r from-indigo-400 via-purple-400 to-cyan-400">Software Engineering</span> Playbook.</>,
+          subtitle: "Friction kills conversions. Learn the elite technical standards required to build lightning-fast, highly scalable web applications."
+        };
+      case "Automation":
+        return {
+          title: <>The <span className="text-transparent bg-clip-text bg-gradient-to-r from-indigo-400 via-purple-400 to-cyan-400">Business Automation</span> Playbook.</>,
+          subtitle: "Manual work is for amateurs. Discover how AI and custom automation workflows can reclaim 1,000+ hours of your team's time."
+        };
+      case "Finance":
+        return {
+          title: <>The <span className="text-transparent bg-clip-text bg-gradient-to-r from-indigo-400 via-purple-400 to-cyan-400">Financial Scale</span> Playbook.</>,
+          subtitle: "Cash flow is oxygen. Understand the rigid financial systems, pricing models, and tracking required to build an 8-figure valuation."
+        };
+      case "Operations":
+        return {
+          title: <>The <span className="text-transparent bg-clip-text bg-gradient-to-r from-indigo-400 via-purple-400 to-cyan-400">Operational Excellence</span> Playbook.</>,
+          subtitle: "Growth breaks weak systems. Learn how to architect bulletproof SOPs, elite remote cultures, and scalable daily operations."
+        };
+      default:
+        return {
+          title: <>The <span className="text-transparent bg-clip-text bg-gradient-to-r from-indigo-400 via-purple-400 to-cyan-400">50 Pillars</span> of Modern Business Scale.</>,
+          subtitle: "Executing these strategies requires elite technical, creative, and operational expertise. Discover what it takes to build a market leader."
+        };
+    }
+  };
+
+  const currentHero = getCategoryHero(activeCategory);
+
   const getCategoryIcon = (category: string) => {
     switch (category) {
       case "Branding": return <Sparkles className="w-5 h-5 text-indigo-400" />;
@@ -154,10 +196,10 @@ export default function TipsPage({ initialCategory = "All" }: TipsPageProps) {
                 Actionable Playbooks
               </div>
               <h1 className="text-4xl md:text-6xl lg:text-7xl font-bold mb-6 tracking-tight">
-                The <span className="text-transparent bg-clip-text bg-gradient-to-r from-indigo-400 via-purple-400 to-cyan-400">50 Pillars</span> of Modern Business Scale.
+                {currentHero.title}
               </h1>
               <p className="text-lg md:text-xl text-gray-400 mb-8 leading-relaxed max-w-2xl mx-auto">
-                Executing these strategies requires elite technical, creative, and operational expertise. Discover what it takes to build a market leader.
+                {currentHero.subtitle}
               </p>
             </div>
           </ScrollReveal>
