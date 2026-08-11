@@ -5,6 +5,7 @@ import Link from "next/link";
 import { Navbar } from "@/components/Navbar";
 import { Footer } from "@/components/Footer";
 import { ImageWithNSDFallback } from "@/components/ImageWithNSDFallback";
+import { ScrollReveal } from "@/components/ScrollReveal";
 import { 
   Sparkles, 
   ExternalLink, 
@@ -87,7 +88,7 @@ export default function PortfolioPage() {
       image: "https://images.unsplash.com/photo-1542751371-adc38448a05e?auto=format&fit=crop&w=800&q=80",
       description: "Bold layout, structured visual grid hierarchy, and print-optimized graphic design.",
       link: "https://tinyurl.com/portfoliobynsd",
-      tech: ["Photoshop CC", "Illustrator CC"]
+      tech: ["Photoshop", "InDesign"]
     },
     {
       id: 7,
@@ -96,9 +97,9 @@ export default function PortfolioPage() {
       client: "Local Retail Agency",
       type: "AI & API Automation",
       image: "https://images.unsplash.com/photo-1611162617213-7d7a39e9b1d7?auto=format&fit=crop&w=800&q=80",
-      description: "Automated direct customer query triggers linking WhatsApp Cloud API with Google Sheets.",
+      description: "Automated direct customer query triggers linking WhatsApp Business API with digital data sheets.",
       link: "https://tinyurl.com/portfoliobynsd",
-      tech: ["WhatsApp Cloud API", "Make.com", "Google Sheets Webhook"]
+      tech: ["Node.js", "WhatsApp API", "Supabase"]
     }
   ];
 
@@ -114,8 +115,8 @@ export default function PortfolioPage() {
       <div className="absolute inset-0 grid-background pointer-events-none -z-10" />
 
       {/* Hero Header */}
-      <section className="pt-24 pb-16 px-6 max-w-7xl mx-auto w-full text-left">
-        <div className="max-w-2xl flex flex-col space-y-4">
+      <section className="pt-24 pb-12 px-6 max-w-7xl mx-auto text-left w-full">
+        <ScrollReveal direction="up" className="max-w-2xl flex flex-col space-y-4">
           <span className="text-xs font-mono font-bold tracking-wider text-indigo-500 uppercase">
             NSD Creations Showcase
           </span>
@@ -128,12 +129,12 @@ export default function PortfolioPage() {
           <p className="text-zinc-500 dark:text-zinc-400 text-sm md:text-base leading-relaxed">
             Witness how we build clean corporate aesthetics and high-performance business applications. Filter across our portfolio of videos, posters, brand books, websites, and custom automated tools.
           </p>
-        </div>
+        </ScrollReveal>
       </section>
 
       {/* Filters bar */}
       <section className="py-6 px-6 max-w-7xl mx-auto w-full">
-        <div className="flex flex-wrap gap-2 border-b border-zinc-200/40 dark:border-zinc-900/40 pb-5">
+        <ScrollReveal direction="up" delay={0.1} className="flex flex-wrap gap-2 border-b border-zinc-200/40 dark:border-zinc-900/40 pb-5">
           {[
             { id: "all", label: "All Works" },
             { id: "video", label: "Images & Videos" },
@@ -154,7 +155,7 @@ export default function PortfolioPage() {
               {cat.label}
             </button>
           ))}
-        </div>
+        </ScrollReveal>
       </section>
 
       {/* Portfolio Grid */}
@@ -226,7 +227,7 @@ export default function PortfolioPage() {
 
       {/* Complete Portfolio External Callout */}
       <section className="py-20 px-6 max-w-4xl mx-auto text-center">
-        <div className="p-8 md:p-12 rounded-3xl bg-zinc-50 dark:bg-[#09090b]/60 border border-zinc-200/50 dark:border-zinc-900/50 shadow-md flex flex-col items-center">
+        <ScrollReveal direction="up" className="p-8 md:p-12 rounded-3xl bg-zinc-50 dark:bg-[#09090b]/60 border border-zinc-200/50 dark:border-zinc-900/50 shadow-md flex flex-col items-center">
           <h2 className="font-display font-bold text-2xl text-zinc-900 dark:text-zinc-50">View our complete historical archive</h2>
           <p className="text-zinc-500 dark:text-zinc-400 text-sm mt-3 max-w-lg">
             We store high-definition master videos, event posters, brochure layouts, and application code snapshots inside our centralized secure Google Drive portfolio folder.
@@ -240,7 +241,7 @@ export default function PortfolioPage() {
             Open Live Drive Folder
             <ExternalLink className="w-4 h-4 ml-2" />
           </Link>
-        </div>
+        </ScrollReveal>
       </section>
 
       <Footer />

@@ -4,6 +4,7 @@ import React from "react";
 import Link from "next/link";
 import { Navbar } from "@/components/Navbar";
 import { Footer } from "@/components/Footer";
+import { ScrollReveal } from "@/components/ScrollReveal";
 import { 
   CheckCircle, 
   ArrowRight, 
@@ -85,7 +86,7 @@ export default function ProcessPage() {
 
       {/* Hero Header */}
       <section className="pt-24 pb-16 px-6 max-w-7xl mx-auto w-full text-left">
-        <div className="max-w-2xl flex flex-col space-y-4">
+        <ScrollReveal direction="up" className="max-w-2xl flex flex-col space-y-4">
           <span className="text-xs font-mono font-bold tracking-wider text-indigo-500 uppercase">
             NSD CREATIONS WORKFLOW
           </span>
@@ -98,62 +99,61 @@ export default function ProcessPage() {
           <p className="text-zinc-500 dark:text-zinc-400 text-sm md:text-base leading-relaxed">
             A premium agency is distinguished by its operational discipline. Our 7-stage workflow ensures transparent collaboration, rapid deliveries, and world-class product quality.
           </p>
-        </div>
+        </ScrollReveal>
       </section>
 
       {/* Steps List */}
       <section className="py-12 px-6 max-w-4xl mx-auto w-full flex flex-col space-y-12">
         {steps.map((step, idx) => (
-          <div 
-            key={step.num}
-            className="p-8 rounded-3xl bg-white dark:bg-[#09090b] border border-zinc-200/60 dark:border-zinc-900/60 shadow-sm flex flex-col space-y-6"
-          >
-            {/* Header row of step card */}
-            <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
-              <div className="flex items-center space-x-4">
-                <span className="text-2xl font-mono font-black text-indigo-500/20 dark:text-indigo-400/20">
-                  {step.num}
-                </span>
-                <div className="w-10 h-10 rounded-xl bg-zinc-50 dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 flex items-center justify-center">
-                  {step.icon}
-                </div>
-                <div>
-                  <h3 className="font-display font-bold text-lg text-zinc-900 dark:text-zinc-100">
-                    {step.name}
-                  </h3>
-                  <p className="text-indigo-500 dark:text-indigo-400 font-mono text-[11px] uppercase tracking-wider font-bold">
-                    {step.tagline}
-                  </p>
+          <ScrollReveal key={step.num} direction="up" delay={idx * 0.05}>
+            <div className="p-8 rounded-3xl bg-white dark:bg-[#09090b] border border-zinc-200/60 dark:border-zinc-900/60 shadow-sm flex flex-col space-y-6">
+              {/* Header row of step card */}
+              <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
+                <div className="flex items-center space-x-4">
+                  <span className="text-2xl font-mono font-black text-indigo-500/20 dark:text-indigo-400/20">
+                    {step.num}
+                  </span>
+                  <div className="w-10 h-10 rounded-xl bg-zinc-50 dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 flex items-center justify-center">
+                    {step.icon}
+                  </div>
+                  <div>
+                    <h3 className="font-display font-bold text-lg text-zinc-900 dark:text-zinc-100">
+                      {step.name}
+                    </h3>
+                    <p className="text-indigo-500 dark:text-indigo-400 font-mono text-[11px] uppercase tracking-wider font-bold">
+                      {step.tagline}
+                    </p>
+                  </div>
                 </div>
               </div>
-            </div>
 
-            {/* Description */}
-            <p className="text-zinc-500 dark:text-zinc-400 text-xs md:text-sm leading-relaxed">
-              {step.desc}
-            </p>
+              {/* Description */}
+              <p className="text-zinc-500 dark:text-zinc-400 text-xs md:text-sm leading-relaxed">
+                {step.desc}
+              </p>
 
-            {/* Deliverables box inside card */}
-            <div className="p-5 rounded-2xl bg-zinc-50 dark:bg-zinc-950 border border-zinc-200/40 dark:border-zinc-900/40">
-              <h4 className="text-[11px] font-mono font-bold tracking-wider text-zinc-400 dark:text-zinc-500 uppercase mb-3">
-                Key Outputs of this Stage:
-              </h4>
-              <ul className="space-y-2">
-                {step.deliverables.map((del, i) => (
-                  <li key={i} className="flex items-start text-xs text-zinc-600 dark:text-zinc-400">
-                    <CheckCircle className="w-4 h-4 text-emerald-500 mr-2 shrink-0 mt-0.5" />
-                    <span>{del}</span>
-                  </li>
-                ))}
-              </ul>
+              {/* Deliverables box inside card */}
+              <div className="p-5 rounded-2xl bg-zinc-50 dark:bg-zinc-950 border border-zinc-200/40 dark:border-zinc-900/40">
+                <h4 className="text-[11px] font-mono font-bold tracking-wider text-zinc-400 dark:text-zinc-500 uppercase mb-3">
+                  Key Outputs of this Stage:
+                </h4>
+                <ul className="space-y-2">
+                  {step.deliverables.map((del, i) => (
+                    <li key={i} className="flex items-start text-xs text-zinc-600 dark:text-zinc-400">
+                      <CheckCircle className="w-4 h-4 text-emerald-500 mr-2 shrink-0 mt-0.5" />
+                      <span>{del}</span>
+                    </li>
+                  ))}
+                </ul>
+              </div>
             </div>
-          </div>
+          </ScrollReveal>
         ))}
       </section>
 
       {/* CTA section */}
       <section className="py-20 px-6 max-w-4xl mx-auto text-center">
-        <div className="p-8 md:p-12 rounded-3xl bg-indigo-500/5 dark:bg-indigo-400/5 border border-indigo-500/10 dark:border-indigo-400/10 shadow-sm flex flex-col items-center">
+        <ScrollReveal direction="up" className="p-8 md:p-12 rounded-3xl bg-indigo-500/5 dark:bg-indigo-400/5 border border-indigo-500/10 dark:border-indigo-400/10 shadow-sm flex flex-col items-center">
           <h2 className="font-display font-bold text-2xl text-zinc-900 dark:text-zinc-50">Ready to witness our process in action?</h2>
           <p className="text-zinc-500 dark:text-zinc-400 text-sm mt-3 max-w-lg">
             Let&apos;s organize a quick consultation to define your custom Stage 01 Discovery plan.
@@ -167,7 +167,7 @@ export default function ProcessPage() {
             Start Your Discovery
             <ArrowRight className="w-4 h-4 ml-2" />
           </a>
-        </div>
+        </ScrollReveal>
       </section>
 
       <Footer />

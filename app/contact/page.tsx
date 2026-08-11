@@ -4,6 +4,7 @@ import React, { useState, useEffect } from "react";
 import Link from "next/link";
 import { Navbar } from "@/components/Navbar";
 import { Footer } from "@/components/Footer";
+import { ScrollReveal } from "@/components/ScrollReveal";
 import { 
   Mail, 
   Phone, 
@@ -61,14 +62,15 @@ export default function ContactPage() {
     const updated = [newSub, ...submissions];
     setSubmissions(updated);
     localStorage.setItem("nsd_contact_submissions", JSON.stringify(updated));
-
     setSubmitted(true);
+
+    // Reset fields except service
     setFormData({
       name: "",
       email: "",
       phone: "",
       businessName: "",
-      service: "website-development",
+      service: formData.service,
       message: ""
     });
 
@@ -79,12 +81,13 @@ export default function ContactPage() {
   };
 
   const clearSubmissions = () => {
-    setSubmissions([]);
     localStorage.removeItem("nsd_contact_submissions");
+    setSubmissions([]);
   };
 
-  // Generate automated prefilled WhatsApp Link
-  const whatsappUrl = `https://wa.me/916303849852?text=Hello%20Sai%20Dheeraj!%20I%20want%20to%20discuss%20a%20project.%20Name:%20${encodeURIComponent(formData.name || "Visitor")}%20Email:%20${encodeURIComponent(formData.email || "Not specified")}%20Service:%20${encodeURIComponent(formData.service)}`;
+  const whatsappUrl = `https://wa.me/916303849852?text=${encodeURIComponent(
+    `Hello Sai Dheeraj! I am submitting an inquiry. Name: ${formData.name || "Client"}, Service: ${formData.service}, Message: ${formData.message || "I'd like to discuss a project."}`
+  )}`;
 
   return (
     <div className="flex-1 flex flex-col relative overflow-x-hidden">
@@ -94,8 +97,8 @@ export default function ContactPage() {
       <div className="absolute inset-0 grid-background pointer-events-none -z-10" />
 
       {/* Hero Header */}
-      <section className="pt-24 pb-16 px-6 max-w-7xl mx-auto w-full text-left">
-        <div className="max-w-2xl flex flex-col space-y-4">
+      <section className="pt-24 pb-12 px-6 max-w-7xl mx-auto w-full text-left">
+        <ScrollReveal direction="up" className="max-w-2xl flex flex-col space-y-4">
           <span className="text-xs font-mono font-bold tracking-wider text-indigo-500 uppercase">
             Let&apos;s Construct Your Launch
           </span>
@@ -108,14 +111,14 @@ export default function ContactPage() {
           <p className="text-zinc-500 dark:text-zinc-400 text-sm md:text-base leading-relaxed">
             Have an idea or operational block? Share details below to store your submission securely or initiate a direct chat session with Sai Dheeraj Nalkari immediately.
           </p>
-        </div>
+        </ScrollReveal>
       </section>
 
       {/* Contact Grid layout */}
       <section className="py-12 px-6 max-w-7xl mx-auto w-full grid grid-cols-1 lg:grid-cols-12 gap-12">
         
         {/* Contact Form Container (Left) */}
-        <div className="lg:col-span-7">
+        <ScrollReveal direction="right" className="lg:col-span-7">
           <div className="p-8 rounded-3xl bg-white dark:bg-[#09090b] border border-zinc-200/60 dark:border-zinc-900/60 shadow-sm relative">
             <h2 className="font-display font-bold text-xl text-zinc-900 dark:text-zinc-100 mb-6 flex items-center">
               <Sparkles className="w-5 h-5 text-indigo-500 mr-2" />
@@ -265,10 +268,10 @@ export default function ContactPage() {
               </div>
             </form>
           </div>
-        </div>
+        </ScrollReveal>
 
         {/* Info & Submissions Container (Right) */}
-        <div className="lg:col-span-5 flex flex-col space-y-6">
+        <ScrollReveal direction="left" delay={0.2} className="lg:col-span-5 flex flex-col space-y-6">
           
           {/* Official Agency info box */}
           <div className="p-6 rounded-3xl bg-zinc-50 dark:bg-[#09090b] border border-zinc-200/50 dark:border-zinc-900/50 shadow-sm space-y-5">
@@ -305,65 +308,56 @@ export default function ContactPage() {
                 <Phone className="w-4 h-4" />
               </div>
               <div>
-                <p className="text-[10px] font-mono text-zinc-400 uppercase">Contact / WhatsApp</p>
+                <p className="text-[10px] font-mono text-zinc-400 uppercase">Call / WhatsApp</p>
                 <p className="text-xs md:text-sm font-semibold text-zinc-800 dark:text-zinc-200 mt-0.5">
-                  +91 6303849852
+                  +91 63038 49852
                 </p>
               </div>
             </div>
           </div>
 
-          {/* Local state submissions dashboard */}
-          <div className="p-6 rounded-3xl bg-zinc-50 dark:bg-[#09090b] border border-zinc-200/50 dark:border-zinc-900/50 shadow-sm space-y-4">
-            <div className="flex items-center justify-between">
-              <h3 className="font-display font-bold text-base text-zinc-900 dark:text-zinc-100 flex items-center">
-                <Database className="w-4 h-4 text-indigo-500 mr-2" />
-                Local State Submissions ({submissions.length})
-              </h3>
-              {submissions.length > 0 && (
-                <button
-                  onClick={clearSubmissions}
-                  className="p-1 rounded bg-zinc-100 hover:bg-red-500/10 text-zinc-400 hover:text-red-500 transition-all"
-                  title="Clear saved inquiries"
-                >
-                  <Trash2 className="w-3.5 h-3.5" />
-                </button>
-              )}
-            </div>
-
-            <p className="text-[11px] text-zinc-400 leading-relaxed">
-              Submissions are preserved directly inside your browser cache. This satisfies the requested &quot;Not Configured&quot; offline-first local sandbox mode safely.
-            </p>
-
-            <div className="space-y-3 max-h-[220px] overflow-y-auto pr-1">
-              {submissions.length === 0 ? (
-                <div className="text-center py-6 text-xs text-zinc-400 font-mono italic">
-                  No submissions recorded yet.
-                </div>
-              ) : (
-                submissions.map((sub) => (
-                  <div 
-                    key={sub.id} 
-                    className="p-3.5 rounded-xl bg-white dark:bg-zinc-950 border border-zinc-200/50 dark:border-zinc-900/50 text-xs space-y-1"
+          {/* Local Saved Submissions Log */}
+          <div className="p-6 rounded-3xl bg-white dark:bg-[#09090b] border border-zinc-200/60 dark:border-zinc-900/60 shadow-sm flex flex-col justify-between">
+            <div>
+              <div className="flex items-center justify-between mb-4">
+                <h3 className="font-display font-bold text-sm text-zinc-900 dark:text-zinc-100 flex items-center">
+                  <Database className="w-4 h-4 text-indigo-500 mr-2" />
+                  Your Local Stored Logs ({submissions.length})
+                </h3>
+                {submissions.length > 0 && (
+                  <button
+                    onClick={clearSubmissions}
+                    className="text-[10px] font-mono text-red-500 hover:text-red-600 flex items-center font-semibold"
                   >
-                    <div className="flex items-center justify-between">
-                      <span className="font-bold text-zinc-800 dark:text-zinc-100">{sub.name}</span>
-                      <span className="text-[9px] font-mono text-zinc-400">{sub.date}</span>
+                    <Trash2 className="w-3 h-3 mr-1" />
+                    Clear Logs
+                  </button>
+                )}
+              </div>
+
+              {submissions.length === 0 ? (
+                <p className="text-zinc-400 text-xs italic py-4">
+                  No local submissions stored in this browser session yet. Submit the form to record an entry.
+                </p>
+              ) : (
+                <div className="space-y-3 max-h-60 overflow-y-auto pr-1">
+                  {submissions.map((s) => (
+                    <div key={s.id} className="p-3 rounded-xl bg-zinc-50 dark:bg-zinc-950/80 border border-zinc-200/50 dark:border-zinc-900/50 text-xs">
+                      <div className="flex items-center justify-between font-mono text-[10px] text-indigo-500 mb-1">
+                        <span>{s.date}</span>
+                        <span className="uppercase font-bold">{s.service}</span>
+                      </div>
+                      <p className="font-bold text-zinc-800 dark:text-zinc-200">{s.name} ({s.email})</p>
+                      {s.businessName && <p className="text-zinc-500 text-[11px]">Brand: {s.businessName}</p>}
+                      <p className="text-zinc-500 dark:text-zinc-400 text-[11px] mt-1 line-clamp-2">{s.message}</p>
                     </div>
-                    <p className="text-indigo-500 dark:text-indigo-400 font-mono text-[9px] uppercase tracking-wider font-bold">
-                      {sub.service} {sub.businessName ? `• ${sub.businessName}` : ""}
-                    </p>
-                    <p className="text-zinc-500 dark:text-zinc-400 leading-normal line-clamp-2">
-                      {sub.message}
-                    </p>
-                  </div>
-                ))
+                  ))}
+                </div>
               )}
             </div>
           </div>
 
-        </div>
-
+        </ScrollReveal>
       </section>
 
       <Footer />

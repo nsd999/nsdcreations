@@ -5,6 +5,7 @@ import Link from "next/link";
 import { Navbar } from "@/components/Navbar";
 import { Footer } from "@/components/Footer";
 import { servicesData } from "@/lib/services-data";
+import { ScrollReveal } from "@/components/ScrollReveal";
 import { 
   Video, 
   Tv, 
@@ -54,7 +55,7 @@ export default function ServicesPage() {
 
       {/* Hero Header */}
       <section className="pt-24 pb-16 px-6 max-w-7xl mx-auto text-left w-full">
-        <div className="max-w-2xl flex flex-col space-y-4">
+        <ScrollReveal direction="up" className="max-w-2xl flex flex-col space-y-4">
           <span className="text-xs font-mono font-bold tracking-wider text-indigo-500 uppercase">
             Our Digital Capabilities
           </span>
@@ -67,44 +68,45 @@ export default function ServicesPage() {
           <p className="text-zinc-500 dark:text-zinc-400 text-sm md:text-base leading-relaxed">
             NSD Creations marries high-end aesthetic storytelling with robust, hand-coded software development and efficient AI automations. Select any of our 14 master services below to view detailed benefits, pricing criteria, technologies, and exact deliverables.
           </p>
-        </div>
+        </ScrollReveal>
       </section>
 
       {/* Categories Showcase Group */}
       <section className="py-12 px-6 max-w-7xl mx-auto w-full">
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-          {Object.values(servicesData).map((service) => (
-            <Link
-              key={service.slug}
-              href={`/services/${service.slug}`}
-              className="group p-6 rounded-3xl bg-white dark:bg-[#09090b] border border-zinc-200/60 dark:border-zinc-900/60 hover:border-indigo-500/50 dark:hover:border-indigo-400/50 hover:shadow-md transition-all duration-300 flex flex-col justify-between"
-            >
-              <div>
-                <div className="w-11 h-11 rounded-2xl bg-zinc-50 dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 flex items-center justify-center mb-5 group-hover:scale-105 transition-transform duration-300">
-                  {getServiceIcon(service.slug)}
+          {Object.values(servicesData).map((service, index) => (
+            <ScrollReveal key={service.slug} delay={index * 0.04} direction="up">
+              <Link
+                href={`/services/${service.slug}`}
+                className="group p-6 rounded-3xl bg-white dark:bg-[#09090b] border border-zinc-200/60 dark:border-zinc-900/60 hover:border-indigo-500/50 dark:hover:border-indigo-400/50 hover:shadow-md transition-all duration-300 flex flex-col justify-between h-full"
+              >
+                <div>
+                  <div className="w-11 h-11 rounded-2xl bg-zinc-50 dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 flex items-center justify-center mb-5 group-hover:scale-105 transition-transform duration-300">
+                    {getServiceIcon(service.slug)}
+                  </div>
+                  <div className="text-[10px] font-mono text-zinc-400 dark:text-zinc-500 uppercase tracking-widest mb-1.5 font-bold">
+                    {service.category}
+                  </div>
+                  <h3 className="font-display font-bold text-base text-zinc-900 dark:text-zinc-100 mb-2 group-hover:text-indigo-600 dark:group-hover:text-indigo-400 transition-colors">
+                    {service.title}
+                  </h3>
+                  <p className="text-zinc-500 dark:text-zinc-400 text-xs leading-relaxed line-clamp-3">
+                    {service.description}
+                  </p>
                 </div>
-                <div className="text-[10px] font-mono text-zinc-400 dark:text-zinc-500 uppercase tracking-widest mb-1.5 font-bold">
-                  {service.category}
+                <div className="mt-6 pt-4 border-t border-zinc-100 dark:border-zinc-900/80 flex items-center text-xs font-semibold text-indigo-500 dark:text-indigo-400 group-hover:translate-x-1 transition-transform">
+                  Read specs & deliverables
+                  <ChevronRight className="w-3.5 h-3.5 ml-1" />
                 </div>
-                <h3 className="font-display font-bold text-base text-zinc-900 dark:text-zinc-100 mb-2 group-hover:text-indigo-600 dark:group-hover:text-indigo-400 transition-colors">
-                  {service.title}
-                </h3>
-                <p className="text-zinc-500 dark:text-zinc-400 text-xs leading-relaxed line-clamp-3">
-                  {service.description}
-                </p>
-              </div>
-              <div className="mt-6 pt-4 border-t border-zinc-100 dark:border-zinc-900/80 flex items-center text-xs font-semibold text-indigo-500 dark:text-indigo-400 group-hover:translate-x-1 transition-transform">
-                Read specs & deliverables
-                <ChevronRight className="w-3.5 h-3.5 ml-1" />
-              </div>
-            </Link>
+              </Link>
+            </ScrollReveal>
           ))}
         </div>
       </section>
 
       {/* CTA Box */}
       <section className="py-20 px-6 max-w-4xl mx-auto text-center">
-        <div className="p-8 md:p-12 rounded-3xl bg-indigo-500/5 dark:bg-indigo-400/5 border border-indigo-500/10 dark:border-indigo-400/10 shadow-sm flex flex-col items-center">
+        <ScrollReveal direction="up" className="p-8 md:p-12 rounded-3xl bg-indigo-500/5 dark:bg-indigo-400/5 border border-indigo-500/10 dark:border-indigo-400/10 shadow-sm flex flex-col items-center">
           <h2 className="font-display font-bold text-2xl text-zinc-900 dark:text-zinc-50">Need a custom solution?</h2>
           <p className="text-zinc-500 dark:text-zinc-400 text-sm mt-3 max-w-xl">
             We understand every business operates on a unique model. Contact us directly to configure a custom multi-service retainer or long-term software support contract.
@@ -118,7 +120,7 @@ export default function ServicesPage() {
             Start Your Custom Quote
             <ArrowRight className="w-4 h-4 ml-2" />
           </a>
-        </div>
+        </ScrollReveal>
       </section>
 
       <Footer />

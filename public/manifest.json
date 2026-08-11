@@ -1,0 +1,23 @@
+{
+  "name": "NSD Creations | AI Creative Studio",
+  "short_name": "NSD Creations",
+  "description": "AI Creative Studio & Digital Agency providing web development, branding, AI video commercials, and automations.",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#09090b",
+  "theme_color": "#4f46e5",
+  "orientation": "portrait",
+  "icons": [
+    {
+      "src": "/icon.png",
+      "sizes": "192x192 512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "/apple-icon.png",
+      "sizes": "180x180",
+      "type": "image/png"
+    }
+  ]
+}

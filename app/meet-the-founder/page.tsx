@@ -5,6 +5,7 @@ import Link from "next/link";
 import { Navbar } from "@/components/Navbar";
 import { Footer } from "@/components/Footer";
 import { ImageWithNSDFallback } from "@/components/ImageWithNSDFallback";
+import { ScrollReveal } from "@/components/ScrollReveal";
 import { 
   Sparkles, 
   ArrowRight, 
@@ -330,7 +331,7 @@ export default function MeetTheFounder() {
         <div className="max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
           
           {/* Left portrait container with premium styling */}
-          <div className="lg:col-span-5 flex justify-center">
+          <ScrollReveal direction="right" className="lg:col-span-5 flex justify-center">
             <div className="relative w-full max-w-[390px] aspect-[4/5] rounded-3xl p-3 glass-card shadow-2xl group overflow-hidden">
               {/* Purple glowing beam */}
               <div className="absolute -inset-1.5 bg-gradient-to-tr from-indigo-500/20 to-purple-500/20 rounded-3xl blur-md opacity-70 group-hover:opacity-100 transition-opacity duration-500" />
@@ -345,10 +346,10 @@ export default function MeetTheFounder() {
                 />
               </div>
             </div>
-          </div>
+          </ScrollReveal>
 
           {/* Right Header Content */}
-          <div className="lg:col-span-7 flex flex-col space-y-6 text-left">
+          <ScrollReveal direction="left" delay={0.2} className="lg:col-span-7 flex flex-col space-y-6 text-left">
             <div className="inline-flex items-center space-x-2 px-3 py-1.5 rounded-full bg-purple-500/5 dark:bg-purple-400/5 border border-purple-500/10 dark:border-purple-400/10 self-start">
               <Sparkles className="w-3.5 h-3.5 text-purple-500" />
               <span className="text-[11px] font-mono font-bold tracking-wider text-purple-600 dark:text-purple-400 uppercase">
@@ -411,29 +412,29 @@ export default function MeetTheFounder() {
                 View Portfolio
               </Link>
             </div>
-          </div>
+          </ScrollReveal>
 
         </div>
       </section>
 
       {/* Philosophy Quote Section */}
       <section className="py-20 px-6 bg-zinc-50 dark:bg-[#09090b]/40 border-y border-zinc-200/50 dark:border-zinc-900/50">
-        <div className="max-w-4xl mx-auto text-center flex flex-col items-center space-y-4">
+        <ScrollReveal direction="up" className="max-w-4xl mx-auto text-center flex flex-col items-center space-y-4">
           <Quote className="w-10 h-10 text-indigo-500/20 dark:text-indigo-400/20" />
           <h2 className="font-display font-medium text-xl md:text-2xl text-zinc-800 dark:text-zinc-200 italic leading-relaxed max-w-3xl">
             &quot;I believe every business deserves world-class digital experiences and high-end creative storytelling, regardless of its size or current scale.&quot;
           </h2>
           <span className="text-xs font-mono tracking-wider text-indigo-500 uppercase font-bold mt-4">&mdash; Sai Dheeraj Nalkari</span>
-        </div>
+        </ScrollReveal>
       </section>
 
       {/* Story Timeline */}
       <section className="py-24 px-6 max-w-4xl mx-auto">
         <div className="flex flex-col space-y-12">
-          <div className="text-left flex flex-col space-y-2">
+          <ScrollReveal direction="up" className="text-left flex flex-col space-y-2">
             <span className="text-xs font-mono font-bold tracking-wider text-indigo-500 uppercase">My Story</span>
             <h2 className="font-display font-bold text-3xl text-zinc-900 dark:text-zinc-50 tracking-tight">The Entrepreneurial Journey</h2>
-          </div>
+          </ScrollReveal>
 
           <div ref={containerRef} className="relative border-l border-zinc-200 dark:border-zinc-800 ml-3 md:ml-6 pl-6 md:pl-10 space-y-12 py-4">
             {/* Active Drawing Line Overlay */}
@@ -469,7 +470,7 @@ export default function MeetTheFounder() {
       {/* Mission & Vision double cards */}
       <section className="py-20 px-6 max-w-7xl mx-auto">
         <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-          <div className="p-8 rounded-3xl bg-white dark:bg-[#09090b] border border-zinc-200/60 dark:border-zinc-900/60 shadow-sm flex flex-col justify-between">
+          <ScrollReveal direction="right" className="p-8 rounded-3xl bg-white dark:bg-[#09090b] border border-zinc-200/60 dark:border-zinc-900/60 shadow-sm flex flex-col justify-between h-full">
             <div>
               <div className="w-10 h-10 rounded-xl bg-indigo-500/5 dark:bg-indigo-400/5 border border-indigo-500/10 dark:border-indigo-400/10 flex items-center justify-center text-indigo-500 mb-6">
                 <Heart className="w-5 h-5" />
@@ -479,9 +480,9 @@ export default function MeetTheFounder() {
                 To hand over standard-setting digital assets to local shops and early-stage entrepreneurs, democratizing custom development architectures and professional automated workflows to enhance business efficiency without enterprise-tier budgeting boundaries.
               </p>
             </div>
-          </div>
+          </ScrollReveal>
 
-          <div className="p-8 rounded-3xl bg-white dark:bg-[#09090b] border border-zinc-200/60 dark:border-zinc-900/60 shadow-sm flex flex-col justify-between">
+          <ScrollReveal direction="left" delay={0.2} className="p-8 rounded-3xl bg-white dark:bg-[#09090b] border border-zinc-200/60 dark:border-zinc-900/60 shadow-sm flex flex-col justify-between h-full">
             <div>
               <div className="w-10 h-10 rounded-xl bg-indigo-500/5 dark:bg-indigo-400/5 border border-indigo-500/10 dark:border-indigo-400/10 flex items-center justify-center text-indigo-500 mb-6">
                 <Sparkles className="w-5 h-5" />
@@ -491,13 +492,13 @@ export default function MeetTheFounder() {
                 To scale NSD Creations into one of India&apos;s most highly trusted digital agencies—known for reliable execution speed, absolute financial transparency, and delivering robust, customized client software services.
               </p>
             </div>
-          </div>
+          </ScrollReveal>
         </div>
       </section>
 
       {/* Core Values Animated Grid */}
       <section className="py-24 px-6 bg-zinc-50 dark:bg-[#050505]/40 border-t border-zinc-200/50 dark:border-zinc-900/50">
-        <div className="max-w-7xl mx-auto flex flex-col space-y-12">
+        <ScrollReveal direction="up" className="max-w-7xl mx-auto flex flex-col space-y-12">
           <div className="text-center flex flex-col space-y-2">
             <span className="text-xs font-mono font-bold tracking-wider text-indigo-500 uppercase">Core Foundations</span>
             <h2 className="font-display font-bold text-3xl text-zinc-900 dark:text-zinc-50 tracking-tight">Our Operational Principles</h2>
@@ -516,12 +517,12 @@ export default function MeetTheFounder() {
               </div>
             ))}
           </div>
-        </div>
+        </ScrollReveal>
       </section>
 
       {/* Skills Grid */}
       <section className="py-24 px-6 max-w-7xl mx-auto">
-        <div className="flex flex-col space-y-12">
+        <ScrollReveal direction="up" className="flex flex-col space-y-12">
           <div className="text-left flex flex-col space-y-2">
             <span className="text-xs font-mono font-bold tracking-wider text-indigo-500 uppercase">Technical Prowess</span>
             <h2 className="font-display font-bold text-3xl text-zinc-900 dark:text-zinc-50 tracking-tight">Handcrafted Skills Set</h2>
@@ -540,12 +541,12 @@ export default function MeetTheFounder() {
               </div>
             ))}
           </div>
-        </div>
+        </ScrollReveal>
       </section>
 
       {/* Bento Grid - Why NSD Creations */}
       <section className="py-24 px-6 bg-zinc-50/50 dark:bg-[#030303]/40 border-t border-zinc-200/50 dark:border-zinc-900/50">
-        <div className="max-w-7xl mx-auto flex flex-col space-y-12">
+        <ScrollReveal direction="up" className="max-w-7xl mx-auto flex flex-col space-y-12">
           <div className="text-left flex flex-col space-y-2">
             <span className="text-xs font-mono font-bold tracking-wider text-indigo-500 uppercase">Why Choose Me</span>
             <h2 className="font-display font-bold text-3xl text-zinc-900 dark:text-zinc-50 tracking-tight">The Bento Grid of Client Value</h2>
@@ -567,12 +568,12 @@ export default function MeetTheFounder() {
               </div>
             ))}
           </div>
-        </div>
+        </ScrollReveal>
       </section>
 
       {/* Personal Message */}
       <section className="py-24 px-6 max-w-4xl mx-auto text-left">
-        <div className="p-8 md:p-12 rounded-3xl bg-white dark:bg-[#09090b] border border-zinc-200/60 dark:border-zinc-900/60 shadow-xl relative overflow-hidden">
+        <ScrollReveal direction="up" className="p-8 md:p-12 rounded-3xl bg-white dark:bg-[#09090b] border border-zinc-200/60 dark:border-zinc-900/60 shadow-xl relative overflow-hidden">
           <div className="absolute top-0 right-0 w-44 h-44 bg-indigo-500/5 rounded-full blur-3xl pointer-events-none" />
           <h3 className="font-display font-bold text-2xl text-zinc-900 dark:text-zinc-50 mb-4">Let&apos;s Build Something Extraordinary Together.</h3>
           <p className="text-zinc-600 dark:text-zinc-400 text-sm md:text-base leading-relaxed mb-6">
@@ -581,12 +582,12 @@ export default function MeetTheFounder() {
           <p className="text-zinc-600 dark:text-zinc-400 text-sm md:text-base leading-relaxed font-semibold italic">
             If you have an idea, let&apos;s turn it into something remarkable.
           </p>
-        </div>
+        </ScrollReveal>
       </section>
 
       {/* Large CTA Section */}
       <section className="py-20 px-6 border-t border-zinc-200/50 dark:border-zinc-900/50 bg-gradient-to-br from-indigo-900/10 via-[#030303] to-[#030303]">
-        <div className="max-w-4xl mx-auto text-center flex flex-col items-center space-y-6">
+        <ScrollReveal direction="up" className="max-w-4xl mx-auto text-center flex flex-col items-center space-y-6">
           <span className="text-xs font-mono font-bold tracking-wider text-indigo-400 uppercase bg-indigo-500/10 px-4 py-1.5 rounded-full border border-indigo-500/20">
             Secure Partnership
           </span>
@@ -616,10 +617,11 @@ export default function MeetTheFounder() {
               WhatsApp Me
             </Link>
           </div>
-        </div>
+        </ScrollReveal>
       </section>
 
       <Footer />
     </div>
   );
 }
+

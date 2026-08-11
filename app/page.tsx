@@ -8,6 +8,7 @@ import { servicesData } from "@/lib/services-data";
 import { ImageWithNSDFallback } from "@/components/ImageWithNSDFallback";
 import { Testimonials } from "@/components/Testimonials";
 import { AnimatedStats } from "@/components/AnimatedStats";
+import { ScrollReveal } from "@/components/ScrollReveal";
 import { 
   Sparkles, 
   ArrowRight, 
@@ -196,7 +197,7 @@ export default function HomePage() {
 
         <div className="max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
           {/* Hero Content Left */}
-          <div className="lg:col-span-7 flex flex-col text-left space-y-6">
+          <ScrollReveal direction="up" duration={0.7} className="lg:col-span-7 flex flex-col text-left space-y-6">
             <div className="inline-flex items-center space-x-2 px-3 py-1.5 rounded-full bg-indigo-500/5 dark:bg-indigo-400/5 border border-indigo-500/10 dark:border-indigo-400/10 self-start">
               <Sparkles className="w-3.5 h-3.5 text-indigo-500 dark:text-indigo-400 animate-pulse" />
               <span className="text-[11px] font-mono font-bold tracking-wider text-indigo-600 dark:text-indigo-400 uppercase">
@@ -248,10 +249,10 @@ export default function HomePage() {
                 Since 2022
               </span>
             </div>
-          </div>
+          </ScrollReveal>
 
           {/* Hero Glassmorphic Image Mock right */}
-          <div className="lg:col-span-5 relative w-full flex justify-center">
+          <ScrollReveal direction="left" delay={0.2} duration={0.7} className="lg:col-span-5 relative w-full flex justify-center">
             <div className="relative w-full max-w-[420px] aspect-[4/5] rounded-3xl p-4 glass-card overflow-hidden group shadow-2xl">
               {/* Outer decorative glowing elements */}
               <div className="absolute top-0 right-0 w-32 h-32 bg-indigo-500/10 rounded-full blur-2xl group-hover:scale-125 transition-transform duration-500" />
@@ -281,7 +282,7 @@ export default function HomePage() {
                 </div>
               </div>
             </div>
-          </div>
+          </ScrollReveal>
         </div>
       </section>
 
@@ -291,7 +292,7 @@ export default function HomePage() {
       {/* Company Story Section (Emotional Origin) */}
       <section id="about" className="py-24 px-6 max-w-7xl mx-auto">
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
-          <div className="lg:col-span-5 flex flex-col space-y-6">
+          <ScrollReveal direction="right" className="lg:col-span-5 flex flex-col space-y-6">
             <div className="text-xs font-mono tracking-wider text-indigo-500 uppercase font-bold">
               Our Journey & Roots
             </div>
@@ -313,9 +314,9 @@ export default function HomePage() {
                 <ArrowRight className="w-4 h-4 ml-1.5" />
               </Link>
             </div>
-          </div>
+          </ScrollReveal>
 
-          <div className="lg:col-span-7 grid grid-cols-1 md:grid-cols-2 gap-6">
+          <ScrollReveal direction="left" delay={0.2} className="lg:col-span-7 grid grid-cols-1 md:grid-cols-2 gap-6">
             {/* Mission Card */}
             <div className="p-8 rounded-3xl bg-white dark:bg-[#09090b] border border-zinc-200/60 dark:border-zinc-900/60 shadow-sm flex flex-col space-y-4">
               <div className="w-10 h-10 rounded-xl bg-indigo-500/10 flex items-center justify-center">
@@ -337,7 +338,7 @@ export default function HomePage() {
                 To build India&apos;s most trusted creative technology studio by consistently matching the execution quality of global brands while protecting client affordability and offering personal, dedicated attention.
               </p>
             </div>
-          </div>
+          </ScrollReveal>
         </div>
       </section>
 
@@ -345,7 +346,7 @@ export default function HomePage() {
       <section id="services" className="py-24 px-6 border-t border-zinc-200/50 dark:border-zinc-900/50 bg-zinc-50/40 dark:bg-[#050505]/20">
         <div className="max-w-7xl mx-auto flex flex-col space-y-12">
           {/* Header */}
-          <div className="flex flex-col md:flex-row items-start md:items-end justify-between gap-6">
+          <ScrollReveal direction="up" className="flex flex-col md:flex-row items-start md:items-end justify-between gap-6">
             <div className="max-w-xl flex flex-col space-y-4 text-left">
               <span className="text-xs font-mono font-bold tracking-wider text-indigo-500 uppercase">
                 Our Agency Offerings
@@ -384,7 +385,7 @@ export default function HomePage() {
                 Web Development
               </button>
             </div>
-          </div>
+          </ScrollReveal>
 
           {/* Service Cards Grid with Staggered Transition */}
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
@@ -455,7 +456,7 @@ export default function HomePage() {
       <section id="portfolio" className="py-24 px-6 max-w-7xl mx-auto">
         <div className="flex flex-col space-y-12">
           {/* Header */}
-          <div className="flex flex-col md:flex-row items-start md:items-end justify-between gap-6">
+          <ScrollReveal direction="up" className="flex flex-col md:flex-row items-start md:items-end justify-between gap-6">
             <div className="max-w-xl flex flex-col space-y-3">
               <span className="text-xs font-mono font-bold tracking-wider text-indigo-500 uppercase">
                 Featured Creative Work
@@ -473,7 +474,7 @@ export default function HomePage() {
               View Full Portfolio
               <ExternalLink className="w-3.5 h-3.5 ml-2" />
             </Link>
-          </div>
+          </ScrollReveal>
 
           {/* Portfolio Categories Filters */}
           <div className="flex flex-wrap gap-2.5 border-b border-zinc-200/40 dark:border-zinc-900/40 pb-4">
@@ -564,7 +565,7 @@ export default function HomePage() {
       {/* Interactive Photo Enhancement / Tribute restoration representation */}
       <section className="py-24 px-6 border-t border-zinc-200/50 dark:border-zinc-900/50 bg-zinc-50/50 dark:bg-[#030303]/20">
         <div className="max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
-          <div className="lg:col-span-6 flex flex-col space-y-6 text-left">
+          <ScrollReveal direction="right" className="lg:col-span-6 flex flex-col space-y-6 text-left">
             <span className="text-xs font-mono font-bold tracking-wider text-indigo-500 uppercase">
               Restoration Craftsmanship
             </span>
@@ -585,10 +586,10 @@ export default function HomePage() {
                 <CheckCircle className="w-4 h-4 text-emerald-500 mr-2.5" /> Removal of physical tears, creases, and coffee spots.
               </div>
             </div>
-          </div>
+          </ScrollReveal>
 
           {/* Interactive Before After Representation */}
-          <div className="lg:col-span-6 flex flex-col space-y-3">
+          <ScrollReveal direction="left" delay={0.2} className="lg:col-span-6 flex flex-col space-y-3">
             <div className="relative w-full aspect-[16/10] rounded-3xl overflow-hidden border border-zinc-200 dark:border-zinc-800 shadow-xl group">
               {/* Dual picture showcase split vertically */}
               <div className="absolute inset-0 flex">
@@ -621,13 +622,13 @@ export default function HomePage() {
             <p className="text-center font-mono text-[10px] text-zinc-400 dark:text-zinc-500 italic">
               *Interactive representation of historical family visual assets. Results vary based on physical photo wear.
             </p>
-          </div>
+          </ScrollReveal>
         </div>
       </section>
 
       {/* Industries We Serve */}
       <section className="py-24 px-6 max-w-7xl mx-auto">
-        <div className="flex flex-col space-y-12 text-center items-center">
+        <ScrollReveal direction="up" className="flex flex-col space-y-12 text-center items-center">
           <div className="max-w-xl flex flex-col space-y-3">
             <span className="text-xs font-mono font-bold tracking-wider text-indigo-500 uppercase">
               Target Sectors
@@ -654,7 +655,7 @@ export default function HomePage() {
               </div>
             ))}
           </div>
-        </div>
+        </ScrollReveal>
       </section>
 
       {/* Our 7-Stage Process */}
@@ -710,7 +711,7 @@ export default function HomePage() {
 
       {/* Pricing Section */}
       <section className="py-24 px-6 border-t border-zinc-200/50 dark:border-zinc-900/50 bg-zinc-50/40 dark:bg-[#050505]/20">
-        <div className="max-w-7xl mx-auto flex flex-col space-y-12 text-center items-center">
+        <ScrollReveal direction="up" className="max-w-7xl mx-auto flex flex-col space-y-12 text-center items-center">
           <div className="max-w-xl flex flex-col space-y-3">
             <span className="text-xs font-mono font-bold tracking-wider text-indigo-500 uppercase">
               Straightforward Pricing
@@ -751,7 +752,7 @@ export default function HomePage() {
               <ChevronRight className="w-4 h-4 ml-1" />
             </a>
           </div>
-        </div>
+        </ScrollReveal>
       </section>
 
       {/* FAQ Accordion Section */}
@@ -809,7 +810,7 @@ export default function HomePage() {
       <section id="contact" className="py-24 px-6 border-t border-zinc-200/50 dark:border-zinc-900/50 bg-zinc-50/30 dark:bg-[#050505]/40">
         <div className="max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-12 gap-12">
           {/* Left Info Column */}
-          <div className="lg:col-span-5 flex flex-col space-y-8">
+          <ScrollReveal direction="right" className="lg:col-span-5 flex flex-col space-y-8">
             <div className="flex flex-col space-y-3">
               <span className="text-xs font-mono font-bold tracking-wider text-indigo-500 uppercase">
                 Let&apos;s Partner Up
@@ -874,10 +875,10 @@ export default function HomePage() {
                 referrerPolicy="no-referrer-when-downgrade"
               />
             </div>
-          </div>
+          </ScrollReveal>
 
           {/* Right Contact Form Column */}
-          <div className="lg:col-span-7">
+          <ScrollReveal direction="left" delay={0.2} className="lg:col-span-7">
             <div className="p-8 md:p-10 rounded-3xl bg-white dark:bg-[#09090b] border border-zinc-200/60 dark:border-zinc-900/60 shadow-xl relative overflow-hidden">
               <AnimatePresence mode="wait">
                 {!formSubmitted ? (
@@ -1000,7 +1001,7 @@ export default function HomePage() {
                 )}
               </AnimatePresence>
             </div>
-          </div>
+          </ScrollReveal>
         </div>
       </section>
 
