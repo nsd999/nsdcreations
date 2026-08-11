@@ -30,7 +30,7 @@ interface Testimonial {
   created_at: string;
 }
 
-export function Testimonials() {
+export function Testimonials({ contextSlug }: { contextSlug?: string } = {}) {
   const [testimonials, setTestimonials] = useState<Testimonial[]>([]);
   const [loading, setLoading] = useState(true);
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -53,11 +53,17 @@ export function Testimonials() {
   // Fetch approved testimonials
   const fetchTestimonials = async () => {
     try {
-      const { data, error } = await supabase
+      let query = supabase
         .from("testimonials")
         .select("*")
         .eq("status", "approved")
         .order("created_at", { ascending: false });
+
+      if (contextSlug) {
+        query = query.eq("context_slug", contextSlug);
+      }
+
+      const { data, error } = await query;
 
       if (error) throw error;
       setTestimonials(data || []);
@@ -197,7 +203,8 @@ export function Testimonials() {
           review: cleanReview,
           avatar_url: `gradient-${Math.floor(Math.random() * 6)}`,
           photo_url: photoBase64,
-          status: "pending" // Admin approval required
+          status: "pending", // Admin approval required
+          context_slug: contextSlug || null
         }
       ]);
 
@@ -422,6 +429,13 @@ export function Testimonials() {
                       ))}
                     </div>
                   </div>
+
+                  {formError && (
+                    <div className="p-3 text-xs font-medium text-red-500 bg-red-50 dark:bg-red-500/10 border border-red-200 dark:border-red-500/20 rounded-xl flex items-center">
+                      <AlertCircle className="w-4 h-4 inline mr-2 shrink-0" />
+                      {formError}
+                    </div>
+                  )}
 
                   {/* Input Fields */}
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4">

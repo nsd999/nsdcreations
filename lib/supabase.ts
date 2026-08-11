@@ -227,6 +227,7 @@ CREATE TABLE IF NOT EXISTS public.testimonials (
   avatar_url TEXT,
   photo_url TEXT,
   status TEXT NOT NULL DEFAULT 'pending' CHECK (status IN ('pending', 'approved', 'rejected')),
+  context_slug TEXT,
   created_at TIMESTAMP WITH TIME ZONE DEFAULT timezone('utc'::text, now()) NOT NULL
 );
 

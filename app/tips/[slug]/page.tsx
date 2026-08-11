@@ -240,7 +240,7 @@ export default function TipDetailsPage({ params }: { params: Promise<{ slug: str
       </section>
 
       {/* Review Submission Component */}
-      <Testimonials />
+      <Testimonials contextSlug={slug} />
 
       <Footer />
     </main>
