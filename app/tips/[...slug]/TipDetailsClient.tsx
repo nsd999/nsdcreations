@@ -105,7 +105,7 @@ export default function TipDetailsClient({ slug }: { slug: string }) {
             <div className="space-y-10 mb-16">
               
               {/* Section 1: Simple Explanation */}
-              <ScrollReveal delay={100}>
+              <ScrollReveal delay={0.1}>
                 <div className="bg-white/5 border border-white/10 rounded-3xl p-8 md:p-10 relative overflow-hidden group hover:border-indigo-500/30 transition-colors">
                   <div className="absolute top-0 right-0 p-8 opacity-10 group-hover:opacity-20 transition-opacity">
                     <Lightbulb className="w-24 h-24 text-indigo-400" />
@@ -121,7 +121,7 @@ export default function TipDetailsClient({ slug }: { slug: string }) {
               </ScrollReveal>
 
               {/* Section 2: Why it Matters */}
-              <ScrollReveal delay={200}>
+              <ScrollReveal delay={0.2}>
                 <div className="bg-white/5 border border-white/10 rounded-3xl p-8 md:p-10 relative overflow-hidden group hover:border-indigo-500/30 transition-colors">
                   <div className="absolute top-0 right-0 p-8 opacity-10 group-hover:opacity-20 transition-opacity">
                     <Target className="w-24 h-24 text-indigo-400" />
@@ -137,7 +137,7 @@ export default function TipDetailsClient({ slug }: { slug: string }) {
               </ScrollReveal>
 
               {/* Section 3: How it Works */}
-              <ScrollReveal delay={300}>
+              <ScrollReveal delay={0.3}>
                 <div className="bg-white/5 border border-white/10 rounded-3xl p-8 md:p-10 relative overflow-hidden group hover:border-indigo-500/30 transition-colors">
                   <div className="absolute top-0 right-0 p-8 opacity-10 group-hover:opacity-20 transition-opacity">
                     <Settings className="w-24 h-24 text-indigo-400" />
@@ -153,7 +153,7 @@ export default function TipDetailsClient({ slug }: { slug: string }) {
               </ScrollReveal>
 
               {/* Section 4: The Hard Reality */}
-              <ScrollReveal delay={400}>
+              <ScrollReveal delay={0.4}>
                 <div className="bg-gradient-to-br from-red-950/40 to-black border border-red-500/20 rounded-3xl p-8 md:p-10 relative overflow-hidden">
                   <div className="absolute top-0 right-0 p-8 opacity-5">
                     <AlertTriangle className="w-32 h-32 text-red-500" />
@@ -170,7 +170,7 @@ export default function TipDetailsClient({ slug }: { slug: string }) {
             </div>
 
             {/* Credentials & 3 Side-By-Side Action Buttons Section */}
-            <ScrollReveal delay={500}>
+            <ScrollReveal delay={0.5}>
               <div className="bg-gradient-to-b from-indigo-950/40 via-white/5 to-black border border-indigo-500/30 p-8 md:p-12 rounded-3xl backdrop-blur-xl relative overflow-hidden my-16">
                 
                 {/* Header & Logo */}

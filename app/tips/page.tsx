@@ -91,7 +91,7 @@ export default function TipsPage({ initialCategory = "All" }: TipsPageProps) {
     const tipUrl = `/tips/${tip.category.toLowerCase()}/${tip.slug}`;
 
     return (
-      <ScrollReveal delay={(index % 3) * 100}>
+      <ScrollReveal delay={(index % 3) * 0.1}>
         <Link href={tipUrl} className="block group h-full">
           <div 
             className={`rounded-2xl h-full transition-all duration-500 flex flex-col relative overflow-hidden ${
