@@ -33,6 +33,9 @@ export const metadata = {
   title: "NSD Creations | AI Creative Studio & Digital Agency",
   description: "A world-class AI Creative Studio & Digital Agency combining software engineering, AI automation, cinematic storytelling, and branding.",
   manifest: "/manifest.json",
+  verification: {
+    google: "googlec7e73944ca34ef0b",
+  },
   icons: {
     icon: [
       { url: "/icon.png", type: "image/png" },

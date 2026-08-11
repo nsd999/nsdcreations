@@ -61,7 +61,7 @@ export default function HomePage() {
       category: "video",
       client: "Keerthy's Daycare & Kindergarten",
       type: "Promotional & Marketing Videos",
-      image: "https://images.unsplash.com/photo-1502082553048-f009c37129b9?auto=format&fit=crop&w=800&q=80",
+      image: "/portfolio/daycare-promo.png",
       description: "High-retention promotional and marketing commercial video produced for Keerthy's Daycare & Kindergarten to boost enrollment and community engagement.",
       link: "https://tinyurl.com/portfoliobynsd"
     },
@@ -71,7 +71,7 @@ export default function HomePage() {
       category: "video",
       client: "Shilpa Palli",
       type: "Nutrition & Wellness Video",
-      image: "https://images.unsplash.com/photo-1490645935967-10de6ba17061?auto=format&fit=crop&w=800&q=80",
+      image: "/portfolio/nutrition-wellness.png",
       description: "Professional introduction video highlighting personalized nutrition and wellness advice, styled with clean layouts and visual guides.",
       link: "https://tinyurl.com/portfoliobynsd"
     },
@@ -81,7 +81,7 @@ export default function HomePage() {
       category: "video",
       client: "Santhosh Juluri",
       type: "AI Memorial Tribute Video",
-      image: "https://images.unsplash.com/photo-1516450360452-9312f5e86fc7?auto=format&fit=crop&w=800&q=80",
+      image: "/portfolio/tribute-memorial.png",
       description: "Deeply emotional tribute and legacy video utilizing AI-enhanced restored photographs and historical family records synchronized to custom soundscapes.",
       link: "https://tinyurl.com/portfoliobynsd"
     },
@@ -91,7 +91,7 @@ export default function HomePage() {
       category: "web",
       client: "NSD Labs",
       type: "E-Commerce Website",
-      image: "https://images.unsplash.com/photo-1460925895917-afdab827c52f?auto=format&fit=crop&w=800&q=80",
+      image: "/portfolio/ecommerce-web.png",
       description: "Hand-coded, lightning-fast storefront styled with professional, sleek layout structures and seamless navigation.",
       link: "https://tinyurl.com/portfoliobynsd"
     },
@@ -101,7 +101,7 @@ export default function HomePage() {
       category: "branding",
       client: "Global Logistics Brand",
       type: "Brand Guidelines",
-      image: "https://images.unsplash.com/photo-1561070791-26c113006238?auto=format&fit=crop&w=800&q=80",
+      image: "/portfolio/branding-identity.png",
       description: "Premium vector graphics, core typography pairs, and standard color guidelines book.",
       link: "https://tinyurl.com/portfoliobynsd"
     },
@@ -111,7 +111,7 @@ export default function HomePage() {
       category: "poster",
       client: "Telangana Institution",
       type: "Poster Design",
-      image: "https://images.unsplash.com/photo-1542751371-adc38448a05e?auto=format&fit=crop&w=800&q=80",
+      image: "/portfolio/poster-design.png",
       description: "Bold layout, structured visual grid hierarchy, and print-optimized graphic design.",
       link: "https://tinyurl.com/portfoliobynsd"
     },
@@ -121,7 +121,7 @@ export default function HomePage() {
       category: "automation",
       client: "Local Retail Agency",
       type: "AI & API Automation",
-      image: "https://images.unsplash.com/photo-1611162617213-7d7a39e9b1d7?auto=format&fit=crop&w=800&q=80",
+      image: "/portfolio/whatsapp-automation.png",
       description: "Automated direct customer query triggers linking WhatsApp Business API with digital data sheets.",
       link: "https://tinyurl.com/portfoliobynsd"
     }
