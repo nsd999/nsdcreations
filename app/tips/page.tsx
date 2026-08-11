@@ -51,7 +51,7 @@ export default function TipsPage() {
       </section>
 
       {/* Categories Filter */}
-      <section className="border-b border-white/10 sticky top-20 bg-black/80 backdrop-blur-md z-40">
+      <section className="border-b border-white/10 relative z-10">
         <div className="container mx-auto px-4 py-4 overflow-x-auto no-scrollbar">
           <div className="flex space-x-2 md:justify-center min-w-max">
             {categories.map((category) => (
@@ -74,7 +74,7 @@ export default function TipsPage() {
       {/* Tips Grid */}
       <section className="py-20">
         <div className="container mx-auto px-4">
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+          <div className={`grid grid-cols-1 ${filteredTips.length === 1 ? '' : filteredTips.length === 2 ? 'md:grid-cols-2 lg:grid-cols-2' : 'md:grid-cols-2 lg:grid-cols-3'} gap-8`}>
             {filteredTips.map((tip, index) => (
               <React.Fragment key={tip.id}>
                 <ScrollReveal delay={index % 3 * 100}>
