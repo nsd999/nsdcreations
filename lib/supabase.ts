@@ -28,17 +28,6 @@ const DEFAULT_TESTIMONIALS = [
     photo_url: null,
     status: "approved",
     created_at: new Date(Date.now() - 15 * 24 * 60 * 60 * 1000).toISOString()
-  },
-  {
-    id: "default-3",
-    name: "Alexander Mercer",
-    business_name: "Vanguard Tech Ventures",
-    rating: 5,
-    review: "The design precision and development speed NSD Creations brought to our SaaS product was game-changing. The interaction details, elegant typography, and absolute responsiveness set a new standard for our enterprise dashboard.",
-    avatar_url: "gradient-2",
-    photo_url: null,
-    status: "approved",
-    created_at: new Date(Date.now() - 5 * 24 * 60 * 60 * 1000).toISOString()
   }
 ];
 

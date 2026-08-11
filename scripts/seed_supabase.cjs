@@ -24,15 +24,6 @@ const DEFAULT_TESTIMONIALS = [
     avatar_url: "gradient-1",
     status: "approved",
     context_slug: null
-  },
-  {
-    name: "Alexander Mercer",
-    business_name: "Vanguard Tech Ventures",
-    rating: 5,
-    review: "The design precision and development speed NSD Creations brought to our SaaS product was game-changing. The interaction details, elegant typography, and absolute responsiveness set a new standard for our enterprise dashboard.",
-    avatar_url: "gradient-2",
-    status: "approved",
-    context_slug: null
   }
 ];
 

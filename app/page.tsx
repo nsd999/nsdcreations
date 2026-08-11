@@ -242,7 +242,7 @@ export default function HomePage() {
               </span>
               <span className="flex items-center">
                 <CheckCircle className="w-4 h-4 text-indigo-500 mr-2" />
-                20+ Projects Completed
+                50+ Projects Completed
               </span>
               <span className="flex items-center">
                 <CheckCircle className="w-4 h-4 text-indigo-500 mr-2" />
