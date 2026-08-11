@@ -32,7 +32,6 @@ const fredoka = Fredoka({
 export const metadata = {
   title: "NSD Creations | AI Creative Studio & Digital Agency",
   description: "A world-class AI Creative Studio & Digital Agency combining software engineering, AI automation, cinematic storytelling, and branding.",
-  manifest: "/manifest.json",
   verification: {
     google: "googlec7e73944ca34ef0b",
   },
@@ -65,7 +64,6 @@ export default function RootLayout({
         <link rel="icon" href="/nsdlogo.png" type="image/png" />
         <link rel="shortcut icon" href="/nsdlogo.png" type="image/png" />
         <link rel="apple-touch-icon" href="/nsdlogo.png" type="image/png" />
-        <link rel="manifest" href="/manifest.json" />
         <link rel="preload" href="/nsdlogo.png" as="image" type="image/png" />
         <link rel="preload" href="/founder.png" as="image" type="image/png" />
       </head>

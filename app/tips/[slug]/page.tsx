@@ -4,7 +4,7 @@ import { notFound } from "next/navigation";
 import { Navbar } from "@/components/Navbar";
 import { Footer } from "@/components/Footer";
 import { ScrollReveal } from "@/components/ScrollReveal";
-import { ArrowLeft, Phone, Mail, Globe, ArrowRight } from "lucide-react";
+import { ArrowLeft, Phone, Mail, Globe, ArrowRight, Lightbulb, Target, Settings, AlertTriangle } from "lucide-react";
 import { tipsData } from "@/lib/tips-data";
 
 export async function generateStaticParams() {
@@ -20,7 +20,6 @@ export default function TipDetailsPage({ params }: { params: { slug: string } })
     notFound();
   }
 
-  // Encode the dynamic WhatsApp message
   const whatsappMessage = encodeURIComponent(
     `Hi, I have seen this tip "${tip.title}" and I have found it useful. Thank you NSD Creations.`
   );
@@ -34,13 +33,13 @@ export default function TipDetailsPage({ params }: { params: { slug: string } })
         <div className="absolute top-0 left-0 w-full h-[50vh] bg-gradient-to-b from-indigo-900/20 to-black pointer-events-none"></div>
         
         <div className="container mx-auto px-4 relative z-10">
-          <div className="max-w-4xl mx-auto">
+          <div className="max-w-5xl mx-auto">
             <Link 
               href="/tips" 
               className="inline-flex items-center text-gray-400 hover:text-white mb-8 transition-colors"
             >
               <ArrowLeft className="w-4 h-4 mr-2" />
-              Back to all tips
+              Back to all strategies
             </Link>
 
             <ScrollReveal>
@@ -52,39 +51,91 @@ export default function TipDetailsPage({ params }: { params: { slug: string } })
                 {tip.title}
               </h1>
               
-              <p className="text-xl md:text-2xl text-gray-300 font-light mb-12 leading-relaxed border-l-4 border-indigo-500 pl-6">
+              <p className="text-xl md:text-2xl text-gray-300 font-light mb-16 leading-relaxed border-l-4 border-indigo-500 pl-6">
                 {tip.excerpt}
               </p>
             </ScrollReveal>
 
-            <div className="grid grid-cols-1 lg:grid-cols-3 gap-12">
-              <div className="lg:col-span-2">
-                <ScrollReveal delay={200}>
-                  <div className="prose prose-invert prose-lg max-w-none prose-p:leading-relaxed prose-headings:text-indigo-300">
-                    {/* Simulated rich text content from our data */}
-                    <p className="text-gray-300 whitespace-pre-line text-lg leading-loose">
-                      {tip.content}
-                    </p>
-                    
-                    <div className="mt-12 p-8 bg-white/5 border border-white/10 rounded-2xl relative overflow-hidden">
-                      <div className="absolute top-0 left-0 w-1 h-full bg-indigo-500"></div>
-                      <h3 className="text-2xl font-bold mb-4">The Brutal Truth</h3>
-                      <p className="text-gray-400">
-                        Understanding this concept is only 5% of the battle. The other 95% is flawless execution. Without the right technical infrastructure, creative talent, and strategic oversight, this knowledge is useless.
-                      </p>
+            <div className="grid grid-cols-1 lg:grid-cols-3 gap-16">
+              
+              {/* Main Content Area */}
+              <div className="lg:col-span-2 space-y-12">
+                
+                {/* Section 1: Simple Explanation */}
+                <ScrollReveal delay={100}>
+                  <div className="bg-white/5 border border-white/10 rounded-3xl p-8 md:p-10 relative overflow-hidden group hover:border-indigo-500/30 transition-colors">
+                    <div className="absolute top-0 right-0 p-8 opacity-10 group-hover:opacity-20 transition-opacity">
+                      <Lightbulb className="w-24 h-24 text-indigo-400" />
                     </div>
+                    <h2 className="text-2xl md:text-3xl font-bold mb-6 flex items-center text-indigo-300">
+                      The Concept, Explained Simply
+                    </h2>
+                    <p className="text-gray-300 text-lg leading-relaxed relative z-10">
+                      {tip.simpleExplanation || tip.content}
+                    </p>
                   </div>
                 </ScrollReveal>
+
+                {/* Section 2: Why it Matters */}
+                {tip.whyItMatters && (
+                  <ScrollReveal delay={200}>
+                    <div className="bg-white/5 border border-white/10 rounded-3xl p-8 md:p-10 relative overflow-hidden group hover:border-indigo-500/30 transition-colors">
+                      <div className="absolute top-0 right-0 p-8 opacity-10 group-hover:opacity-20 transition-opacity">
+                        <Target className="w-24 h-24 text-indigo-400" />
+                      </div>
+                      <h2 className="text-2xl md:text-3xl font-bold mb-6 flex items-center text-indigo-300">
+                        Why It Matters For Your Business
+                      </h2>
+                      <p className="text-gray-300 text-lg leading-relaxed relative z-10">
+                        {tip.whyItMatters}
+                      </p>
+                    </div>
+                  </ScrollReveal>
+                )}
+
+                {/* Section 3: How it Works */}
+                {tip.howItWorks && (
+                  <ScrollReveal delay={300}>
+                    <div className="bg-white/5 border border-white/10 rounded-3xl p-8 md:p-10 relative overflow-hidden group hover:border-indigo-500/30 transition-colors">
+                      <div className="absolute top-0 right-0 p-8 opacity-10 group-hover:opacity-20 transition-opacity">
+                        <Settings className="w-24 h-24 text-indigo-400" />
+                      </div>
+                      <h2 className="text-2xl md:text-3xl font-bold mb-6 flex items-center text-indigo-300">
+                        How It Works In Practice
+                      </h2>
+                      <p className="text-gray-300 text-lg leading-relaxed relative z-10">
+                        {tip.howItWorks}
+                      </p>
+                    </div>
+                  </ScrollReveal>
+                )}
+
+                {/* Section 4: The Hard Reality */}
+                {tip.theHardReality && (
+                  <ScrollReveal delay={400}>
+                    <div className="bg-gradient-to-br from-red-950/40 to-black border border-red-500/20 rounded-3xl p-8 md:p-10 relative overflow-hidden">
+                      <div className="absolute top-0 right-0 p-8 opacity-5">
+                        <AlertTriangle className="w-32 h-32 text-red-500" />
+                      </div>
+                      <h2 className="text-2xl md:text-3xl font-bold mb-6 flex items-center text-red-400">
+                        The Brutal Truth
+                      </h2>
+                      <p className="text-gray-300 text-lg leading-relaxed relative z-10 font-medium">
+                        {tip.theHardReality}
+                      </p>
+                    </div>
+                  </ScrollReveal>
+                )}
               </div>
 
               {/* Sticky Sidebar / CTA Credentials */}
               <div className="lg:col-span-1">
                 <div className="sticky top-32 space-y-6">
-                  <ScrollReveal delay={400}>
+                  <ScrollReveal delay={500}>
                     <div className="bg-gradient-to-b from-white/10 to-transparent border border-white/10 p-8 rounded-3xl backdrop-blur-md">
                       <h3 className="text-2xl font-bold mb-2">Need Experts?</h3>
-                      <p className="text-gray-400 mb-8 text-sm">
-                        Don't waste time trying to master this yourself. Let NSD Creations engineer this for your business.
+                      <p className="text-gray-400 mb-8 text-sm leading-relaxed">
+                        Understanding this concept is easy. Executing it flawlessly requires a dedicated team of elite professionals. Let NSD Creations engineer this for your business.
                       </p>
                       
                       <div className="space-y-4 mb-8">
