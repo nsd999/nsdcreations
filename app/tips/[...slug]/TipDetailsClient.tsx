@@ -223,7 +223,7 @@ export default function TipDetailsClient({ slug }: { slug: string }) {
 
                   {/* Button 3: Follow on Instagram */}
                   <a 
-                    href="https://instagram.com/nsdcreations" 
+                    href="https://instagram.com/nsd.creations.official" 
                     target="_blank" 
                     rel="noopener noreferrer"
                     className="flex items-center justify-center py-4 px-6 bg-gradient-to-r from-purple-600 via-pink-600 to-amber-500 hover:opacity-95 text-white rounded-2xl font-bold text-sm transition-all shadow-lg shadow-pink-500/20 hover:scale-[1.02]"
