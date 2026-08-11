@@ -524,6 +524,14 @@ export default function HomePage() {
                     <div className="absolute top-4 left-4 bg-[#030303]/80 backdrop-blur-md border border-zinc-800 text-[10px] font-mono font-bold tracking-widest text-indigo-400 px-3 py-1.5 rounded-full uppercase z-10">
                       {work.type}
                     </div>
+                    {/* Watermark logo overlay on bottom right corner, smaller, 60% opacity */}
+                    <div className="absolute bottom-3 right-3 z-10 pointer-events-none opacity-60 drop-shadow-md flex items-center justify-center">
+                      <img
+                        src="/nsdlogo.png"
+                        alt="NSD Logo Watermark"
+                        className="w-6 h-6 object-contain"
+                      />
+                    </div>
                   </div>
 
                   {/* Card Content */}

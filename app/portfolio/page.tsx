@@ -30,7 +30,7 @@ export default function PortfolioPage() {
       category: "video",
       client: "Keerthy's Daycare & Kindergarten",
       type: "Promotional & Marketing Videos",
-      image: "https://images.unsplash.com/photo-1502082553048-f009c37129b9?auto=format&fit=crop&w=800&q=80",
+      image: "/portfolio/daycare-promo.png",
       description: "High-retention promotional and marketing commercial video produced for Keerthy's Daycare & Kindergarten to boost enrollment and community engagement.",
       link: "https://tinyurl.com/portfoliobynsd",
       tech: ["Runway Gen-3", "Premiere Pro", "Midjourney XL"]
@@ -41,7 +41,7 @@ export default function PortfolioPage() {
       category: "video",
       client: "Shilpa Palli",
       type: "Nutrition & Wellness Video",
-      image: "https://images.unsplash.com/photo-1490645935967-10de6ba17061?auto=format&fit=crop&w=800&q=80",
+      image: "/portfolio/nutrition-wellness.png",
       description: "Professional introduction video highlighting personalized nutrition and wellness advice, styled with clean layouts and visual guides.",
       link: "https://tinyurl.com/portfoliobynsd",
       tech: ["Runway Gen-3", "Midjourney XL", "Premiere Pro"]
@@ -52,7 +52,7 @@ export default function PortfolioPage() {
       category: "video",
       client: "Santhosh Juluri",
       type: "AI Memorial Tribute Video",
-      image: "https://images.unsplash.com/photo-1516450360452-9312f5e86fc7?auto=format&fit=crop&w=800&q=80",
+      image: "/portfolio/tribute-memorial.png",
       description: "Deeply emotional tribute and legacy video utilizing AI-enhanced restored photographs and historical family records synchronized to custom soundscapes.",
       link: "https://tinyurl.com/portfoliobynsd",
       tech: ["Topaz AI", "ElevenLabs", "Audition", "Photoshop Neural"]
@@ -63,7 +63,7 @@ export default function PortfolioPage() {
       category: "websites",
       client: "NSD Labs",
       type: "Next.js Web App",
-      image: "https://images.unsplash.com/photo-1460925895917-afdab827c52f?auto=format&fit=crop&w=800&q=80",
+      image: "/portfolio/ecommerce-web.png",
       description: "Hand-coded, lightning-fast storefront styled with Tailwind and seamless page transitions.",
       link: "https://tinyurl.com/portfoliobynsd",
       tech: ["Next.js 15", "React 19", "Tailwind CSS", "Vercel Edge"]
@@ -74,7 +74,7 @@ export default function PortfolioPage() {
       category: "branding",
       client: "Global Logistics Brand",
       type: "Brand Guidelines",
-      image: "https://images.unsplash.com/photo-1561070791-26c113006238?auto=format&fit=crop&w=800&q=80",
+      image: "/portfolio/branding-identity.png",
       description: "Premium vector graphics, core typography pairs, and standard color guidelines book.",
       link: "https://tinyurl.com/portfoliobynsd",
       tech: ["Figma CC", "Adobe Illustrator"]
@@ -85,7 +85,7 @@ export default function PortfolioPage() {
       category: "posters",
       client: "Telangana Institution",
       type: "Poster Design",
-      image: "https://images.unsplash.com/photo-1542751371-adc38448a05e?auto=format&fit=crop&w=800&q=80",
+      image: "/portfolio/poster-design.png",
       description: "Bold layout, structured visual grid hierarchy, and print-optimized graphic design.",
       link: "https://tinyurl.com/portfoliobynsd",
       tech: ["Photoshop", "InDesign"]
@@ -96,7 +96,7 @@ export default function PortfolioPage() {
       category: "apps",
       client: "Local Retail Agency",
       type: "AI & API Automation",
-      image: "https://images.unsplash.com/photo-1611162617213-7d7a39e9b1d7?auto=format&fit=crop&w=800&q=80",
+      image: "/portfolio/whatsapp-automation.png",
       description: "Automated direct customer query triggers linking WhatsApp Business API with digital data sheets.",
       link: "https://tinyurl.com/portfoliobynsd",
       tech: ["Node.js", "WhatsApp API", "Supabase"]
@@ -181,6 +181,14 @@ export default function PortfolioPage() {
                   />
                   <div className="absolute top-4 left-4 bg-[#030303]/85 backdrop-blur-md border border-zinc-800 text-[10px] font-mono font-bold tracking-widest text-indigo-400 px-3 py-1.5 rounded-full uppercase z-10">
                     {work.type}
+                  </div>
+                  {/* Watermark logo overlay on bottom right corner, smaller, 60% opacity */}
+                  <div className="absolute bottom-3 right-3 z-10 pointer-events-none opacity-60 drop-shadow-md flex items-center justify-center">
+                    <img
+                      src="/nsdlogo.png"
+                      alt="NSD Logo Watermark"
+                      className="w-6 h-6 object-contain"
+                    />
                   </div>
                 </div>
 
