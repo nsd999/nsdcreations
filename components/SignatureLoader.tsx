@@ -139,7 +139,7 @@ export function SignatureLoader({ isHomepage = false, onComplete }: SignatureLoa
                 transition={{ duration: 1.1, repeat: Infinity, ease: "linear" }}
               />
               <ImageWithNSDFallback
-                src="/nsdlogo.png"
+                src="/nsdlogo-original.jpg"
                 alt="NSD Creations Official Logo"
                 className="w-full h-full object-contain"
                 fill
