@@ -379,7 +379,7 @@ export default function MeetTheFounder() {
               <div className="p-4 rounded-2xl bg-white/50 dark:bg-zinc-900/40 border border-zinc-200/50 dark:border-zinc-900/50">
                 <Award className="w-5 h-5 text-indigo-500 mb-2" />
                 <p className="text-[10px] font-mono text-zinc-400 uppercase">Delivered</p>
-                <p className="text-sm font-bold text-zinc-800 dark:text-zinc-100 mt-0.5">20+ Projects</p>
+                <p className="text-sm font-bold text-zinc-800 dark:text-zinc-100 mt-0.5">50+ Projects</p>
               </div>
 
               <div className="p-4 rounded-2xl bg-white/50 dark:bg-zinc-900/40 border border-zinc-200/50 dark:border-zinc-900/50">
