@@ -2,6 +2,7 @@
 
 import React, { useState, useEffect } from "react";
 import Link from "next/link";
+import { usePathname } from "next/navigation";
 import { Navbar } from "@/components/Navbar";
 import { Footer } from "@/components/Footer";
 import { ScrollReveal } from "@/components/ScrollReveal";
@@ -10,20 +11,26 @@ import { tipsData, Tip } from "@/lib/tips-data";
 
 const categories = ["All", "Branding", "Marketing", "Development", "Automation", "Finance", "Operations"];
 
-interface TipsPageProps {
-  initialCategory?: string;
-}
-
-export default function TipsPage({ initialCategory = "All" }: TipsPageProps) {
-  const [activeCategory, setActiveCategory] = useState(initialCategory);
+export default function TipsPage() {
+  const pathname = usePathname();
+  const [activeCategory, setActiveCategory] = useState("All");
   const [showMore, setShowMore] = useState(false);
   const [visibleCount, setVisibleCount] = useState(12);
 
   useEffect(() => {
-    if (initialCategory && categories.includes(initialCategory)) {
-      setActiveCategory(initialCategory);
+    if (pathname && pathname.startsWith("/tips/")) {
+      const parts = pathname.split("/");
+      if (parts.length >= 3) {
+        const urlCat = parts[2].toLowerCase();
+        const matchingCategory = categories.find(
+          (c) => c.toLowerCase() === urlCat
+        );
+        if (matchingCategory) {
+          setActiveCategory(matchingCategory);
+        }
+      }
     }
-  }, [initialCategory]);
+  }, [pathname]);
 
   const handleCategoryChange = (category: string) => {
     setActiveCategory(category);

@@ -16,8 +16,7 @@ export default async function DynamicTipsPage({ params }: { params: Promise<{ sl
     // Check if 1st segment is a category (e.g., /tips/branding, /tips/finance)
     const matchingCategory = categories.find((cat) => cat === rawParam);
     if (matchingCategory) {
-      const capitalizedCategory = matchingCategory.charAt(0).toUpperCase() + matchingCategory.slice(1);
-      return <TipsPage initialCategory={capitalizedCategory} />;
+      return <TipsPage />;
     }
 
     // Check if 1st segment is a tip slug (e.g., /tips/cash-flow-management-basics)
