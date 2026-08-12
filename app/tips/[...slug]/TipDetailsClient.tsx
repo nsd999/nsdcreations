@@ -59,11 +59,11 @@ export default function TipDetailsClient({ slug }: { slug: string }) {
   const categorySlug = tip.category.toLowerCase();
 
   return (
-    <main className="min-h-screen bg-black text-white selection:bg-indigo-500/30">
+    <main className="min-h-screen bg-transparent dark:bg-black text-zinc-900 dark:text-white selection:bg-indigo-500/30">
       <Navbar />
 
       <section className="pt-32 pb-16 relative">
-        <div className="absolute top-0 left-0 w-full h-[50vh] bg-gradient-to-b from-indigo-900/20 to-black pointer-events-none"></div>
+        <div className="absolute top-0 left-0 w-full h-[50vh] bg-gradient-to-b from-indigo-100/50 to-transparent dark:from-indigo-900/20 dark:to-black pointer-events-none"></div>
         
         <div className="container mx-auto px-4 relative z-10">
           <div className="max-w-5xl mx-auto">
@@ -72,7 +72,7 @@ export default function TipDetailsClient({ slug }: { slug: string }) {
             <div className="flex items-center justify-between mb-8">
               <Link 
                 href={`/tips/${categorySlug}`}
-                className="inline-flex items-center text-gray-400 hover:text-white transition-colors text-sm font-medium"
+                className="inline-flex items-center text-zinc-600 dark:text-gray-400 hover:text-indigo-600 dark:hover:text-white transition-colors text-sm font-medium"
               >
                 <ArrowLeft className="w-4 h-4 mr-2" />
                 Back to {tip.category} strategies
@@ -80,23 +80,23 @@ export default function TipDetailsClient({ slug }: { slug: string }) {
 
               <button
                 onClick={handleShare}
-                className="inline-flex items-center space-x-2 px-4 py-2 rounded-full bg-white/5 border border-white/10 hover:bg-white/10 text-gray-300 hover:text-white transition-all text-xs font-semibold"
+                className="inline-flex items-center space-x-2 px-4 py-2 rounded-full bg-black/5 dark:bg-white/5 border border-black/10 dark:border-white/10 hover:bg-black/10 dark:hover:bg-white/10 text-zinc-600 dark:text-gray-300 hover:text-indigo-600 dark:hover:text-white transition-all text-xs font-semibold"
               >
-                {copied ? <Check className="w-3.5 h-3.5 text-emerald-400" /> : <Share2 className="w-3.5 h-3.5 text-indigo-400" />}
+                {copied ? <Check className="w-3.5 h-3.5 text-emerald-500 dark:text-emerald-400" /> : <Share2 className="w-3.5 h-3.5 text-indigo-600 dark:text-indigo-400" />}
                 <span>{copied ? "Link Copied!" : "Share Tip"}</span>
               </button>
             </div>
 
             <ScrollReveal>
-              <div className="inline-block px-4 py-1.5 rounded-full border border-indigo-500/30 bg-indigo-500/10 text-indigo-400 text-xs font-mono font-bold uppercase tracking-wider mb-6">
+              <div className="inline-block px-4 py-1.5 rounded-full border border-indigo-500/30 bg-indigo-50 dark:bg-indigo-500/10 text-indigo-700 dark:text-indigo-400 text-xs font-mono font-bold uppercase tracking-wider mb-6">
                 {tip.category} Strategy
               </div>
               
-              <h1 className="text-3xl md:text-5xl lg:text-6xl font-bold mb-6 leading-tight">
+              <h1 className="text-3xl md:text-5xl lg:text-6xl font-bold mb-6 leading-tight text-zinc-900 dark:text-white">
                 {tip.title}
               </h1>
               
-              <p className="text-lg md:text-2xl text-gray-300 font-light mb-12 leading-relaxed border-l-4 border-indigo-500 pl-6">
+              <p className="text-lg md:text-2xl text-zinc-700 dark:text-gray-300 font-light mb-12 leading-relaxed border-l-4 border-indigo-500 pl-6">
                 {tip.excerpt}
               </p>
             </ScrollReveal>
@@ -105,21 +105,21 @@ export default function TipDetailsClient({ slug }: { slug: string }) {
             <div className="space-y-12 mb-16">
               {tip.content.map((section, index) => (
                 <ScrollReveal key={index} delay={index * 0.1}>
-                  <div className="prose prose-invert prose-lg max-w-none">
+                  <div className="prose prose-lg dark:prose-invert max-w-none">
                     {section.heading && (
-                      <h2 className="text-2xl md:text-3xl font-bold mb-6 text-indigo-300 flex items-center">
-                        <span className="w-2 h-2 rounded-full bg-indigo-400 mr-4 inline-block" />
+                      <h2 className="text-2xl md:text-3xl font-bold mb-6 text-indigo-700 dark:text-indigo-300 flex items-center">
+                        <span className="w-2 h-2 rounded-full bg-indigo-500 dark:bg-indigo-400 mr-4 inline-block" />
                         {section.heading}
                       </h2>
                     )}
                     {Array.isArray(section.text) ? (
-                      <div className="space-y-6 text-gray-300 leading-relaxed text-lg">
+                      <div className="space-y-6 text-zinc-700 dark:text-gray-300 leading-relaxed text-lg">
                         {section.text.map((paragraph, pIndex) => (
                           <p key={pIndex}>{paragraph}</p>
                         ))}
                       </div>
                     ) : (
-                      <p className="text-gray-300 leading-relaxed text-lg">
+                      <p className="text-zinc-700 dark:text-gray-300 leading-relaxed text-lg">
                         {section.text}
                       </p>
                     )}
@@ -130,31 +130,31 @@ export default function TipDetailsClient({ slug }: { slug: string }) {
 
             {/* Credentials & 3 Side-By-Side Action Buttons Section */}
             <ScrollReveal delay={0.5}>
-              <div className="bg-gradient-to-b from-indigo-950/40 via-white/5 to-black border border-indigo-500/30 p-8 md:p-12 rounded-3xl backdrop-blur-xl relative overflow-hidden my-16">
+              <div className="bg-gradient-to-b from-indigo-50/50 via-white/40 to-transparent dark:from-indigo-950/40 dark:via-white/5 dark:to-black border border-indigo-200 dark:border-indigo-500/30 p-8 md:p-12 rounded-3xl backdrop-blur-xl relative overflow-hidden my-16 shadow-lg shadow-indigo-900/5">
                 
                 {/* Header & Logo */}
-                <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-6 mb-8 border-b border-white/10 pb-6">
+                <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-6 mb-8 border-b border-black/10 dark:border-white/10 pb-6">
                   <div>
-                    <span className="text-xs font-mono font-bold text-indigo-400 uppercase tracking-widest block mb-1">
+                    <span className="text-xs font-mono font-bold text-indigo-600 dark:text-indigo-400 uppercase tracking-widest block mb-1">
                       {"// Partner With NSD Creations"}
                     </span>
-                    <h3 className="text-2xl md:text-3xl font-bold">Let Our Experts Handle This Strategy</h3>
+                    <h3 className="text-2xl md:text-3xl font-bold text-zinc-900 dark:text-white">Let Our Experts Handle This Strategy</h3>
                   </div>
 
                   <div className="flex items-center space-x-6 shrink-0">
-                    <a href="tel:+916303849852" className="flex items-center text-sm font-semibold text-gray-300 hover:text-indigo-400 transition-colors">
-                      <Phone className="w-4 h-4 mr-2.5 text-indigo-400" />
+                    <a href="tel:+916303849852" className="flex items-center text-sm font-semibold text-zinc-700 dark:text-gray-300 hover:text-indigo-600 dark:hover:text-indigo-400 transition-colors">
+                      <Phone className="w-4 h-4 mr-2.5 text-indigo-600 dark:text-indigo-400" />
                       +91 63038 49852
                     </a>
                     
-                    <a href="mailto:nsd.creations.official@gmail.com" className="hidden sm:flex items-center text-sm font-semibold text-gray-300 hover:text-indigo-400 transition-colors">
-                      <Mail className="w-4 h-4 mr-2.5 text-indigo-400" />
+                    <a href="mailto:nsd.creations.official@gmail.com" className="hidden sm:flex items-center text-sm font-semibold text-zinc-700 dark:text-gray-300 hover:text-indigo-600 dark:hover:text-indigo-400 transition-colors">
+                      <Mail className="w-4 h-4 mr-2.5 text-indigo-600 dark:text-indigo-400" />
                       nsd.creations.official@gmail.com
                     </a>
                   </div>
                 </div>
 
-                <p className="text-gray-300 text-sm md:text-base leading-relaxed mb-8 max-w-3xl">
+                <p className="text-zinc-700 dark:text-gray-300 text-sm md:text-base leading-relaxed mb-8 max-w-3xl">
                   Don&apos;t waste months trying to master this yourself. Collaborate directly with NSD Creations to get custom software engineering, AI video production, and high-conversion branding executed seamlessly.
                 </p>
 
