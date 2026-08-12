@@ -1,8 +1,10 @@
 import fs from 'fs';
 
 async function run() {
+  // Pixelcut API Key provided by you
   const apiKey = 'sk_d69efdccbdb041c287019b755b5d43e2';
-  const url = 'https://api.developer.pixelcut.ai/v1/remove-background';
+  // Pixelcut Upscaler Endpoint
+  const url = 'https://api.developer.pixelcut.ai/v1/upscale';
 
   const filesToProcess = [
     'public/icon.png',
@@ -17,7 +19,7 @@ async function run() {
       continue;
     }
     
-    console.log(`Processing ${file}...`);
+    console.log(`Processing enhancement for ${file}...`);
     
     try {
       const buffer = fs.readFileSync(file);
@@ -25,7 +27,7 @@ async function run() {
       
       const formData = new FormData();
       formData.append('image', blob, file.split('/').pop());
-      formData.append('format', 'png');
+      formData.append('scale', '2'); 
       
       const res = await fetch(url, {
         method: 'POST',
@@ -38,7 +40,7 @@ async function run() {
       
       const contentType = res.headers.get('content-type');
       if (res.ok && contentType && contentType.includes('image')) {
-          console.log(`Successfully removed background for ${file}`);
+          console.log(`Successfully enhanced ${file}`);
           const imgBuffer = await res.arrayBuffer();
           fs.writeFileSync(file, Buffer.from(imgBuffer));
           console.log(`Saved enhanced file to ${file}`);
