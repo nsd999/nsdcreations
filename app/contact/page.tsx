@@ -21,26 +21,16 @@ export default function ContactPage() {
   const [formData, setFormData] = useState({
     name: "",
     email: "",
+    countryCode: "+91",
     phone: "",
     businessName: "",
     service: "website-development",
     message: ""
   });
 
-  const [submissions, setSubmissions] = useState<any[]>([]);
+  const [loading, setLoading] = useState(false);
   const [submitted, setSubmitted] = useState(false);
-
-  // Load from localStorage on client render
-  useEffect(() => {
-    const saved = localStorage.getItem("nsd_contact_submissions");
-    if (saved) {
-      try {
-        setSubmissions(JSON.parse(saved));
-      } catch (e) {
-        console.error(e);
-      }
-    }
-  }, []);
+  const [errorMsg, setErrorMsg] = useState("");
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
     setFormData({
@@ -49,40 +39,55 @@ export default function ContactPage() {
     });
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!formData.name || !formData.email || !formData.message) return;
 
-    const newSub = {
-      ...formData,
-      id: Date.now(),
-      date: new Date().toLocaleString()
-    };
+    // Validate Phone if provided
+    if (formData.phone && !/^\d{10}$/.test(formData.phone)) {
+      setErrorMsg("Phone number must be exactly 10 digits");
+      return;
+    }
 
-    const updated = [newSub, ...submissions];
-    setSubmissions(updated);
-    localStorage.setItem("nsd_contact_submissions", JSON.stringify(updated));
-    setSubmitted(true);
+    setLoading(true);
+    setErrorMsg("");
 
-    // Reset fields except service
-    setFormData({
-      name: "",
-      email: "",
-      phone: "",
-      businessName: "",
-      service: formData.service,
-      message: ""
-    });
+    try {
+      const response = await fetch("/api/contact", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(formData),
+      });
 
-    // Clear confirmation after 5 seconds
-    setTimeout(() => {
-      setSubmitted(false);
-    }, 5000);
-  };
+      const data = await response.json();
 
-  const clearSubmissions = () => {
-    localStorage.removeItem("nsd_contact_submissions");
-    setSubmissions([]);
+      if (!response.ok) {
+        throw new Error(data.error || "Failed to submit inquiry");
+      }
+
+      setSubmitted(true);
+      // Reset fields except service
+      setFormData({
+        name: "",
+        email: "",
+        countryCode: "+91",
+        phone: "",
+        businessName: "",
+        service: formData.service,
+        message: ""
+      });
+
+      // Clear confirmation after 5 seconds
+      setTimeout(() => {
+        setSubmitted(false);
+      }, 5000);
+    } catch (err: any) {
+      setErrorMsg(err.message || "An unexpected error occurred");
+    } finally {
+      setLoading(false);
+    }
   };
 
   const whatsappUrl = `https://wa.me/916303849852?text=${encodeURIComponent(
@@ -109,7 +114,7 @@ export default function ContactPage() {
             </span>
           </h1>
           <p className="text-zinc-500 dark:text-zinc-400 text-sm md:text-base leading-relaxed">
-            Have an idea or operational block? Share details below to store your submission securely or initiate a direct chat session with Sai Dheeraj Nalkari immediately.
+            Have an idea or operational block? Share details below to submit your request securely or initiate a direct chat session with Sai Dheeraj Nalkari immediately.
           </p>
         </ScrollReveal>
       </section>
@@ -128,7 +133,13 @@ export default function ContactPage() {
             {submitted && (
               <div className="mb-6 p-4 rounded-2xl bg-emerald-500/10 border border-emerald-500/20 text-emerald-600 dark:text-emerald-400 text-xs md:text-sm font-semibold flex items-center">
                 <CheckCircle className="w-5 h-5 mr-2 shrink-0" />
-                <span>Thank you! Your project request was saved in secure local state successfully.</span>
+                <span>Thank you! Your project request has been submitted successfully. We will reach out shortly.</span>
+              </div>
+            )}
+
+            {errorMsg && (
+              <div className="mb-6 p-4 rounded-2xl bg-red-500/10 border border-red-500/20 text-red-600 dark:text-red-400 text-xs md:text-sm font-semibold flex items-center">
+                <span>{errorMsg}</span>
               </div>
             )}
 
@@ -185,14 +196,28 @@ export default function ContactPage() {
                   <label htmlFor="phone" className="block text-[11px] font-mono font-bold tracking-wider text-zinc-400 dark:text-zinc-500 uppercase mb-2">
                     Phone Number
                   </label>
-                  <input
-                    type="text"
-                    id="phone"
-                    value={formData.phone}
-                    onChange={handleChange}
-                    placeholder="e.g. +91 98765 43210"
-                    className="w-full px-4.5 py-3.5 rounded-2xl bg-zinc-50 dark:bg-zinc-950/60 border border-zinc-200 dark:border-zinc-900/60 text-xs md:text-sm text-zinc-900 dark:text-zinc-100 placeholder-zinc-400 focus:outline-none focus:border-indigo-500"
-                  />
+                  <div className="flex space-x-2">
+                    <select
+                      id="countryCode"
+                      value={formData.countryCode}
+                      onChange={handleChange}
+                      className="w-1/3 px-4.5 py-3.5 rounded-2xl bg-zinc-50 dark:bg-zinc-950/60 border border-zinc-200 dark:border-zinc-900/60 text-xs md:text-sm text-zinc-900 dark:text-zinc-100 focus:outline-none focus:border-indigo-500"
+                    >
+                      <option value="+91">+91 (IN)</option>
+                      <option value="+1">+1 (US)</option>
+                      <option value="+44">+44 (UK)</option>
+                      <option value="+971">+971 (AE)</option>
+                      <option value="+61">+61 (AU)</option>
+                    </select>
+                    <input
+                      type="text"
+                      id="phone"
+                      value={formData.phone}
+                      onChange={handleChange}
+                      placeholder="9876543210"
+                      className="w-2/3 px-4.5 py-3.5 rounded-2xl bg-zinc-50 dark:bg-zinc-950/60 border border-zinc-200 dark:border-zinc-900/60 text-xs md:text-sm text-zinc-900 dark:text-zinc-100 placeholder-zinc-400 focus:outline-none focus:border-indigo-500"
+                    />
+                  </div>
                 </div>
 
                 <div>
@@ -251,9 +276,10 @@ export default function ContactPage() {
               <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-4 pt-2">
                 <button
                   type="submit"
-                  className="inline-flex items-center justify-center px-6 py-3.5 rounded-full text-xs font-bold tracking-widest uppercase bg-indigo-600 hover:bg-indigo-700 text-white shadow-lg active:scale-95 transition-all text-center"
+                  disabled={loading}
+                  className="inline-flex items-center justify-center px-6 py-3.5 rounded-full text-xs font-bold tracking-widest uppercase bg-indigo-600 hover:bg-indigo-700 disabled:opacity-50 disabled:cursor-not-allowed text-white shadow-lg active:scale-95 transition-all text-center"
                 >
-                  Save Local Request
+                  {loading ? "Submitting..." : "Submit Inquiry"}
                   <ArrowRight className="w-4 h-4 ml-2" />
                 </button>
                 <Link
@@ -316,46 +342,6 @@ export default function ContactPage() {
             </div>
           </div>
 
-          {/* Local Saved Submissions Log */}
-          <div className="p-6 rounded-3xl bg-white dark:bg-[#09090b] border border-zinc-200/60 dark:border-zinc-900/60 shadow-sm flex flex-col justify-between">
-            <div>
-              <div className="flex items-center justify-between mb-4">
-                <h3 className="font-display font-bold text-sm text-zinc-900 dark:text-zinc-100 flex items-center">
-                  <Database className="w-4 h-4 text-indigo-500 mr-2" />
-                  Your Local Stored Logs ({submissions.length})
-                </h3>
-                {submissions.length > 0 && (
-                  <button
-                    onClick={clearSubmissions}
-                    className="text-[10px] font-mono text-red-500 hover:text-red-600 flex items-center font-semibold"
-                  >
-                    <Trash2 className="w-3 h-3 mr-1" />
-                    Clear Logs
-                  </button>
-                )}
-              </div>
-
-              {submissions.length === 0 ? (
-                <p className="text-zinc-400 text-xs italic py-4">
-                  No local submissions stored in this browser session yet. Submit the form to record an entry.
-                </p>
-              ) : (
-                <div className="space-y-3 max-h-60 overflow-y-auto pr-1">
-                  {submissions.map((s) => (
-                    <div key={s.id} className="p-3 rounded-xl bg-zinc-50 dark:bg-zinc-950/80 border border-zinc-200/50 dark:border-zinc-900/50 text-xs">
-                      <div className="flex items-center justify-between font-mono text-[10px] text-indigo-500 mb-1">
-                        <span>{s.date}</span>
-                        <span className="uppercase font-bold">{s.service}</span>
-                      </div>
-                      <p className="font-bold text-zinc-800 dark:text-zinc-200">{s.name} ({s.email})</p>
-                      {s.businessName && <p className="text-zinc-500 text-[11px]">Brand: {s.businessName}</p>}
-                      <p className="text-zinc-500 dark:text-zinc-400 text-[11px] mt-1 line-clamp-2">{s.message}</p>
-                    </div>
-                  ))}
-                </div>
-              )}
-            </div>
-          </div>
 
         </ScrollReveal>
       </section>
