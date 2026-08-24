@@ -100,8 +100,11 @@ export default async function ServicePricingPage({ params }: Props) {
                   
                   <div className="p-8 flex-1 flex flex-col">
                     <h3 className="font-display font-bold text-2xl text-zinc-900 dark:text-zinc-50 mb-2">{pkg.name}</h3>
-                    <p className="text-zinc-500 dark:text-zinc-400 text-sm mb-6 min-h-[40px]">{pkg.description}</p>
+                    {pkg.idealFor && (
+                      <p className="text-zinc-500 dark:text-zinc-400 text-sm mb-6 min-h-[40px]">{pkg.idealFor}</p>
+                    )}
                     
+
                     <div className="mb-8 pb-8 border-b border-zinc-100 dark:border-zinc-800">
                       <div className="flex items-end gap-2">
                         <span className="font-display font-bold text-4xl text-zinc-900 dark:text-white">
