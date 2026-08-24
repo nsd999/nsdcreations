@@ -108,11 +108,13 @@ export default async function ServicePricingPage({ params }: Props) {
                     <div className="mb-8 pb-8 border-b border-zinc-100 dark:border-zinc-800">
                       <div className="flex items-end gap-2">
                         <span className="font-display font-bold text-4xl text-zinc-900 dark:text-white">
-                          ₹{pkg.priceValue.toLocaleString('en-IN')}
+                          {pkg.price}
                         </span>
-                        <span className="text-zinc-500 dark:text-zinc-400 mb-1 font-medium">
-                          /{pkg.pricePeriod}
-                        </span>
+                        {service.pricingPeriod && (
+                          <span className="text-zinc-500 dark:text-zinc-400 mb-1 font-medium">
+                            {service.pricingPeriod}
+                          </span>
+                        )}
                       </div>
                     </div>
                     
@@ -161,9 +163,8 @@ export default async function ServicePricingPage({ params }: Props) {
                   </div>
                   <div>
                     <h4 className="font-bold text-zinc-900 dark:text-zinc-100 mb-1">{addon.name}</h4>
-                    <p className="text-xs text-zinc-500 dark:text-zinc-400 mb-2 line-clamp-2">{addon.description}</p>
                     <div className="font-mono text-sm font-bold text-indigo-600 dark:text-indigo-400">
-                      + ₹{addon.priceValue.toLocaleString('en-IN')}
+                      + {addon.price}
                     </div>
                   </div>
                 </div>

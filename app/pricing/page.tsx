@@ -124,10 +124,8 @@ export default function PricingPage() {
                 
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
                   {services.map((service, index) => {
-                    // Get lowest price from packages
-                    const lowestPrice = Math.min(...service.packages.map(p => p.priceValue).filter(v => v !== null) as number[]);
-                    const formattedPrice = lowestPrice === Infinity ? "Custom" : `₹${lowestPrice.toLocaleString('en-IN')}`;
-                    const defaultPeriod = service.packages[0]?.pricePeriod || "project";
+                    const formattedPrice = service.startingPrice === "Custom" ? "Custom" : `${service.currency}${service.startingPrice}`;
+                    const defaultPeriod = service.pricingPeriod || "";
                     
                     return (
                       <ScrollReveal key={service.id} delay={(index % 4) * 0.1} direction="up">
