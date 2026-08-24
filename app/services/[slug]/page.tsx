@@ -19,7 +19,7 @@ import {
 
 export default function ServiceDetailPage({ params }: { params: Promise<{ slug: string }> }) {
   const { slug } = use(params);
-  const service = servicesData[slug];
+  const service = servicesData.find((s) => s.slug === slug);
 
   const [faqOpen, setFaqOpen] = useState<number | null>(null);
 
