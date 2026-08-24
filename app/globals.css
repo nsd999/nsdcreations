@@ -127,7 +127,7 @@ select,
 }
 
 .dark .grid-background {
-  background-image: radial-gradient(rgba(168, 85, 247, 0.04) 1px, transparent 1px);
+  background-image: radial-gradient(rgba(255, 255, 255, 0.03) 1px, transparent 1px);
   opacity: 0.8;
 }
 
@@ -162,8 +162,8 @@ select,
 }
 
 .dark .premium-glass-hover:hover {
-  border-color: rgba(168, 85, 247, 0.2);
-  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.8), 0 0 15px rgba(168, 85, 247, 0.1);
+  border-color: rgba(255, 255, 255, 0.1);
+  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.8), 0 0 15px rgba(255, 255, 255, 0.03);
 }
 
 /* Luxury Glow System */
@@ -172,7 +172,7 @@ select,
 }
 
 .dark .glow-indigo {
-  box-shadow: 0 0 50px rgba(168, 85, 247, 0.15);
+  box-shadow: 0 0 50px rgba(255, 255, 255, 0.03);
 }
 
 /* Pulse slower animations */
