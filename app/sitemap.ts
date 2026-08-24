@@ -1,5 +1,6 @@
 import { MetadataRoute } from 'next';
 import { tipsData } from '@/lib/tips-data';
+import { servicesData } from '@/lib/services-data';
 
 export default function sitemap(): MetadataRoute.Sitemap {
   const baseUrl = 'https://nsdcreations.vercel.app';
@@ -21,7 +22,15 @@ export default function sitemap(): MetadataRoute.Sitemap {
     priority: route === '' ? 1 : 0.8,
   }));
 
-  // Categories
+  // Individual pricing/service pages — all 16 dynamic routes
+  const pricingRoutes = servicesData.map((service) => ({
+    url: `${baseUrl}/pricing/${service.slug}`,
+    lastModified: new Date(),
+    changeFrequency: 'weekly' as const,
+    priority: 0.9,
+  }));
+
+  // Tip categories
   const categories = ["branding", "marketing", "development", "automation", "finance", "operations"].map((category) => ({
     url: `${baseUrl}/tips/${category}`,
     lastModified: new Date(),
@@ -37,5 +46,5 @@ export default function sitemap(): MetadataRoute.Sitemap {
     priority: 0.6,
   }));
 
-  return [...routes, ...categories, ...tips];
+  return [...routes, ...pricingRoutes, ...categories, ...tips];
 }

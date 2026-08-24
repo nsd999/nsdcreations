@@ -21,10 +21,8 @@ import {
   Share2, 
   Settings, 
   Workflow, 
-  ChevronRight,
   ArrowRight,
   Search,
-  Image
 } from "lucide-react";
 
 const CATEGORIES = ["All", "Creative", "Branding", "Marketing", "Automation", "Technology"];
