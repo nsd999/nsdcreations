@@ -74,11 +74,11 @@ export default function ServiceDetailPage({ params }: { params: Promise<{ slug: 
           </span>
 
           <h1 className="font-display font-bold text-3xl sm:text-4xl md:text-5xl text-zinc-900 dark:text-zinc-50 tracking-tight leading-tight">
-            {service.title}
+            {service.name}
           </h1>
 
           <p className="text-zinc-600 dark:text-zinc-300 font-mono text-sm md:text-base leading-relaxed max-w-2xl font-semibold -mt-1 text-indigo-600 dark:text-indigo-400">
-            &bull; {service.tagline}
+            &bull; {service.shortDescription}
           </p>
         </div>
       </section>
@@ -96,7 +96,7 @@ export default function ServiceDetailPage({ params }: { params: Promise<{ slug: 
               Service Overview
             </h2>
             <p className="text-zinc-600 dark:text-zinc-400 text-sm md:text-base leading-relaxed bg-white dark:bg-[#09090b] p-6 rounded-3xl border border-zinc-200/50 dark:border-zinc-900/50">
-              {service.overview}
+              {service.longDescription}
             </p>
           </div>
 
@@ -107,7 +107,7 @@ export default function ServiceDetailPage({ params }: { params: Promise<{ slug: 
               Key Benefits & Value
             </h2>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              {service.benefits.map((benefit, i) => (
+              {service.features.map((benefit, i) => (
                 <div 
                   key={i} 
                   className="p-5 rounded-2xl bg-white dark:bg-[#09090b] border border-zinc-200/60 dark:border-zinc-900/60 shadow-sm flex items-start"
@@ -185,7 +185,7 @@ export default function ServiceDetailPage({ params }: { params: Promise<{ slug: 
               Key Deliverables
             </h3>
             <ul className="space-y-3">
-              {service.deliverables.map((del, i) => (
+              {service.packages[1]?.features.slice(0, 5).map((del, i) => (
                 <li key={i} className="flex items-start text-xs md:text-sm text-zinc-600 dark:text-zinc-400 leading-relaxed">
                   <CheckCircle className="w-4 h-4 text-emerald-500 mr-2 shrink-0 mt-0.5" />
                   <span>{del}</span>
@@ -200,7 +200,7 @@ export default function ServiceDetailPage({ params }: { params: Promise<{ slug: 
               Technologies We Use
             </h3>
             <div className="flex flex-wrap gap-2">
-              {service.technologies.map((tech) => (
+              {service.seo.keywords.slice(0, 6).map((tech) => (
                 <span 
                   key={tech} 
                   className="px-3 py-1.5 rounded-lg bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 text-[11px] font-mono text-zinc-700 dark:text-zinc-300 font-semibold shadow-sm"
@@ -216,7 +216,7 @@ export default function ServiceDetailPage({ params }: { params: Promise<{ slug: 
             <div>
               <h3 className="font-display font-bold text-lg leading-tight">Ready to start this project?</h3>
               <p className="text-indigo-100 text-xs mt-2 leading-relaxed">
-                Contact us today to receive a precise quote contract and project scope for {service.title}.
+                Contact us today to receive a precise quote contract and project scope for {service.name}.
               </p>
             </div>
             <Link
@@ -246,10 +246,10 @@ export default function ServiceDetailPage({ params }: { params: Promise<{ slug: 
             >
               <div>
                 <h4 className="font-display font-bold text-sm text-zinc-900 dark:text-zinc-100 mb-1.5 group-hover:text-indigo-600 dark:group-hover:text-indigo-400 transition-colors">
-                  {rel.title}
+                  {rel.name}
                 </h4>
                 <p className="text-zinc-500 dark:text-zinc-400 text-xs leading-relaxed line-clamp-2">
-                  {rel.description}
+                  {rel.shortDescription}
                 </p>
               </div>
               <span className="text-[10px] font-mono text-indigo-500 dark:text-indigo-400 font-bold mt-4 block">
