@@ -207,7 +207,7 @@ export default function PricingPage() {
               Need a Custom Solution?
             </h2>
             <p className="text-zinc-400 text-lg mb-10 max-w-2xl leading-relaxed">
-              Looking for a tailored package or enterprise solution? Let's discuss your specific requirements and build a strategy that scales with you.
+              Looking for a tailored package or enterprise solution? Let&apos;s discuss your specific requirements and build a strategy that scales with you.
             </p>
             <div className="flex flex-col sm:flex-row items-center gap-4">
               <Link

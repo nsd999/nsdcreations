@@ -20,7 +20,7 @@ export default function NotFound() {
         </h1>
         
         <p className="text-zinc-500 dark:text-zinc-400 text-lg max-w-md mx-auto mb-10">
-          The pricing plan or service you're looking for doesn't exist or has been moved. 
+          The pricing plan or service you&apos;re looking for doesn&apos;t exist or has been moved. 
           Please check our complete list of services.
         </p>
         

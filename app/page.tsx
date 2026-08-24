@@ -434,10 +434,10 @@ export default function HomePage() {
                           {getServiceIcon(service.slug)}
                         </div>
                         <h3 className="font-display font-bold text-base text-zinc-900 dark:text-zinc-100 mb-2 group-hover:text-indigo-600 dark:group-hover:text-indigo-400 transition-colors">
-                          {service.title}
+                          {service.name}
                         </h3>
                         <p className="text-zinc-500 dark:text-zinc-400 text-xs leading-relaxed line-clamp-3">
-                          {service.description}
+                          {service.shortDescription}
                         </p>
                       </div>
                       <div className="mt-6 pt-4 border-t border-zinc-100 dark:border-zinc-900/80 flex items-center text-xs font-semibold text-indigo-500 dark:text-indigo-400 group-hover:translate-x-1 transition-transform">
@@ -977,7 +977,7 @@ export default function HomePage() {
                         >
                           {Object.values(servicesData).map((srv) => (
                             <option key={srv.slug} value={srv.slug}>
-                              {srv.title}
+                              {srv.name}
                             </option>
                           ))}
                         </select>
