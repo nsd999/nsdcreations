@@ -124,7 +124,7 @@ export default function ContactPage() {
         <ScrollReveal direction="right" className="lg:col-span-7">
           <div className="p-8 rounded-3xl bg-white dark:bg-[#09090b] border border-zinc-200/60 dark:border-zinc-900/60 shadow-sm relative">
             <h2 className="font-display font-bold text-xl text-zinc-900 dark:text-zinc-100 mb-6 flex items-center">
-              <Sparkles className="w-5 h-5 text-indigo-500 mr-2" />
+              <MessageSquare className="w-5 h-5 text-indigo-500 mr-2" />
               Project Enquiry Form
             </h2>
 

@@ -327,7 +327,7 @@ export default function HomePage() {
             {/* Vision Card */}
             <div className="p-8 rounded-3xl bg-white dark:bg-[#09090b] border border-zinc-200/60 dark:border-zinc-900/60 shadow-sm flex flex-col space-y-4">
               <div className="w-10 h-10 rounded-xl bg-indigo-500/10 flex items-center justify-center">
-                <Sparkles className="w-5 h-5 text-indigo-500" />
+                <Award className="w-5 h-5 text-indigo-500" />
               </div>
               <h3 className="font-display font-bold text-lg text-zinc-900 dark:text-zinc-50">Our Vision</h3>
               <p className="text-zinc-500 dark:text-zinc-400 text-xs md:text-sm leading-relaxed">
