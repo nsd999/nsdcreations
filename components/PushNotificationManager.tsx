@@ -45,22 +45,43 @@ export function PushNotificationManager() {
     };
     navigator.serviceWorker.addEventListener('message', handleSWMessage);
 
-    // Check permission status
-    if (Notification.permission === 'granted') {
-      setIsSubscribed(true);
-    } else if (Notification.permission === 'default') {
-      // Show prompt after a slight delay for better UX
-      const timer = setTimeout(() => {
-        const hasSeenPrompt = localStorage.getItem('hasSeenPushPrompt');
-        if (!hasSeenPrompt) {
-          setShowPrompt(true);
+    const checkSubscription = async () => {
+      if (Notification.permission === 'granted') {
+        // If they already allowed it (e.g. from Chrome settings), make sure they are actually subscribed to the PushManager!
+        try {
+          const registration = await navigator.serviceWorker.ready;
+          const subscription = await registration.pushManager.getSubscription();
+          if (!subscription) {
+            // They allowed it but aren't subscribed yet, so subscribe them silently
+            const vapidPublicKey = process.env.NEXT_PUBLIC_VAPID_PUBLIC_KEY;
+            if (vapidPublicKey) {
+              const newSub = await registration.pushManager.subscribe({
+                userVisibleOnly: true,
+                applicationServerKey: urlBase64ToUint8Array(vapidPublicKey),
+              });
+              await fetch('/api/subscribe', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(newSub),
+              });
+            }
+          }
+          setIsSubscribed(true);
+        } catch (error) {
+          console.error('Error during silent subscription check:', error);
         }
-      }, 3000);
-      return () => {
-        clearTimeout(timer);
-        navigator.serviceWorker.removeEventListener('message', handleSWMessage);
-      };
-    }
+      } else if (Notification.permission === 'default') {
+        // Show our custom prompt immediately so they don't miss it
+        const timer = setTimeout(() => {
+          setShowPrompt(true);
+        }, 1000);
+        return () => {
+          clearTimeout(timer);
+        };
+      }
+    };
+
+    checkSubscription();
 
     return () => {
       navigator.serviceWorker.removeEventListener('message', handleSWMessage);
