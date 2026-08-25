@@ -177,7 +177,7 @@ export default function ServicesPage() {
                   </div>
                   <div className="relative z-10 mt-auto flex flex-col gap-2">
                     <Link
-                      href={`/pricing/${service.slug}`}
+                      href={`/services/${service.slug}`}
                       className="flex items-center justify-center w-full py-2.5 rounded-xl bg-zinc-100 hover:bg-zinc-200 dark:bg-zinc-800 dark:hover:bg-zinc-700 text-zinc-900 dark:text-zinc-100 text-xs font-bold uppercase tracking-wider transition-colors"
                     >
                       Explore Service
