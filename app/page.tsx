@@ -150,9 +150,29 @@ export default function HomePage() {
     }
   ];
 
-  const handleFormSubmit = (e: React.FormEvent) => {
+  const handleFormSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setFormSubmitted(true);
+    
+    // Submit to database for Admin Panel tracking
+    try {
+      await fetch('/api/contact', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          name: formData.name,
+          email: formData.email,
+          countryCode: '+91', // Defaulting as form handles full phone
+          phone: formData.phone,
+          businessName: '',
+          service: formData.service,
+          message: formData.message,
+        }),
+      });
+    } catch (err) {
+      console.error('Submission error:', err);
+    }
+
     // Open a direct WhatsApp pre-filled link for ease of immediate client action
     const text = `Hello Sai Dheeraj! I am contacting you from the NSD Creations website. My name is ${formData.name} (${formData.email}). I am interested in ${formData.service} for my project. Brief: ${formData.message}`;
     const encodedText = encodeURIComponent(text);
@@ -919,32 +939,32 @@ export default function HomePage() {
             </div>
 
             <div className="space-y-4">
-              <div className="flex items-start space-x-4">
-                <div className="w-10 h-10 rounded-xl bg-indigo-500/5 dark:bg-indigo-400/5 border border-indigo-500/10 dark:border-indigo-400/10 flex items-center justify-center text-indigo-500 shrink-0">
+              <a href="tel:+916303849852" className="flex items-start space-x-4 group cursor-pointer">
+                <div className="w-10 h-10 rounded-xl bg-indigo-500/5 dark:bg-indigo-400/5 border border-indigo-500/10 dark:border-indigo-400/10 flex items-center justify-center text-indigo-500 shrink-0 group-hover:bg-indigo-500/10 transition-colors">
                   <Phone className="w-4 h-4" />
                 </div>
                 <div>
                   <p className="text-[10px] font-mono text-zinc-400 uppercase tracking-widest">Call / WhatsApp</p>
-                  <p className="text-sm font-semibold text-zinc-950 dark:text-zinc-50 mt-0.5">+91 63038 49852</p>
+                  <p className="text-sm font-semibold text-zinc-950 dark:text-zinc-50 mt-0.5 group-hover:text-indigo-500 transition-colors">+91 63038 49852</p>
                 </div>
-              </div>
+              </a>
 
-              <div className="flex items-start space-x-4">
-                <div className="w-10 h-10 rounded-xl bg-indigo-500/5 dark:bg-indigo-400/5 border border-indigo-500/10 dark:border-indigo-400/10 flex items-center justify-center text-indigo-500 shrink-0">
+              <a href="mailto:nsd.creations.official@gmail.com" className="flex items-start space-x-4 group cursor-pointer">
+                <div className="w-10 h-10 rounded-xl bg-indigo-500/5 dark:bg-indigo-400/5 border border-indigo-500/10 dark:border-indigo-400/10 flex items-center justify-center text-indigo-500 shrink-0 group-hover:bg-indigo-500/10 transition-colors">
                   <Mail className="w-4 h-4" />
                 </div>
                 <div>
                   <p className="text-[10px] font-mono text-zinc-400 uppercase tracking-widest">Business Email</p>
-                  <p className="text-sm font-semibold text-zinc-950 dark:text-zinc-50 mt-0.5">nsd.creations.official@gmail.com</p>
+                  <p className="text-sm font-semibold text-zinc-950 dark:text-zinc-50 mt-0.5 group-hover:text-indigo-500 transition-colors">nsd.creations.official@gmail.com</p>
                 </div>
-              </div>
+              </a>
 
               <div className="flex items-start space-x-4">
                 <div className="w-10 h-10 rounded-xl bg-indigo-500/5 dark:bg-indigo-400/5 border border-indigo-500/10 dark:border-indigo-400/10 flex items-center justify-center text-indigo-500 shrink-0">
                   <MapPin className="w-4 h-4" />
                 </div>
                 <div>
-                  <p className="text-[10px] font-mono text-zinc-400 uppercase tracking-widest">HQ Location</p>
+                  <p className="text-[10px] font-mono text-zinc-400 uppercase tracking-widest">Service Area</p>
                   <p className="text-sm font-semibold text-zinc-950 dark:text-zinc-50 mt-0.5">Hyderabad, Telangana, India</p>
                 </div>
               </div>
@@ -958,17 +978,6 @@ export default function HomePage() {
                   <p className="text-sm font-semibold text-zinc-950 dark:text-zinc-50 mt-0.5">09:00 AM - 08:00 PM (IST)</p>
                 </div>
               </div>
-            </div>
-
-            {/* Google maps iframe embedding - completely premium layout */}
-            <div className="w-full aspect-[16/9] rounded-2xl overflow-hidden border border-zinc-200 dark:border-zinc-800 shadow-inner">
-              <iframe
-                src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d243647.34203387878!2d78.26795908611145!3d17.4118335198038!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3bcb99daeaebd2c7%3A0xae93b78022c0258a!2sHyderabad%2C%20Telangana%2C%20India!5e0!3m2!1sen!2sus!4v1710000000000!5m2!1sen!2sus"
-                className="w-full h-full border-0 grayscale dark:invert"
-                allowFullScreen
-                loading="lazy"
-                referrerPolicy="no-referrer-when-downgrade"
-              />
             </div>
           </ScrollReveal>
 
@@ -1057,10 +1066,10 @@ export default function HomePage() {
                       </span>
                       <button
                         type="submit"
-                        className="inline-flex items-center justify-center px-6.5 py-4 rounded-xl text-xs font-bold tracking-widest uppercase bg-indigo-600 hover:bg-indigo-700 text-white shadow-lg active:scale-97 transition-all"
+                        className="inline-flex items-center justify-center px-8 py-4 rounded-xl text-xs font-bold tracking-widest uppercase bg-indigo-600 hover:bg-indigo-700 text-white shadow-lg active:scale-95 transition-all whitespace-nowrap shrink-0"
                       >
                         Submit & Launch WhatsApp
-                        <ArrowRight className="w-4 h-4 ml-2" />
+                        <ArrowRight className="w-4 h-4 ml-2 shrink-0" />
                       </button>
                     </div>
                   </motion.form>
