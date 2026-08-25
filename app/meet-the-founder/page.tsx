@@ -436,10 +436,13 @@ export default function MeetTheFounder() {
             <h2 className="font-display font-bold text-3xl text-zinc-900 dark:text-zinc-50 tracking-tight">The Entrepreneurial Journey</h2>
           </ScrollReveal>
 
-          <div ref={containerRef} className="relative border-l border-zinc-200 dark:border-zinc-800 ml-3 md:ml-6 pl-6 md:pl-10 space-y-12 py-4">
-            {/* Active Drawing Line Overlay */}
+          <div ref={containerRef} className="relative ml-3 md:ml-6 pl-6 md:pl-10 space-y-12 py-4">
+            {/* Premium Dashed Background Track */}
+            <div className="absolute left-0 top-0 bottom-0 w-[2px] border-l-2 border-dashed border-zinc-200 dark:border-zinc-800" />
+
+            {/* Active Drawing Line Overlay - Creative Laser Style */}
             <motion.div 
-              className="absolute -left-[1px] top-0 w-[2px] bg-indigo-500 origin-top pointer-events-none"
+              className="absolute left-[0px] top-0 w-[2px] bg-gradient-to-b from-indigo-400 via-purple-500 to-indigo-600 origin-top pointer-events-none"
               animate={{ height: shouldReduceMotion ? "100%" : lineHeight }}
               transition={{
                 type: "spring",
@@ -447,7 +450,14 @@ export default function MeetTheFounder() {
                 damping: 20,
                 restDelta: 0.001
               }}
-            />
+            >
+              {/* Soft glow trail behind the line */}
+              <div className="absolute inset-0 w-full h-full bg-indigo-500 blur-[3px] opacity-40" />
+              
+              {/* Laser 'head' at the leading edge */}
+              <div className="absolute -bottom-1 -left-[3px] w-[8px] h-[12px] bg-white rounded-full blur-[2px] shadow-[0_0_15px_rgba(99,102,241,1)]" />
+              <div className="absolute -bottom-2 -left-[5px] w-[12px] h-[20px] bg-indigo-400 rounded-full blur-[5px] opacity-80" />
+            </motion.div>
 
             {journeyTimeline.map((item, idx) => (
               <TimelineItem 

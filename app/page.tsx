@@ -212,21 +212,20 @@ export default function HomePage() {
               Helping businesses transform ideas into powerful digital experiences through AI-powered creativity, modern websites, branding, automations, and compelling cinematic visual storytelling.
             </p>
 
-            <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-4 pt-4">
-              <a
-                href="https://tinyurl.com/startwithNSD"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="inline-flex items-center justify-center px-7 py-4 rounded-full text-xs font-bold tracking-widest uppercase bg-indigo-600 hover:bg-indigo-700 text-white shadow-lg shadow-indigo-600/15 hover:shadow-indigo-600/25 active:scale-95 transition-all text-center"
+            <div className="flex flex-col sm:flex-row items-center gap-6 pt-4">
+              <Link
+                href="#contact"
+                className="inline-flex items-center justify-center px-7 py-4 rounded-full text-xs font-bold tracking-widest uppercase bg-indigo-600 hover:bg-indigo-700 text-white shadow-lg shadow-indigo-600/15 hover:shadow-indigo-600/25 active:scale-95 transition-all text-center w-full sm:w-auto"
               >
                 Start Your Project
                 <ArrowRight className="w-4 h-4 ml-2" />
-              </a>
+              </Link>
               <Link
                 href="#portfolio"
-                className="inline-flex items-center justify-center px-7 py-4 rounded-full text-xs font-bold tracking-widest uppercase bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 text-zinc-800 dark:text-zinc-200 hover:bg-zinc-100 dark:hover:bg-zinc-800 active:scale-95 transition-all text-center"
+                className="inline-flex items-center justify-center text-xs font-bold tracking-widest uppercase text-zinc-600 dark:text-zinc-400 hover:text-indigo-600 dark:hover:text-indigo-400 transition-colors group"
               >
                 Explore Portfolio
+                <span className="inline-block transform group-hover:translate-x-1 transition-transform ml-1">-&gt;</span>
               </Link>
             </div>
 
@@ -789,15 +788,13 @@ export default function HomePage() {
                 <li className="flex items-center"><CheckCircle className="w-4 h-4 text-emerald-500 mr-2.5 shrink-0" /> No hidden charges, ever</li>
               </ul>
 
-              <a
-                href="https://tinyurl.com/startwithNSD"
-                target="_blank"
-                rel="noopener noreferrer"
+              <Link
+                href="#contact"
                 className="mt-auto w-full inline-flex items-center justify-center px-6 py-4 rounded-full text-xs font-bold tracking-widest uppercase bg-indigo-600 hover:bg-indigo-700 text-white shadow-lg active:scale-95 transition-all"
               >
                 Request Custom Quote
                 <ArrowRight className="w-4 h-4 ml-1.5" />
-              </a>
+              </Link>
             </div>
 
             {/* RIGHT — Creative /pricing redirect card */}

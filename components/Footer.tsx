@@ -37,36 +37,21 @@ export function Footer() {
   return (
     <footer className="bg-zinc-50 dark:bg-[#050505] border-t border-zinc-200/60 dark:border-zinc-900/60 transition-colors">
       {/* Upper Footer CTA Section */}
-      <div className="max-w-7xl mx-auto px-6 py-12 md:py-16 border-b border-zinc-200/50 dark:border-zinc-900/50">
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 items-center">
-          <div className="lg:col-span-7">
-            <h2 className="font-display font-bold text-2xl md:text-3xl text-zinc-900 dark:text-zinc-50 tracking-tight leading-tight">
-              Let&apos;s craft something remarkable together.
-            </h2>
-            <p className="text-zinc-500 dark:text-zinc-400 mt-3 max-w-xl text-sm md:text-base">
-              Have an idea, video commercial, website, or custom automation project? Get in touch today for a free personal consultation and tailored pricing quote.
-            </p>
-          </div>
-          <div className="lg:col-span-5 flex flex-col sm:flex-row gap-4 lg:justify-end">
-            <a
-              href="https://tinyurl.com/startwithNSD"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="inline-flex items-center justify-center px-6 py-3.5 rounded-full text-sm font-semibold tracking-wide uppercase bg-indigo-600 hover:bg-indigo-700 text-white shadow-lg shadow-indigo-600/10 hover:shadow-indigo-600/20 active:scale-95 transition-all text-center"
-            >
-              Start Your Project
-              <ArrowRight className="w-4 h-4 ml-2" />
-            </a>
-            <Link
-              href="https://wa.me/916303849852"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="inline-flex items-center justify-center px-6 py-3.5 rounded-full text-sm font-semibold tracking-wide uppercase bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 text-zinc-800 dark:text-zinc-200 hover:bg-zinc-100 dark:hover:bg-zinc-800 active:scale-95 transition-all text-center"
-            >
-              <MessageSquare className="w-4 h-4 mr-2 text-green-500" />
-              WhatsApp Us
-            </Link>
-          </div>
+      <div className="max-w-7xl mx-auto px-6 py-16 md:py-20 border-b border-zinc-200/50 dark:border-zinc-900/50 text-center flex flex-col items-center">
+        <h2 className="font-display font-bold text-3xl md:text-4xl text-zinc-900 dark:text-zinc-50 tracking-tight leading-tight max-w-2xl">
+          Let&apos;s craft something remarkable together.
+        </h2>
+        <p className="text-zinc-500 dark:text-zinc-400 mt-4 max-w-xl text-sm md:text-base">
+          Have an idea, video commercial, website, or custom automation project? Get in touch today for a free personal consultation and tailored pricing quote.
+        </p>
+        <div className="mt-8">
+          <Link
+            href="/#contact"
+            className="inline-flex items-center justify-center px-8 py-4 rounded-full text-sm font-bold tracking-widest uppercase bg-indigo-600 hover:bg-indigo-700 text-white shadow-lg shadow-indigo-600/20 hover:shadow-indigo-600/30 active:scale-95 transition-all text-center"
+          >
+            Start Your Project
+            <ArrowRight className="w-4 h-4 ml-2" />
+          </Link>
         </div>
       </div>
 
