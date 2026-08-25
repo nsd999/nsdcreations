@@ -15,7 +15,21 @@ self.addEventListener('push', function (event) {
       // for security reasons (mostly system default plays), but we include it in case of browser support.
       sound: data.sound || '/notification.mp3' 
     };
-    event.waitUntil(self.registration.showNotification(data.title, options));
+    
+    // Show notification
+    const notificationPromise = self.registration.showNotification(data.title, options);
+    
+    // Broadcast to open clients so they can play custom programmatic audio
+    const broadcastPromise = clients.matchAll({ type: 'window', includeUncontrolled: true }).then(clientList => {
+      for (const client of clientList) {
+        client.postMessage({
+          type: 'PUSH_RECEIVED',
+          payload: data
+        });
+      }
+    });
+
+    event.waitUntil(Promise.all([notificationPromise, broadcastPromise]));
   }
 });
 

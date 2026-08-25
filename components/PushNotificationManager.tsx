@@ -32,6 +32,19 @@ export function PushNotificationManager() {
     // Register SW
     navigator.serviceWorker.register('/sw.js').catch(err => console.error("SW registration failed", err));
 
+    // Listen for push events broadcasted by SW for custom audio
+    const handleSWMessage = (event: MessageEvent) => {
+      if (event.data && event.data.type === 'PUSH_RECEIVED') {
+        const type = event.data.payload?.type;
+        if (type === 'review') {
+          playNSDReviewNotification();
+        } else {
+          playNSDTipNotification();
+        }
+      }
+    };
+    navigator.serviceWorker.addEventListener('message', handleSWMessage);
+
     // Check permission status
     if (Notification.permission === 'granted') {
       setIsSubscribed(true);
@@ -43,9 +56,62 @@ export function PushNotificationManager() {
           setShowPrompt(true);
         }
       }, 3000);
-      return () => clearTimeout(timer);
+      return () => {
+        clearTimeout(timer);
+        navigator.serviceWorker.removeEventListener('message', handleSWMessage);
+      };
     }
+
+    return () => {
+      navigator.serviceWorker.removeEventListener('message', handleSWMessage);
+    };
   }, []);
+
+  function playNSDTipNotification() {
+    const audioCtx = new (window.AudioContext || (window as any).webkitAudioContext)();
+    const osc = audioCtx.createOscillator();
+    const gainNode = audioCtx.createGain();
+    
+    osc.type = 'sine';
+    osc.frequency.setValueAtTime(587.33, audioCtx.currentTime); // D5 note
+    osc.frequency.exponentialRampToValueAtTime(880, audioCtx.currentTime + 0.4); // A5 note
+    
+    gainNode.gain.setValueAtTime(0.15, audioCtx.currentTime);
+    gainNode.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 2.5);
+    
+    osc.connect(gainNode);
+    gainNode.connect(audioCtx.destination);
+    
+    osc.start();
+    osc.stop(audioCtx.currentTime + 2.5);
+  }
+
+  function playNSDReviewNotification() {
+    const audioCtx = new (window.AudioContext || (window as any).webkitAudioContext)();
+    
+    function playTone(freq: number, startTime: number, duration: number, volume: number) {
+      const osc = audioCtx.createOscillator();
+      const gainNode = audioCtx.createGain();
+      
+      osc.type = 'triangle';
+      osc.frequency.setValueAtTime(freq, audioCtx.currentTime + startTime);
+      
+      gainNode.gain.setValueAtTime(0.001, audioCtx.currentTime + startTime);
+      gainNode.gain.linearRampToValueAtTime(volume, audioCtx.currentTime + startTime + 0.05);
+      gainNode.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + startTime + duration);
+      
+      osc.connect(gainNode);
+      gainNode.connect(audioCtx.destination);
+      
+      osc.start(audioCtx.currentTime + startTime);
+      osc.stop(audioCtx.currentTime + startTime + duration);
+    }
+  
+    playTone(523.25, 0.0, 0.4, 0.1);  // C5
+    playTone(659.25, 0.08, 0.4, 0.1); // E5
+    playTone(783.99, 0.16, 0.8, 0.15); // G5
+    playTone(1046.50, 0.20, 1.2, 0.12); // C6
+  }
 
   const handleSubscribe = async () => {
     try {

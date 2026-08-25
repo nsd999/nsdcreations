@@ -60,7 +60,8 @@ export async function POST(req: Request) {
         image: null,
         icon: '/icon.png',
         url: 'https://nsd-creations.vercel.app', 
-        sound: '/notification-review.mp3' // Unique sonic branding for reviews
+        sound: '/notification-review.mp3', // Unique sonic branding for reviews
+        type: 'review'
       });
 
       try {

@@ -57,7 +57,9 @@ export async function GET(req: Request) {
         body: randomTip.description,
         image: randomTip.image,
         icon: '/icon.png', // Fallback icon
-        url: 'https://nsd-creations.vercel.app' // Clicking opens the site
+        url: 'https://nsd-creations.vercel.app', // Clicking opens the site
+        sound: '/notification.mp3', // Fallback sound
+        type: 'tip'
       });
 
       try {
