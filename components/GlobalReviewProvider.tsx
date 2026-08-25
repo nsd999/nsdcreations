@@ -178,7 +178,7 @@ export function GlobalReviewProvider({ children }: { children: ReactNode }) {
     const textToCopy = review;
     navigator.clipboard.writeText(textToCopy).then(() => {
       // Redirect to the provided Google Search / Reviews link
-      window.open("https://www.google.com/search?q=NSD+Creations&oq=NSD+Creations&gs_lcrp=EgZjaHJvbWUqBggAEEUYOzIGCAAQRRg7MgYIARBFGDwyBggCEEUYPDIGCAMQRRg80gEIMzEzMmowajeoAgCwAgA&sourceid=chrome&source=chrome.ob&ie=UTF-8&sei=-yKNapvlHMmbhvcPh8KYuAs#", "_blank");
+      window.open("https://search.google.com/local/writereview?placeid=ChIJW_2FF_fAcGMREqHLHsghU5U", "_blank");
       
       // Now we can reset the form fields
       setName("");
