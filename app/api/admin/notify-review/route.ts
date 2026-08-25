@@ -59,7 +59,7 @@ export async function POST(req: Request) {
         body: `Here's a review from one of our clients: ${name} just reviewed NSD Creations!`,
         image: null,
         icon: '/icon.png',
-        url: 'https://nsd-creations.vercel.app', 
+        url: 'https://nsdcreations.vercel.app',
         sound: '/notification-review.mp3', // Unique sonic branding for reviews
         type: 'review'
       });
