@@ -6,8 +6,17 @@ export async function POST(request: Request) {
     const body = await request.json();
     
     // Validate request body
-    const { name, email, countryCode, phone, businessName, service, message } = body;
+    let { name, email, countryCode, phone, businessName, service, message } = body;
     
+    // Parse combined phone number from PhoneInput if countryCode is missing or phone contains a space
+    if (phone && phone.includes(' ')) {
+      const parts = phone.split(' ');
+      if (parts.length > 1) {
+        countryCode = parts[0];
+        phone = parts[1];
+      }
+    }
+
     if (!name || !email || !message) {
       return NextResponse.json(
         { error: 'Missing required fields' },
@@ -22,7 +31,7 @@ export async function POST(request: Request) {
         {
           name,
           email,
-          country_code: countryCode,
+          country_code: countryCode || '+91',
           phone,
           business_name: businessName,
           service,
