@@ -181,9 +181,9 @@ export function Footer() {
           <div className="flex flex-wrap items-center gap-x-6 gap-y-2 text-zinc-500 dark:text-zinc-400">
             <span>&copy; {currentYear} NSD Creations. All rights reserved.</span>
             <span className="hidden md:inline text-zinc-300 dark:text-zinc-800">|</span>
-            <span className="font-medium text-indigo-600 dark:text-indigo-400">
-              Pricing starting from ₹99*
-            </span>
+            <Link href="/pricing" className="font-medium text-indigo-600 dark:text-indigo-400 hover:underline transition-all">
+              Pricing starting from ₹299*
+            </Link>
           </div>
           <div className="flex flex-wrap items-center gap-6 text-zinc-500 dark:text-zinc-400 font-mono text-[11px]">
             <span className="flex items-center gap-1">
