@@ -1,0 +1,491 @@
+@import "tailwindcss";
+
+@layer base {
+  :root {
+    --background: 255 255 255;
+    --foreground: 15 15 17;
+    --card: 255 255 255;
+    --card-border: 228 228 231;
+    --primary: 99 102 241; /* Indigo-500 */
+    --accent: 168 85 247; /* Purple-500 */
+    --font-sans: var(--font-sans), system-ui, -apple-system, sans-serif;
+    --font-display: var(--font-display), system-ui, sans-serif;
+    --font-mono: var(--font-mono), monospace;
+  }
+
+  .dark {
+    --background: 3 3 3; /* Deep Obsidian */
+    --foreground: 244 244 245;
+    --card: 9 9 11;
+    --card-border: 24 24 27;
+    --primary: 168 85 247; /* Purple-500 */
+    --accent: 59 130 246; /* Blue-500 */
+  }
+
+  html {
+    scroll-behavior: smooth;
+    font-family: var(--font-sans);
+  }
+
+  body {
+    background-color: rgb(var(--background));
+    color: rgb(var(--foreground));
+    transition: background-color 0.4s cubic-bezier(0.16, 1, 0.3, 1), color 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+    overflow-x: hidden;
+  }
+}
+
+/* Smooth, premium transitions for theme-dependent properties to avoid flashing or abrupt changes */
+body, 
+header, 
+footer, 
+section, 
+button, 
+a, 
+input, 
+textarea, 
+select, 
+.glass-card, 
+.premium-glass-hover, 
+.rounded-2xl, 
+.rounded-3xl, 
+[class*="bg-"], 
+[class*="border-"], 
+[class*="text-"] {
+  transition: 
+    background-color 0.4s cubic-bezier(0.16, 1, 0.3, 1),
+    border-color 0.4s cubic-bezier(0.16, 1, 0.3, 1),
+    color 0.4s cubic-bezier(0.16, 1, 0.3, 1),
+    box-shadow 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+/* Custom fonts styling */
+.font-sans {
+  font-family: var(--font-sans);
+}
+
+.font-display {
+  font-family: var(--font-display);
+}
+
+.font-mono {
+  font-family: var(--font-mono);
+}
+
+.font-fredoka {
+  font-family: var(--font-fredoka), system-ui, sans-serif;
+}
+
+/* Custom scrollbar styling */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.dark ::-webkit-scrollbar-track {
+  background: #030303;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #e4e4e7;
+  border-radius: 9999px;
+  border: 2px solid transparent;
+}
+
+.dark ::-webkit-scrollbar-thumb {
+  background: #18181b;
+  border: 2px solid transparent;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #cbd5e1;
+}
+
+.dark ::-webkit-scrollbar-thumb:hover {
+  background: #27272a;
+}
+
+/* Custom high-end agency effects */
+@keyframes grid-fade {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+.grid-background {
+  background-image: radial-gradient(rgba(99, 102, 241, 0.08) 1px, transparent 1px);
+  background-size: 32px 32px;
+  animation: grid-fade 1.5s ease-out forwards;
+  opacity: 0.6;
+}
+
+.dark .grid-background {
+  background-image: radial-gradient(rgba(255, 255, 255, 0.03) 1px, transparent 1px);
+  opacity: 0.8;
+}
+
+/* Glassmorphism effects */
+.glass-card {
+  background: rgba(255, 255, 255, 0.75);
+  backdrop-filter: blur(24px);
+  -webkit-backdrop-filter: blur(24px);
+  border: 1px solid rgba(230, 232, 240, 0.8);
+  box-shadow: 
+    0 1px 2px rgba(0, 0, 0, 0.01),
+    0 8px 24px rgba(149, 157, 165, 0.04),
+    0 16px 32px rgba(149, 157, 165, 0.02);
+}
+
+.dark .glass-card {
+  background: rgba(10, 10, 12, 0.5);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 1px solid rgba(255, 255, 255, 0.03);
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.4);
+}
+
+.premium-glass-hover {
+  transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.premium-glass-hover:hover {
+  transform: translateY(-4px);
+  border-color: rgba(168, 85, 247, 0.35);
+  box-shadow: 0 20px 40px -15px rgba(168, 85, 247, 0.08);
+}
+
+.dark .premium-glass-hover:hover {
+  border-color: rgba(255, 255, 255, 0.1);
+  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.8), 0 0 15px rgba(255, 255, 255, 0.03);
+}
+
+/* Luxury Glow System */
+.glow-indigo {
+  box-shadow: 0 0 40px rgba(99, 102, 241, 0.08);
+}
+
+.dark .glow-indigo {
+  box-shadow: 0 0 50px rgba(255, 255, 255, 0.03);
+}
+
+/* Pulse slower animations */
+@keyframes pulse-slow {
+  0%, 100% {
+    opacity: 0.15;
+    transform: scale(1) translate(0px, 0px);
+  }
+  50% {
+    opacity: 0.35;
+    transform: scale(1.08) translate(10px, -10px);
+  }
+}
+
+.animate-pulse-slow {
+  animation: pulse-slow 12s cubic-bezier(0.4, 0, 0.2, 1) infinite;
+}
+
+/* Spotlight mouse tracking placeholder gradient */
+.spotlight-card {
+  position: relative;
+}
+
+.spotlight-card::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(600px circle at var(--mouse-x, 0) var(--mouse-y, 0), rgba(168, 85, 247, 0.06), transparent 40%);
+  z-index: 1;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.5s ease;
+}
+
+.spotlight-card:hover::before {
+  opacity: 1;
+}
+
+.dark .spotlight-card::before {
+  background: radial-gradient(600px circle at var(--mouse-x, 0) var(--mouse-y, 0), rgba(168, 85, 247, 0.1), transparent 40%);
+}
+
+/* ==========================================================================
+   DEDICATED LIGHT THEME PREMIUM DESIGN SYSTEM
+   ========================================================================== */
+
+html:not(.dark) body {
+  background-color: #edd8b9 !important;
+  background-image: 
+    radial-gradient(circle at 0% 0%, rgba(139, 92, 246, 0.04) 0%, transparent 40%),
+    radial-gradient(circle at 100% 0%, rgba(59, 130, 246, 0.05) 0%, transparent 40%),
+    radial-gradient(circle at 50% 50%, rgba(168, 85, 247, 0.02) 0%, transparent 50%),
+    radial-gradient(circle at 100% 100%, rgba(139, 92, 246, 0.04) 0%, transparent 40%) !important;
+  background-attachment: fixed !important;
+  color: #111827 !important;
+}
+
+/* Light Theme Grid Pattern */
+html:not(.dark) .grid-background {
+  background-image: radial-gradient(rgba(139, 92, 246, 0.06) 1.5px, transparent 1.5px) !important;
+  background-size: 24px 24px !important;
+  opacity: 0.75 !important;
+}
+
+/* Light Mode Typography & High Contrast Accessibilities */
+html:not(.dark) h1,
+html:not(.dark) h2,
+html:not(.dark) h3,
+html:not(.dark) h4,
+html:not(.dark) h5,
+html:not(.dark) h6 {
+  color: #111827 !important;
+  letter-spacing: -0.025em !important;
+}
+
+html:not(.dark) .text-zinc-900,
+html:not(.dark) .text-zinc-850,
+html:not(.dark) .text-zinc-800 {
+  color: #111827 !important;
+}
+
+html:not(.dark) .text-zinc-700,
+html:not(.dark) .text-zinc-600 {
+  color: #374151 !important;
+}
+
+html:not(.dark) .text-zinc-500 {
+  color: #4B5563 !important; /* Premium contrast gray */
+}
+
+html:not(.dark) .text-zinc-400 {
+  color: #6B7280 !important; /* Premium readable muted gray */
+}
+
+/* Prevent image darkening or dimming */
+html:not(.dark) img {
+  filter: brightness(1) contrast(1.02) !important;
+  opacity: 1 !important;
+  box-shadow: 
+    0 1px 3px rgba(0, 0, 0, 0.01),
+    0 10px 30px rgba(149, 157, 165, 0.04) !important;
+}
+
+/* Header & Floating Navigation */
+html:not(.dark) header {
+  background: rgba(237, 216, 185, 0.9) !important;
+  backdrop-filter: blur(24px) !important;
+  -webkit-backdrop-filter: blur(24px) !important;
+  border-bottom: 1px solid rgba(230, 232, 240, 0.8) !important;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.015) !important;
+}
+
+html:not(.dark) header a {
+  color: #4B5563 !important;
+}
+
+html:not(.dark) header a:hover {
+  color: #8b5cf6 !important; /* Purple hover accents */
+}
+
+/* Active indicator in Light Theme Navbar */
+html:not(.dark) span[layoutid="navbar-active-bg"] {
+  background-color: rgba(139, 92, 246, 0.06) !important;
+}
+
+/* Secondary Navigation / Static links active state */
+html:not(.dark) header .text-indigo-600 {
+  color: #6366f1 !important;
+  font-weight: 600;
+}
+
+/* Section Backgrounds (White canvas / soft greys) */
+html:not(.dark) section {
+  background-color: transparent !important;
+}
+
+html:not(.dark) .bg-zinc-50\/40,
+html:not(.dark) .bg-zinc-50\/50,
+html:not(.dark) .bg-zinc-50\/30,
+html:not(.dark) .bg-zinc-50 {
+  background-color: rgba(246, 247, 251, 0.6) !important; /* #F6F7FB */
+}
+
+/* Card Elements (Stripe/Apple inspired soft white card design) */
+html:not(.dark) .bg-white,
+html:not(.dark) .bg-white\/50 {
+  background: linear-gradient(135deg, #FFFFFF 0%, #edd8b9 100%) !important;
+  border: 1px solid rgba(237, 216, 185, 0.4) !important;
+  box-shadow: 
+    0 1px 2px rgba(0, 0, 0, 0.01),
+    0 12px 28px rgba(149, 157, 165, 0.03) !important;
+}
+
+/* Input Fields (Apple inspired) */
+html:not(.dark) input,
+html:not(.dark) textarea,
+html:not(.dark) select {
+  background: linear-gradient(135deg, #FFFFFF 0%, #edd8b9 100%) !important;
+  border: 1px solid rgba(237, 216, 185, 0.4) !important;
+  color: #111827 !important;
+}
+
+html:not(.dark) input:focus,
+html:not(.dark) textarea:focus,
+html:not(.dark) select:focus {
+  border-color: #8b5cf6 !important;
+  box-shadow: 0 0 0 3px rgba(139, 92, 246, 0.1) !important;
+}
+
+/* Primary buttons with gorgeous premium purple-blue gradient, elevated shadows, and hover lift */
+html:not(.dark) .bg-indigo-600,
+html:not(.dark) .bg-indigo-500,
+html:not(.dark) .bg-indigo-600\/90 {
+  background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 50%, #a855f7 100%) !important;
+  color: #FFFFFF !important;
+  box-shadow: 
+    0 4px 6px -1px rgba(139, 92, 246, 0.12),
+    0 10px 15px -3px rgba(139, 92, 246, 0.15),
+    0 0 15px rgba(168, 85, 247, 0.05) !important;
+}
+
+html:not(.dark) .bg-indigo-600:hover,
+html:not(.dark) .bg-indigo-500:hover,
+html:not(.dark) .bg-indigo-600\/90:hover {
+  transform: translateY(-2px) !important;
+  box-shadow: 
+    0 6px 12px -2px rgba(139, 92, 246, 0.15),
+    0 16px 24px -4px rgba(139, 92, 246, 0.2),
+    0 0 20px rgba(168, 85, 247, 0.15) !important;
+  filter: brightness(1.05) !important;
+}
+
+/* Secondary Button design (Stripe/Framer-inspired) */
+html:not(.dark) a[class*="border-zinc-200"],
+html:not(.dark) button[class*="border-zinc-200"],
+html:not(.dark) div[class*="border-zinc-200"] {
+  border-color: rgba(237, 216, 185, 0.6) !important;
+  background: linear-gradient(135deg, #FFFFFF 0%, #edd8b9 100%) !important;
+  color: #4B5563 !important;
+}
+
+html:not(.dark) a[class*="border-zinc-200"]:hover,
+html:not(.dark) button[class*="border-zinc-200"]:hover {
+  border-color: rgba(139, 92, 246, 0.4) !important;
+  color: #8b5cf6 !important;
+  background-color: rgba(139, 92, 246, 0.02) !important;
+  transform: translateY(-1.5px) !important;
+  box-shadow: 0 8px 16px rgba(139, 92, 246, 0.04) !important;
+}
+
+/* FAQ accordion style overrides in Light Mode */
+html:not(.dark) .space-y-4 .rounded-2xl.border {
+  background: linear-gradient(135deg, #FFFFFF 0%, #edd8b9 100%) !important;
+  border-color: rgba(237, 216, 185, 0.6) !important;
+  box-shadow: 
+    0 1px 2px rgba(0, 0, 0, 0.01),
+    0 8px 20px rgba(149, 157, 165, 0.02) !important;
+}
+
+/* Premium white glass panels for specific section elements (e.g. "About") */
+html:not(.dark) #about .rounded-3xl,
+html:not(.dark) #about .bg-white {
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.9) 0%, rgba(237, 216, 185, 0.9) 100%) !important;
+  backdrop-filter: blur(24px) !important;
+  -webkit-backdrop-filter: blur(24px) !important;
+  border: 1px solid rgba(237, 216, 185, 0.6) !important;
+  box-shadow: 
+    0 1px 3px rgba(0, 0, 0, 0.01),
+    0 16px 36px rgba(149, 157, 165, 0.03) !important;
+}
+
+/* Floating white cards on "Services" in Light mode */
+html:not(.dark) #services .premium-glass-hover,
+html:not(.dark) .grid .group.p-6.rounded-3xl {
+  background: linear-gradient(135deg, #FFFFFF 0%, #edd8b9 100%) !important;
+  border: 1px solid rgba(237, 216, 185, 0.6) !important;
+  box-shadow: 
+    0 1px 2px rgba(0, 0, 0, 0.01),
+    0 12px 24px rgba(149, 157, 165, 0.03) !important;
+}
+
+html:not(.dark) #services .premium-glass-hover:hover,
+html:not(.dark) .grid .group.p-6.rounded-3xl:hover {
+  border-color: rgba(139, 92, 246, 0.35) !important;
+  box-shadow: 
+    0 16px 36px -10px rgba(139, 92, 246, 0.12),
+    0 0 12px rgba(139, 92, 246, 0.02) !important;
+}
+
+/* Testimonials: Soft luxurious gradient cards */
+html:not(.dark) .group.relative.overflow-hidden.rounded-2xl {
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.95) 0%, rgba(246, 247, 251, 0.95) 100%) !important;
+  border-color: #E6E8F0 !important;
+  box-shadow: 
+    0 1px 2px rgba(0, 0, 0, 0.01),
+    0 10px 24px rgba(149, 157, 165, 0.03) !important;
+}
+
+/* Portfolio: Elegant gallery cards */
+html:not(.dark) #portfolio .rounded-3xl {
+  background: linear-gradient(135deg, #FFFFFF 0%, #edd8b9 100%) !important;
+  border-color: rgba(237, 216, 185, 0.6) !important;
+  box-shadow: 
+    0 1px 2px rgba(0, 0, 0, 0.01),
+    0 16px 32px rgba(149, 157, 165, 0.03) !important;
+}
+
+html:not(.dark) #portfolio .absolute.top-4.left-4 {
+  background: rgba(255, 255, 255, 0.9) !important;
+  backdrop-filter: blur(10px) !important;
+  border: 1px solid #E6E8F0 !important;
+  color: #6366f1 !important;
+}
+
+/* Floating Status Box inside the Hero glass card container */
+html:not(.dark) .absolute.bottom-4.left-4.right-4 {
+  background: rgba(255, 255, 255, 0.85) !important;
+  backdrop-filter: blur(16px) !important;
+  border: 1px solid rgba(230, 232, 240, 0.9) !important;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.03) !important;
+}
+
+html:not(.dark) .absolute.bottom-4.left-4.right-4 p,
+html:not(.dark) .absolute.bottom-4.left-4.right-4 span,
+html:not(.dark) .absolute.bottom-4.left-4.right-4 div {
+  color: #111827 !important;
+  border-color: #E6E8F0 !important;
+}
+
+html:not(.dark) .absolute.bottom-4.left-4.right-4 a {
+  color: #6366f1 !important;
+}
+
+/* Footer Section - Soft grey background, Dark text, Purple highlights */
+html:not(.dark) footer {
+  background-color: #F3F4F6 !important; /* Soft grey background */
+  border-top: 1px solid #E5E7EB !important;
+}
+
+html:not(.dark) footer [class*="border-zinc-200"] {
+  border-color: #E5E7EB !important;
+}
+
+html:not(.dark) footer .text-zinc-500,
+html:not(.dark) footer .text-zinc-400 {
+  color: #4B5563 !important; /* Readable dark-grey text */
+}
+
+html:not(.dark) footer .text-zinc-900,
+html:not(.dark) footer .text-zinc-800 {
+  color: #111827 !important; /* Readable primary dark text */
+}
+
+html:not(.dark) footer a:hover {
+  color: #8b5cf6 !important; /* Purple highlights */
+}
