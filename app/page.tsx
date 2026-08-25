@@ -193,7 +193,7 @@ export default function HomePage() {
       <section className="relative pt-20 pb-24 md:pt-32 md:pb-36 px-6 overflow-hidden">
         <div className="max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
           {/* Hero Content Left */}
-          <motion.div className="lg:col-span-7 flex flex-col items-start space-y-6">
+          <ScrollReveal direction="up" duration={0.7} className="lg:col-span-7 flex flex-col items-start space-y-6">
             <div className="inline-flex items-center space-x-2 px-3 py-1.5 rounded-full bg-indigo-500/5 dark:bg-indigo-400/5 border border-indigo-500/10 dark:border-indigo-400/10 self-start">
               <Award className="w-3.5 h-3.5 text-indigo-500 dark:text-indigo-400" />
               <span className="text-[11px] font-mono font-bold tracking-wider text-indigo-600 dark:text-indigo-400 uppercase">
