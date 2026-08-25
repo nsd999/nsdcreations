@@ -130,6 +130,32 @@ export default function AdminPage() {
       if (error) throw error;
 
       setSystemLog((prev) => `${prev}\n[SUCCESS] Record ${id} status updated.`);
+      
+      // If approved, trigger the push notification
+      if (newStatus === "approved") {
+        const approvedTestimonial = testimonials.find(t => t.id === id);
+        if (approvedTestimonial) {
+          try {
+            setSystemLog((prev) => `${prev}\n[NOTIFICATION] Triggering review push notification...`);
+            const notifyRes = await fetch("/api/admin/notify-review", {
+              method: "POST",
+              headers: {
+                "Content-Type": "application/json",
+                "Authorization": `Bearer ${password}`
+              },
+              body: JSON.stringify({ name: approvedTestimonial.name, review: approvedTestimonial.review })
+            });
+            if (notifyRes.ok) {
+              setSystemLog((prev) => `${prev}\n[SUCCESS] Push notifications sent to all clients.`);
+            } else {
+              setSystemLog((prev) => `${prev}\n[WARNING] Failed to send push notifications.`);
+            }
+          } catch (e: any) {
+            console.error("Push notification error:", e);
+          }
+        }
+      }
+
       // Refetch automatically
       await fetchAllTestimonials();
     } catch (err: any) {

@@ -13,7 +13,7 @@ self.addEventListener('push', function (event) {
       },
       // Note: Web Push API currently doesn't widely support custom sounds across all browsers
       // for security reasons (mostly system default plays), but we include it in case of browser support.
-      sound: '/notification.mp3' 
+      sound: data.sound || '/notification.mp3' 
     };
     event.waitUntil(self.registration.showNotification(data.title, options));
   }
