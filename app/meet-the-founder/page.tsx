@@ -7,7 +7,7 @@ import { Footer } from "@/components/Footer";
 import { ImageWithNSDFallback } from "@/components/ImageWithNSDFallback";
 import { ScrollReveal } from "@/components/ScrollReveal";
 import { 
-  Sparkles, 
+
   ArrowRight, 
   CheckCircle, 
   Calendar, 
@@ -193,7 +193,7 @@ export default function MeetTheFounder() {
   const skillSets = [
     { name: "Website Development", icon: <Code className="w-4 h-4 text-indigo-500" /> },
     { name: "AI Automation", icon: <Cpu className="w-4 h-4 text-indigo-500" /> },
-    { name: "Brand Identity", icon: <Sparkles className="w-4 h-4 text-amber-500" /> },
+    { name: "Brand Identity", icon: <Award className="w-4 h-4 text-amber-500" /> },
     { name: "Graphic Design", icon: <Palette className="w-4 h-4 text-indigo-500" /> },
     { name: "Video Production", icon: <Video className="w-4 h-4 text-indigo-500" /> },
     { name: "Business Strategy", icon: <Settings className="w-4 h-4 text-indigo-500" /> },
@@ -351,7 +351,7 @@ export default function MeetTheFounder() {
           {/* Right Header Content */}
           <ScrollReveal direction="left" delay={0.2} className="lg:col-span-7 flex flex-col space-y-6 text-left">
             <div className="inline-flex items-center space-x-2 px-3 py-1.5 rounded-full bg-purple-500/5 dark:bg-purple-400/5 border border-purple-500/10 dark:border-purple-400/10 self-start">
-              <Sparkles className="w-3.5 h-3.5 text-purple-500" />
+              <Award className="w-3.5 h-3.5 text-purple-500" />
               <span className="text-[11px] font-mono font-bold tracking-wider text-purple-600 dark:text-purple-400 uppercase">
                 MEET THE FOUNDER
               </span>
@@ -485,7 +485,7 @@ export default function MeetTheFounder() {
           <ScrollReveal direction="left" delay={0.2} className="p-8 rounded-3xl bg-white dark:bg-[#09090b] border border-zinc-200/60 dark:border-zinc-900/60 shadow-sm flex flex-col justify-between h-full">
             <div>
               <div className="w-10 h-10 rounded-xl bg-indigo-500/5 dark:bg-indigo-400/5 border border-indigo-500/10 dark:border-indigo-400/10 flex items-center justify-center text-indigo-500 mb-6">
-                <Sparkles className="w-5 h-5" />
+                <Award className="w-5 h-5" />
               </div>
               <h3 className="font-display font-bold text-xl text-zinc-900 dark:text-zinc-50">My Core Vision</h3>
               <p className="text-zinc-500 dark:text-zinc-400 text-xs md:text-sm leading-relaxed mt-3">

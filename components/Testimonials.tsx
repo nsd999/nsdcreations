@@ -11,7 +11,7 @@ import {
   Check, 
   AlertCircle, 
   ShieldAlert, 
-  Sparkles, 
+
   ArrowRight
 } from "lucide-react";
 import { supabase } from "@/lib/supabase";

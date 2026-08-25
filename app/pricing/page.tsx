@@ -15,7 +15,7 @@ import {
   Smartphone,
   Cpu,
   MessageSquare,
-  Sparkles,
+  Award,
   TrendingUp,
   Share2,
   Settings,
@@ -82,7 +82,7 @@ function getServiceIcon(iconName: string, size = "w-5 h-5") {
     case "message-square":
       return <MessageSquare className={`${size} text-emerald-500`} />;
     case "sparkles":
-      return <Sparkles className={`${size} text-amber-500`} />;
+      return <Award className={`${size} text-amber-500`} />;
     case "trending-up":
       return <TrendingUp className={`${size} text-indigo-500`} />;
     case "share":
@@ -92,7 +92,7 @@ function getServiceIcon(iconName: string, size = "w-5 h-5") {
     case "settings":
       return <Settings className={`${size} text-slate-500`} />;
     default:
-      return <Sparkles className={`${size} text-indigo-500`} />;
+      return <Award className={`${size} text-indigo-500`} />;
   }
 }
 
@@ -212,7 +212,7 @@ export default function PricingPage() {
         >
           {/* Entry badge */}
           <div className="inline-flex items-center space-x-2 bg-indigo-50 dark:bg-indigo-500/10 px-4 py-2 rounded-full border border-indigo-100 dark:border-indigo-500/20">
-            <Sparkles className="w-4 h-4 text-indigo-500" />
+            <Award className="w-4 h-4 text-indigo-500" />
             <span className="text-sm font-semibold text-indigo-600 dark:text-indigo-400">
               Services &amp; Pricing
             </span>
@@ -445,7 +445,7 @@ export default function PricingPage() {
         <div className="relative z-10 px-6 max-w-4xl mx-auto text-center">
           <ScrollReveal direction="up" className="flex flex-col items-center">
             <div className="inline-flex items-center gap-2 px-4 py-2 mb-6 rounded-full bg-white/5 border border-white/10 text-white/70 text-xs font-mono font-bold tracking-widest uppercase">
-              <Sparkles className="w-3.5 h-3.5" />
+              <Award className="w-3.5 h-3.5" />
               Custom Solutions
             </div>
             <h2 className="font-display font-bold text-3xl sm:text-4xl md:text-5xl text-white mb-6 leading-tight">

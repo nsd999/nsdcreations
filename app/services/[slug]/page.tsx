@@ -9,7 +9,7 @@ import {
   ArrowLeft, 
   CheckCircle, 
   ChevronRight, 
-  Sparkles, 
+  Award, 
   ArrowRight, 
   HelpCircle,
   Code2,
@@ -92,7 +92,7 @@ export default function ServiceDetailPage({ params }: { params: Promise<{ slug: 
           {/* Overview Block */}
           <div className="space-y-4">
             <h2 className="font-display font-bold text-xl text-zinc-900 dark:text-zinc-100 flex items-center">
-              <Sparkles className="w-4 h-4 text-indigo-500 mr-2" />
+              <Award className="w-4 h-4 text-indigo-500 mr-2" />
               Service Overview
             </h2>
             <p className="text-zinc-600 dark:text-zinc-400 text-sm md:text-base leading-relaxed bg-white dark:bg-[#09090b] p-6 rounded-3xl border border-zinc-200/50 dark:border-zinc-900/50">

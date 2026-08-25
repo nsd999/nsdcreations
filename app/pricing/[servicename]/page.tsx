@@ -14,7 +14,7 @@ import {
   Info,
   ChevronDown,
   Home,
-  Sparkles,
+  Award,
   Users,
   MessageSquare,
 } from "lucide-react";
@@ -261,7 +261,7 @@ export default async function ServicePricingPage({ params }: Props) {
                   {isPopular && (
                     <div className="absolute top-0 left-1/2 -translate-x-1/2 -translate-y-1/2">
                       <span className="inline-flex items-center gap-1.5 bg-gradient-to-r from-indigo-500 to-purple-500 text-white text-[11px] font-bold uppercase tracking-widest py-1.5 px-4 rounded-full shadow-lg">
-                        <Sparkles className="w-3 h-3" />
+                        <Award className="w-3 h-3" />
                         Most Popular
                       </span>
                     </div>
@@ -520,7 +520,7 @@ export default async function ServicePricingPage({ params }: Props) {
 
             <div className="relative z-10 flex flex-col items-center">
               <div className="inline-flex items-center gap-2 px-4 py-2 mb-6 rounded-full bg-white/5 border border-white/10 text-white/60 text-[11px] font-mono font-bold tracking-widest uppercase">
-                <Sparkles className="w-3.5 h-3.5 text-indigo-400" />
+                <Award className="w-3.5 h-3.5 text-indigo-400" />
                 NSD Creations
               </div>
 

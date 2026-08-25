@@ -13,7 +13,7 @@ import {
   Eye, 
   Terminal, 
   Workflow, 
-  Sparkles, 
+  Award, 
   LifeBuoy 
 } from "lucide-react";
 
@@ -65,7 +65,7 @@ export default function ProcessPage() {
       tagline: "Going Live to the Public",
       desc: "We deploy applications onto rapid edge cloud servers, submit native apps to stores, configure search SEO mappings, and push ad campaigns live.",
       deliverables: ["Production live deployment URL configuration", "Fully indexing on-page sitemaps and schemas", "Live campaign ad account parameters"],
-      icon: <Sparkles className="w-5 h-5 text-indigo-500" />
+      icon: <Award className="w-5 h-5 text-indigo-500" />
     },
     {
       num: "07",

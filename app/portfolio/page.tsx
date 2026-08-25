@@ -9,7 +9,7 @@ import { ScrollReveal } from "@/components/ScrollReveal";
 import { SpotlightCard } from "@/components/SpotlightCard";
 import { KineticMarquee } from "@/components/KineticMarquee";
 import { 
-  Sparkles, 
+
   ExternalLink, 
   ArrowRight,
   Heart,

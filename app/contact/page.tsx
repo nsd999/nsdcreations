@@ -11,7 +11,7 @@ import {
   MapPin, 
   MessageSquare, 
   CheckCircle, 
-  Sparkles, 
+
   ArrowRight,
 } from "lucide-react";
 

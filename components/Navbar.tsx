@@ -4,7 +4,7 @@ import React, { useState, useEffect } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useTheme } from "@/components/ThemeProvider";
-import { Sun, Moon, Laptop, Menu, X, ArrowRight, Sparkles } from "lucide-react";
+import { Sun, Moon, Laptop, Menu, X, ArrowRight } from "lucide-react";
 import { motion, AnimatePresence } from "motion/react";
 import { NsdLogo } from "./NsdLogo";
 

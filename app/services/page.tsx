@@ -16,7 +16,7 @@ import {
   Smartphone, 
   Cpu, 
   MessageSquare, 
-  Sparkles, 
+  Award, 
   TrendingUp, 
   Share2, 
   Settings, 
@@ -42,12 +42,12 @@ export default function ServicesPage() {
       case "smartphone": return <Smartphone className="w-5 h-5 text-indigo-500" />;
       case "cpu": return <Cpu className="w-5 h-5 text-indigo-500" />;
       case "message-square": return <MessageSquare className="w-5 h-5 text-emerald-500" />;
-      case "sparkles": return <Sparkles className="w-5 h-5 text-amber-500" />;
+      case "sparkles": return <Award className="w-5 h-5 text-amber-500" />;
       case "trending-up": return <TrendingUp className="w-5 h-5 text-indigo-500" />;
       case "share": return <Share2 className="w-5 h-5 text-indigo-500" />;
       case "workflow": return <Workflow className="w-5 h-5 text-indigo-500" />;
       case "settings": return <Settings className="w-5 h-5 text-indigo-500" />;
-      default: return <Sparkles className="w-5 h-5 text-indigo-500" />;
+      default: return <Award className="w-5 h-5 text-indigo-500" />;
     }
   };
 

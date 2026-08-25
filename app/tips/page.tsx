@@ -6,7 +6,7 @@ import { usePathname } from "next/navigation";
 import { Navbar } from "@/components/Navbar";
 import { Footer } from "@/components/Footer";
 import { ScrollReveal } from "@/components/ScrollReveal";
-import { ArrowRight, Sparkles, TrendingUp, Briefcase, Code, Cpu, Award } from "lucide-react";
+import { ArrowRight, TrendingUp, Briefcase, Code, Cpu, Award } from "lucide-react";
 import { tipsData, Tip } from "@/lib/tips-data";
 
 const categories = ["All", "Branding", "Marketing", "Development", "Automation", "Finance", "Operations"];
@@ -96,13 +96,13 @@ export default function TipsPage() {
 
   const getCategoryIcon = (category: string) => {
     switch (category) {
-      case "Branding": return <Sparkles className="w-5 h-5 text-indigo-400" />;
+      case "Branding": return <Award className="w-5 h-5 text-indigo-400" />;
       case "Marketing": return <TrendingUp className="w-5 h-5 text-indigo-400" />;
       case "Development": return <Code className="w-5 h-5 text-indigo-400" />;
       case "Automation": return <Cpu className="w-5 h-5 text-indigo-400" />;
       case "Finance": return <Briefcase className="w-5 h-5 text-indigo-400" />;
       case "Operations": return <Briefcase className="w-5 h-5 text-indigo-400" />;
-      default: return <Sparkles className="w-5 h-5 text-indigo-400" />;
+      default: return <Award className="w-5 h-5 text-indigo-400" />;
     }
   };
 
