@@ -4,6 +4,7 @@ import { ThemeProvider } from "@/components/ThemeProvider";
 import { LoadingWrapper } from "@/components/LoadingWrapper";
 import { ServiceWorkerRegister } from "@/components/ServiceWorkerRegister";
 import { FilmGrain } from "@/components/FilmGrain";
+import { GlobalReviewProvider } from "@/components/GlobalReviewProvider";
 
 const inter = Inter({
   subsets: ["latin"],
@@ -70,11 +71,13 @@ export default function RootLayout({
       </head>
       <body className="antialiased min-h-screen flex flex-col">
         <ThemeProvider>
-          <LoadingWrapper>
-            <FilmGrain />
-            {children}
-            <ServiceWorkerRegister />
-          </LoadingWrapper>
+          <GlobalReviewProvider>
+            <LoadingWrapper>
+              <FilmGrain />
+              {children}
+              <ServiceWorkerRegister />
+            </LoadingWrapper>
+          </GlobalReviewProvider>
         </ThemeProvider>
       </body>
     </html>

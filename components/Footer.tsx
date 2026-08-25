@@ -2,11 +2,13 @@
 
 import React from "react";
 import Link from "next/link";
-import { Mail, Phone, MessageSquare, Instagram, Youtube, ArrowRight, ShieldCheck, Heart } from "lucide-react";
+import { Mail, Phone, MessageSquare, Instagram, Youtube, ArrowRight, ShieldCheck, Heart, Star } from "lucide-react";
 import { NsdLogo } from "./NsdLogo";
+import { useGlobalReview } from "./GlobalReviewProvider";
 
 export function Footer() {
   const currentYear = new Date().getFullYear();
+  const { openReviewModal } = useGlobalReview();
 
   const servicesLinks = [
     { name: "AI Video Advertisements", href: "/services/ai-video-advertisements" },
@@ -175,6 +177,15 @@ export function Footer() {
                 </Link>
               </li>
             ))}
+            <li>
+              <button
+                onClick={() => openReviewModal("footer")}
+                className="text-xs md:text-sm text-zinc-500 dark:text-zinc-400 hover:text-indigo-600 dark:hover:text-indigo-400 transition-colors flex items-center gap-1.5"
+              >
+                Write a Review
+                <Star className="w-3.5 h-3.5" />
+              </button>
+            </li>
           </ul>
         </div>
       </div>
