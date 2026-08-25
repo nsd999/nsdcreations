@@ -138,7 +138,7 @@ export default function HomePage() {
     },
     {
       q: "Do you require upfront setup or high enterprise licensing fees?",
-      a: "No, our mission is to make premium creative technology accessible. Our pricing is flexible, with specific entry-level digital design options starting from just ₹99*, and custom project packages custom-tailored to suit the financial scale of growing startups and local businesses."
+      a: "No, our mission is to make premium creative technology accessible. Our pricing is flexible, with services starting from just ₹299, and custom project packages tailored to suit the financial scale of growing startups and local businesses. Explore all 16 services and transparent pricing at nsdcreations.vercel.app/pricing."
     },
     {
       q: "Who is the founder, and where are you based?",
@@ -434,10 +434,10 @@ export default function HomePage() {
                           {getServiceIcon(service.slug)}
                         </div>
                         <h3 className="font-display font-bold text-base text-zinc-900 dark:text-zinc-100 mb-2 group-hover:text-indigo-600 dark:group-hover:text-indigo-400 transition-colors">
-                          {service.title}
+                          {service.name}
                         </h3>
                         <p className="text-zinc-500 dark:text-zinc-400 text-xs leading-relaxed line-clamp-3">
-                          {service.description}
+                          {service.shortDescription}
                         </p>
                       </div>
                       <div className="mt-6 pt-4 border-t border-zinc-100 dark:border-zinc-900/80 flex items-center text-xs font-semibold text-indigo-500 dark:text-indigo-400 group-hover:translate-x-1 transition-transform">
@@ -752,45 +752,110 @@ export default function HomePage() {
       {/* Pricing Section */}
       <section className="py-24 px-6 border-t border-zinc-200/50 dark:border-zinc-900/50 bg-zinc-50/40 dark:bg-[#050505]/20">
         <ScrollReveal direction="up" className="max-w-7xl mx-auto flex flex-col space-y-12 text-center items-center">
+          {/* Section header */}
           <div className="max-w-xl flex flex-col space-y-3">
             <span className="text-xs font-mono font-bold tracking-wider text-indigo-500 uppercase">
-              Straightforward Pricing
+              Transparent Pricing
             </span>
             <h2 className="font-display font-bold text-3xl md:text-4xl text-zinc-900 dark:text-zinc-50 tracking-tight">
-              Premium services made affordable.
+              Premium services.{" "}
+              <span className="bg-clip-text text-transparent bg-gradient-to-r from-indigo-500 to-purple-600">Honest prices.</span>
             </h2>
             <p className="text-zinc-500 dark:text-zinc-400 text-sm">
-              We provide clean customized quotes depending on the exact parameters and size of your creative technology project.
+              Transparent, scope-based pricing across 16 specialized services — no hidden fees, ever.
             </p>
           </div>
 
-          <div className="p-10 rounded-3xl bg-white dark:bg-[#09090b] border border-zinc-200/60 dark:border-zinc-900/60 shadow-xl max-w-lg w-full text-center flex flex-col items-center">
-            <span className="text-xs font-mono font-bold text-indigo-500 tracking-wider uppercase bg-indigo-500/5 dark:bg-indigo-400/5 px-4 py-1.5 rounded-full border border-indigo-500/10 dark:border-indigo-400/10">
-              Basic Digital Services
-            </span>
-            <div className="mt-6 flex items-baseline justify-center">
-              <span className="text-zinc-400 dark:text-zinc-500 text-lg font-bold font-sans">Starting from</span>
-              <span className="text-5xl font-display font-black text-zinc-900 dark:text-white mx-2">₹99*</span>
+          {/* ── Two-card pricing layout ── */}
+          <div className="w-full max-w-4xl grid grid-cols-1 md:grid-cols-2 gap-6 items-stretch">
+
+            {/* LEFT — Starting Price Card */}
+            <div className="p-8 rounded-3xl bg-white dark:bg-[#09090b] border border-zinc-200/60 dark:border-zinc-900/60 shadow-xl flex flex-col items-center text-center">
+              {/* Entry price badge */}
+              <div className="inline-flex items-center gap-2 bg-zinc-900 dark:bg-white px-5 py-2.5 rounded-full mb-6">
+                <Sparkles className="w-4 h-4 text-indigo-400 dark:text-indigo-600" />
+                <span className="text-white dark:text-zinc-900 font-bold text-sm">
+                  Services starting from{" "}
+                  <span className="text-indigo-400 dark:text-indigo-600">₹299</span>
+                </span>
+              </div>
+
+              <p className="text-zinc-500 dark:text-zinc-400 text-xs leading-relaxed mb-6">
+                All services are individually scoped. From quick graphic assets to full-stack websites and AI automation — every project gets a precise, customized quote.
+              </p>
+
+              <div className="w-full h-px bg-zinc-100 dark:bg-zinc-900 mb-6" />
+
+              <ul className="text-left space-y-3 text-xs text-zinc-600 dark:text-zinc-300 w-full mb-8">
+                <li className="flex items-center"><CheckCircle className="w-4 h-4 text-emerald-500 mr-2.5 shrink-0" /> Handcrafted, pixel-perfect quality</li>
+                <li className="flex items-center"><CheckCircle className="w-4 h-4 text-emerald-500 mr-2.5 shrink-0" /> Source files & full IP ownership</li>
+                <li className="flex items-center"><CheckCircle className="w-4 h-4 text-emerald-500 mr-2.5 shrink-0" /> Fast 24–48 hour turnarounds</li>
+                <li className="flex items-center"><CheckCircle className="w-4 h-4 text-emerald-500 mr-2.5 shrink-0" /> No hidden charges, ever</li>
+              </ul>
+
+              <a
+                href="https://tinyurl.com/startwithNSD"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="mt-auto w-full inline-flex items-center justify-center px-6 py-4 rounded-full text-xs font-bold tracking-widest uppercase bg-indigo-600 hover:bg-indigo-700 text-white shadow-lg active:scale-95 transition-all"
+              >
+                Request Custom Quote
+                <ArrowRight className="w-4 h-4 ml-1.5" />
+              </a>
             </div>
-            <p className="text-zinc-500 dark:text-zinc-400 text-xs mt-4 leading-relaxed">
-              Selected graphic designing assets only. Comprehensive custom software, AI video advertisements, and high-conversion websites receive precise customized quote contracts.
-            </p>
-            <div className="w-full h-px bg-zinc-100 dark:bg-zinc-900 my-6" />
-            <ul className="text-left space-y-3 text-xs text-zinc-600 dark:text-zinc-300 w-full font-sans">
-              <li className="flex items-center"><CheckCircle className="w-4 h-4 text-emerald-500 mr-2.5" /> Handcrafted, pixel-perfect designs</li>
-              <li className="flex items-center"><CheckCircle className="w-4 h-4 text-emerald-500 mr-2.5" /> 100% vector format deliverables</li>
-              <li className="flex items-center"><CheckCircle className="w-4 h-4 text-emerald-500 mr-2.5" /> Fast 24-48 hours turnarounds</li>
-              <li className="flex items-center"><CheckCircle className="w-4 h-4 text-emerald-500 mr-2.5" /> Full personal advisory consultation</li>
-            </ul>
-            <a
-              href="https://tinyurl.com/startwithNSD"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="mt-8 w-full inline-flex items-center justify-center px-6 py-4.5 rounded-full text-xs font-bold tracking-widest uppercase bg-indigo-600 hover:bg-indigo-700 text-white shadow-lg active:scale-97 transition-all text-center"
+
+            {/* RIGHT — Creative /pricing redirect card */}
+            <Link
+              href="/pricing"
+              className="group relative p-8 rounded-3xl bg-zinc-900 dark:bg-black border border-zinc-800 shadow-2xl flex flex-col items-center text-center overflow-hidden transition-all duration-500 hover:border-indigo-500/60 hover:shadow-[0_0_60px_rgba(99,102,241,0.15)]"
             >
-              Request Custom Quote
-              <ChevronRight className="w-4 h-4 ml-1" />
-            </a>
+              {/* Animated glow orbs */}
+              <div className="absolute -top-10 -left-10 w-32 h-32 bg-indigo-600/20 rounded-full blur-3xl group-hover:bg-indigo-500/30 transition-all duration-700 group-hover:scale-150" />
+              <div className="absolute -bottom-10 -right-10 w-32 h-32 bg-purple-600/20 rounded-full blur-3xl group-hover:bg-purple-500/30 transition-all duration-700 group-hover:scale-150" />
+              {/* Glossy top shine */}
+              <div className="absolute top-0 inset-x-0 h-px bg-gradient-to-r from-transparent via-indigo-500/50 to-transparent group-hover:via-indigo-400/80 transition-all duration-500" />
+
+              <div className="relative z-10 flex flex-col items-center flex-1">
+                {/* Icon + label */}
+                <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-indigo-500 to-purple-600 flex items-center justify-center mb-5 shadow-lg shadow-indigo-500/30 group-hover:scale-110 group-hover:rotate-3 transition-all duration-500">
+                  <Sparkles className="w-7 h-7 text-white" />
+                </div>
+
+                <span className="text-[10px] font-mono font-bold text-indigo-400 uppercase tracking-widest mb-2">
+                  Full Pricing Breakdown
+                </span>
+
+                <h3 className="font-display font-black text-2xl text-white mb-3 leading-snug">
+                  Explore All{" "}
+                  <span className="bg-clip-text text-transparent bg-gradient-to-r from-indigo-400 to-purple-400">
+                    16 Services
+                  </span>
+                </h3>
+
+                <p className="text-zinc-400 text-xs leading-relaxed mb-6">
+                  Every service. Every package. Every add-on. All prices in one place — transparent and honest.
+                </p>
+
+                {/* Category chips */}
+                <div className="flex flex-wrap justify-center gap-2 mb-6">
+                  {["Creative", "Branding", "Marketing", "Automation", "Technology"].map((cat) => (
+                    <span key={cat} className="text-[10px] font-bold uppercase tracking-wide px-2.5 py-1 rounded-full bg-white/5 border border-white/10 text-white/60 group-hover:border-indigo-500/30 group-hover:text-white/80 transition-all duration-300">
+                      {cat}
+                    </span>
+                  ))}
+                </div>
+
+                <div className="mt-auto w-full pt-4 border-t border-white/10 flex items-center justify-between">
+                  <span className="text-xs font-bold text-zinc-400 group-hover:text-white transition-colors">
+                    View Pricing Page
+                  </span>
+                  <div className="w-8 h-8 rounded-full bg-white/5 group-hover:bg-indigo-500 border border-white/10 group-hover:border-indigo-500 flex items-center justify-center transition-all duration-300">
+                    <ArrowRight className="w-4 h-4 text-white/50 group-hover:text-white group-hover:translate-x-0.5 transition-all duration-300" />
+                  </div>
+                </div>
+              </div>
+            </Link>
+
           </div>
         </ScrollReveal>
       </section>
@@ -977,7 +1042,7 @@ export default function HomePage() {
                         >
                           {Object.values(servicesData).map((srv) => (
                             <option key={srv.slug} value={srv.slug}>
-                              {srv.title}
+                              {srv.name}
                             </option>
                           ))}
                         </select>

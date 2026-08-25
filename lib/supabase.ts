@@ -245,4 +245,35 @@ WITH CHECK (true);
 
 -- ENABLE REALTIME
 alter publication supabase_realtime add table testimonials;
+
+-- CREATE CONTACT SUBMISSIONS TABLE
+CREATE TABLE IF NOT EXISTS public.contact_submissions (
+  id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
+  name TEXT NOT NULL,
+  email TEXT NOT NULL,
+  country_code TEXT,
+  phone TEXT,
+  business_name TEXT,
+  service TEXT,
+  message TEXT NOT NULL,
+  status TEXT NOT NULL DEFAULT 'unread' CHECK (status IN ('unread', 'read', 'archived')),
+  created_at TIMESTAMP WITH TIME ZONE DEFAULT timezone('utc'::text, now()) NOT NULL
+);
+
+-- ENABLE ROW LEVEL SECURITY (RLS) FOR CONTACT SUBMISSIONS
+ALTER TABLE public.contact_submissions ENABLE ROW LEVEL SECURITY;
+
+-- CREATE POLICIES FOR CONTACT SUBMISSIONS
+-- 1. Allow anyone to submit an inquiry (insert new submission)
+CREATE POLICY "Allow public inserts for contact submissions" 
+ON public.contact_submissions
+FOR INSERT 
+WITH CHECK (true);
+
+-- 2. Allow admins to manage all submissions
+CREATE POLICY "Allow admin operations for contact submissions" 
+ON public.contact_submissions
+FOR ALL 
+USING (true)
+WITH CHECK (true);
 `;

@@ -6,6 +6,8 @@ import { Navbar } from "@/components/Navbar";
 import { Footer } from "@/components/Footer";
 import { ImageWithNSDFallback } from "@/components/ImageWithNSDFallback";
 import { ScrollReveal } from "@/components/ScrollReveal";
+import { SpotlightCard } from "@/components/SpotlightCard";
+import { KineticMarquee } from "@/components/KineticMarquee";
 import { 
   Sparkles, 
   ExternalLink, 
@@ -107,6 +109,22 @@ export default function PortfolioPage() {
     ? portfolioWorks
     : portfolioWorks.filter(w => w.category === activeCategory);
 
+  const getBentoClasses = (index: number) => {
+    // If not showing all, fallback to a normal uniform grid
+    if (activeCategory !== "all") return "md:col-span-1 md:row-span-1";
+
+    const classes = [
+      "md:col-span-2 md:row-span-2", // 0: Large square
+      "md:col-span-2 md:row-span-1", // 1: Wide rectangle
+      "md:col-span-1 md:row-span-1", // 2: Small square
+      "md:col-span-1 md:row-span-1", // 3: Small square
+      "md:col-span-2 md:row-span-1", // 4: Wide rectangle
+      "md:col-span-1 md:row-span-1", // 5: Small square
+      "md:col-span-1 md:row-span-1", // 6: Small square
+    ];
+    return classes[index % classes.length];
+  };
+
   return (
     <div className="flex-1 flex flex-col relative overflow-x-hidden">
       <Navbar />
@@ -158,11 +176,18 @@ export default function PortfolioPage() {
         </ScrollReveal>
       </section>
 
+      {/* Kinetic Divider */}
+      <section className="py-4 border-y border-zinc-200/40 dark:border-zinc-900/40 bg-zinc-50 dark:bg-zinc-900/20 overflow-hidden">
+        <KineticMarquee baseVelocity={15} className="text-zinc-900 dark:text-zinc-100 font-bold text-lg md:text-xl uppercase tracking-widest">
+          <span className="opacity-50 mx-4">•</span> CREATIVE EXCELLENCE <span className="opacity-50 mx-4">•</span> PRODUCTION GRADE <span className="opacity-50 mx-4">•</span> HIGH PERFORMANCE <span className="opacity-50 mx-4">•</span> TACTILE DESIGN
+        </KineticMarquee>
+      </section>
+
       {/* Portfolio Grid */}
       <section className="py-12 px-6 max-w-7xl mx-auto w-full">
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+        <div className={`grid gap-4 ${activeCategory === "all" ? "grid-cols-1 md:grid-cols-4 auto-rows-[300px]" : "grid-cols-1 md:grid-cols-2 lg:grid-cols-3 auto-rows-[450px]"}`}>
           <AnimatePresence mode="popLayout">
-            {filteredWorks.map((work) => (
+            {filteredWorks.map((work, index) => (
               <motion.div
                 layout
                 initial={{ opacity: 0, scale: 0.95 }}
@@ -170,9 +195,10 @@ export default function PortfolioPage() {
                 exit={{ opacity: 0, scale: 0.95 }}
                 transition={{ duration: 0.3 }}
                 key={work.id}
-                className="group flex flex-col bg-white dark:bg-[#09090b] rounded-3xl overflow-hidden border border-zinc-200/60 dark:border-zinc-900/60 shadow-sm hover:shadow-md transition-all duration-300"
+                className={`group ${getBentoClasses(index)}`}
               >
-                <div className="relative aspect-[16/10] overflow-hidden bg-zinc-100 dark:bg-zinc-950">
+                <SpotlightCard className="h-full flex flex-col hover:shadow-md transition-all duration-300">
+                  <div className="relative flex-1 overflow-hidden bg-zinc-100 dark:bg-zinc-950">
                   <ImageWithNSDFallback
                     src={work.image}
                     alt={work.title}
@@ -227,6 +253,7 @@ export default function PortfolioPage() {
                     </Link>
                   </div>
                 </div>
+                </SpotlightCard>
               </motion.div>
             ))}
           </AnimatePresence>

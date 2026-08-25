@@ -95,6 +95,7 @@ export function Testimonials({ contextSlug }: { contextSlug?: string } = {}) {
         channel.unsubscribe();
       }
     };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   // Simple clean sanitization to guard against XSS

@@ -32,19 +32,38 @@ interface Testimonial {
   created_at: string;
 }
 
+interface ContactSubmission {
+  id: string;
+  name: string;
+  email: string;
+  country_code: string;
+  phone: string;
+  business_name: string;
+  service: string;
+  message: string;
+  status: string;
+  created_at: string;
+}
+
 export default function AdminPage() {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [password, setPassword] = useState("");
   const [authError, setAuthError] = useState("");
 
   const [testimonials, setTestimonials] = useState<Testimonial[]>([]);
+  const [inquiries, setInquiries] = useState<ContactSubmission[]>([]);
   const [loading, setLoading] = useState(true);
+  
+  type DashboardView = "testimonials" | "inquiries";
+  const [dashboardView, setDashboardView] = useState<DashboardView>("testimonials");
   const [activeTab, setActiveTab] = useState<"pending" | "approved" | "rejected">("pending");
+  const [inquiryTab, setInquiryTab] = useState<"unread" | "read" | "archived">("unread");
+  
   const [systemLog, setSystemLog] = useState<string>("Initializing administrative session...");
   const [copiedSql, setCopiedSql] = useState(false);
 
   // Quick administrative security guard passcode
-  const ADMIN_PASSCODE = "admin123";
+  const ADMIN_PASSCODE = "19082008";
 
   const handleLogin = (e: React.FormEvent) => {
     e.preventDefault();
@@ -140,6 +159,78 @@ export default function AdminPage() {
     }
   };
 
+  const fetchInquiries = async () => {
+    setLoading(true);
+    try {
+      const res = await fetch("/api/admin", {
+        headers: { "Authorization": `Bearer ${password}` }
+      });
+      if (res.ok) {
+        const data = await res.json();
+        setInquiries(data.submissions || []);
+        setSystemLog((prev) => `${prev}\n[DB] Synced ${data.submissions?.length || 0} inquiries from system table.`);
+      } else {
+        throw new Error("Failed to fetch inquiries");
+      }
+    } catch (err: any) {
+      console.error(err);
+      setSystemLog((prev) => `${prev}\n[ERROR] Inquiries sync failed: ${err.message}`);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    if (isAuthenticated && dashboardView === "inquiries") {
+      fetchInquiries();
+    }
+  }, [isAuthenticated, dashboardView]);
+
+  const updateInquiryStatus = async (id: string, newStatus: string) => {
+    try {
+      setSystemLog((prev) => `${prev}\n[MUTATION] Updating inquiry ${id} to ${newStatus.toUpperCase()}...`);
+      const res = await fetch("/api/admin", {
+        method: "PATCH",
+        headers: {
+          "Content-Type": "application/json",
+          "Authorization": `Bearer ${password}`
+        },
+        body: JSON.stringify({ id, status: newStatus })
+      });
+      if (res.ok) {
+        setSystemLog((prev) => `${prev}\n[SUCCESS] Inquiry ${id} status updated.`);
+        await fetchInquiries();
+      } else {
+        throw new Error("Update failed");
+      }
+    } catch (err: any) {
+      console.error("Failed to update status:", err);
+      setSystemLog((prev) => `${prev}\n[ERROR] Mutation failed: ${err.message}`);
+    }
+  };
+
+  const deleteInquiry = async (id: string) => {
+    if (!confirm("Are you absolutely sure you want to permanently delete this inquiry? This action is irreversible.")) {
+      return;
+    }
+    try {
+      setSystemLog((prev) => `${prev}\n[MUTATION] Deleting inquiry ${id}...`);
+      const res = await fetch(`/api/admin?id=${id}`, {
+        method: "DELETE",
+        headers: { "Authorization": `Bearer ${password}` }
+      });
+      if (res.ok) {
+        setSystemLog((prev) => `${prev}\n[SUCCESS] Inquiry ${id} permanently removed.`);
+        await fetchInquiries();
+      } else {
+        throw new Error("Delete failed");
+      }
+    } catch (err: any) {
+      console.error("Failed to delete:", err);
+      setSystemLog((prev) => `${prev}\n[ERROR] Deletion failed: ${err.message}`);
+    }
+  };
+
   const copySqlToClipboard = () => {
     navigator.clipboard.writeText(SUPABASE_SETUP_SQL);
     setCopiedSql(true);
@@ -214,7 +305,7 @@ export default function AdminPage() {
                 required
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
-                placeholder="Enter admin passcode (admin123)"
+                placeholder="Enter admin passcode"
                 className="w-full px-4 py-3 rounded-xl border border-zinc-200 dark:border-zinc-800 bg-zinc-50 dark:bg-zinc-950 focus:border-orange-500 dark:focus:border-amber-400 text-sm outline-none transition-all placeholder:text-zinc-400 text-center font-mono tracking-widest"
               />
             </div>
@@ -264,7 +355,7 @@ export default function AdminPage() {
               </Link>
               <span className="text-xs font-mono font-bold text-orange-500 dark:text-amber-400 uppercase tracking-widest">{"// DEPLOYMENT CONSOLE"}</span>
             </div>
-            <h1 className="font-display font-bold text-3xl md:text-4xl tracking-tight text-zinc-900 dark:text-zinc-50">Review Moderation</h1>
+            <h1 className="font-display font-bold text-3xl md:text-4xl tracking-tight text-zinc-900 dark:text-zinc-50">Admin Dashboard</h1>
           </div>
 
           {/* Database Setup Info Card */}
@@ -285,124 +376,258 @@ export default function AdminPage() {
           {/* Main Moderation Queue (2 cols) */}
           <div className="lg:col-span-2 space-y-6">
             
-            {/* Status Tabs */}
-            <div className="flex space-x-2 border-b border-zinc-200 dark:border-zinc-900/40 pb-3">
-              {(["pending", "approved", "rejected"] as const).map((tab) => {
-                const count = testimonials.filter((t) => t.status === tab).length;
-                return (
-                  <button
-                    key={tab}
-                    onClick={() => setActiveTab(tab)}
-                    className={`px-5 py-2.5 rounded-xl font-mono text-xs font-bold uppercase transition-all flex items-center space-x-2 ${
-                      activeTab === tab
-                        ? "bg-zinc-900 dark:bg-zinc-50 text-white dark:text-zinc-950 shadow-md"
-                        : "text-zinc-400 hover:text-zinc-900 dark:hover:text-zinc-50 hover:bg-zinc-100 dark:hover:bg-zinc-900"
-                    }`}
-                  >
-                    <span>{tab}</span>
-                    <span className={`px-1.5 py-0.5 rounded-md text-[10px] ${activeTab === tab ? "bg-zinc-700 dark:bg-zinc-200" : "bg-zinc-200 dark:bg-zinc-800"}`}>
-                      {count}
-                    </span>
-                  </button>
-                );
-              })}
+            {/* Dashboard View Toggle */}
+            <div className="flex space-x-4 mb-4">
+              <button
+                onClick={() => setDashboardView("testimonials")}
+                className={`text-sm font-bold tracking-wider uppercase pb-2 border-b-2 transition-all ${
+                  dashboardView === "testimonials" 
+                  ? "border-orange-500 text-orange-500" 
+                  : "border-transparent text-zinc-500 hover:text-zinc-700 dark:hover:text-zinc-300"
+                }`}
+              >
+                Testimonials
+              </button>
+              <button
+                onClick={() => setDashboardView("inquiries")}
+                className={`text-sm font-bold tracking-wider uppercase pb-2 border-b-2 transition-all ${
+                  dashboardView === "inquiries" 
+                  ? "border-orange-500 text-orange-500" 
+                  : "border-transparent text-zinc-500 hover:text-zinc-700 dark:hover:text-zinc-300"
+                }`}
+              >
+                Contact Inquiries
+              </button>
             </div>
 
-            {/* Testimonials List */}
-            {loading ? (
-              <div className="flex flex-col items-center justify-center py-24 space-y-4">
-                <div className="w-8 h-8 rounded-full border-2 border-orange-500/25 border-t-orange-500 animate-spin" />
-                <p className="text-xs font-mono tracking-wider text-zinc-400">LOADING DATABASE ENTRIES...</p>
-              </div>
-            ) : filtered.length === 0 ? (
-              <div className="border border-dashed border-zinc-200 dark:border-zinc-800 rounded-2xl p-16 text-center text-zinc-400 space-y-3 bg-white/40 dark:bg-zinc-900/10">
-                <Clock className="w-8 h-8 text-zinc-300 dark:text-zinc-700 mx-auto stroke-[1.5]" />
-                <p className="text-sm">No testimonials in the &quot;{activeTab}&quot; queue.</p>
-              </div>
-            ) : (
-              <div className="space-y-4">
-                <AnimatePresence mode="popLayout">
-                  {filtered.map((testimonial) => (
-                    <motion.div
-                      key={testimonial.id}
-                      initial={{ opacity: 0, y: 15 }}
-                      animate={{ opacity: 1, y: 0 }}
-                      exit={{ opacity: 0, scale: 0.95 }}
-                      className="p-6 md:p-8 rounded-2xl bg-white dark:bg-zinc-900/30 border border-zinc-200/50 dark:border-zinc-900 shadow-sm flex flex-col md:flex-row md:items-start justify-between gap-6"
-                    >
-                      <div className="flex items-start space-x-4 flex-1">
-                        <GradientAvatar
-                          name={testimonial.name}
-                          photoUrl={testimonial.photo_url || testimonial.avatar_url}
-                          size={46}
-                        />
-                        <div className="space-y-3 flex-1 text-left">
-                          <div>
-                            <h3 className="font-display font-bold text-base text-zinc-900 dark:text-zinc-50">{testimonial.name}</h3>
-                            {testimonial.business_name && (
-                              <p className="text-xs font-mono text-zinc-400 uppercase tracking-wide">{testimonial.business_name}</p>
-                            )}
-                          </div>
-                          
-                          {/* Rating */}
-                          <div className="flex space-x-1">
-                            {Array.from({ length: 5 }).map((_, i) => (
-                              <Star
-                                key={i}
-                                className={`w-3.5 h-3.5 ${
-                                  i < testimonial.rating
-                                    ? "fill-orange-500 text-orange-500 dark:fill-amber-400 dark:text-amber-400"
-                                    : "text-zinc-200 dark:text-zinc-800"
-                                }`}
-                              />
-                            ))}
-                          </div>
+            {dashboardView === "testimonials" && (
+              <>
+                {/* Status Tabs */}
+                <div className="flex space-x-2 border-b border-zinc-200 dark:border-zinc-900/40 pb-3">
+                  {(["pending", "approved", "rejected"] as const).map((tab) => {
+                    const count = testimonials.filter((t) => t.status === tab).length;
+                    return (
+                      <button
+                        key={tab}
+                        onClick={() => setActiveTab(tab)}
+                        className={`px-5 py-2.5 rounded-xl font-mono text-xs font-bold uppercase transition-all flex items-center space-x-2 ${
+                          activeTab === tab
+                            ? "bg-zinc-900 dark:bg-zinc-50 text-white dark:text-zinc-950 shadow-md"
+                            : "text-zinc-400 hover:text-zinc-900 dark:hover:text-zinc-50 hover:bg-zinc-100 dark:hover:bg-zinc-900"
+                        }`}
+                      >
+                        <span>{tab}</span>
+                        <span className={`px-1.5 py-0.5 rounded-md text-[10px] ${activeTab === tab ? "bg-zinc-700 dark:bg-zinc-200" : "bg-zinc-200 dark:bg-zinc-800"}`}>
+                          {count}
+                        </span>
+                      </button>
+                    );
+                  })}
+                </div>
 
-                          {/* Review */}
-                          <p className="text-sm text-zinc-600 dark:text-zinc-300 leading-relaxed font-sans italic">
-                            &quot;{testimonial.review}&quot;
-                          </p>
-
-                          <div className="text-[10px] text-zinc-400 font-mono">
-                            Submitted: {new Date(testimonial.created_at).toLocaleString()}
-                          </div>
-                        </div>
-                      </div>
-
-                      {/* Actions */}
-                      <div className="flex md:flex-col gap-2 shrink-0 justify-end border-t md:border-t-0 pt-4 md:pt-0 border-zinc-100 dark:border-zinc-900">
-                        {testimonial.status !== "approved" && (
-                          <button
-                            onClick={() => updateStatus(testimonial.id, "approved")}
-                            className="flex-1 md:flex-none inline-flex items-center justify-center space-x-1.5 px-4 py-2.5 rounded-lg bg-emerald-500/10 hover:bg-emerald-500 text-emerald-600 dark:text-emerald-400 hover:text-white text-xs font-mono font-bold uppercase transition-all"
-                            title="Approve Review"
-                          >
-                            <Check className="w-3.5 h-3.5" />
-                            <span>Approve</span>
-                          </button>
-                        )}
-                        {testimonial.status !== "rejected" && (
-                          <button
-                            onClick={() => updateStatus(testimonial.id, "rejected")}
-                            className="flex-1 md:flex-none inline-flex items-center justify-center space-x-1.5 px-4 py-2.5 rounded-lg bg-zinc-100 dark:bg-zinc-800/80 hover:bg-zinc-200 dark:hover:bg-zinc-800 text-zinc-600 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-zinc-200 text-xs font-mono font-bold uppercase transition-all"
-                            title="Reject Review"
-                          >
-                            <X className="w-3.5 h-3.5" />
-                            <span>Reject</span>
-                          </button>
-                        )}
-                        <button
-                          onClick={() => deleteTestimonial(testimonial.id)}
-                          className="px-4 py-2.5 rounded-lg bg-red-500/10 hover:bg-red-500 text-red-600 dark:text-red-400 hover:text-white text-xs font-mono font-bold uppercase transition-all flex items-center justify-center"
-                          title="Delete Permanently"
+                {/* Testimonials List */}
+                {loading ? (
+                  <div className="flex flex-col items-center justify-center py-24 space-y-4">
+                    <div className="w-8 h-8 rounded-full border-2 border-orange-500/25 border-t-orange-500 animate-spin" />
+                    <p className="text-xs font-mono tracking-wider text-zinc-400">LOADING DATABASE ENTRIES...</p>
+                  </div>
+                ) : filtered.length === 0 ? (
+                  <div className="border border-dashed border-zinc-200 dark:border-zinc-800 rounded-2xl p-16 text-center text-zinc-400 space-y-3 bg-white/40 dark:bg-zinc-900/10">
+                    <Clock className="w-8 h-8 text-zinc-300 dark:text-zinc-700 mx-auto stroke-[1.5]" />
+                    <p className="text-sm">No testimonials in the &quot;{activeTab}&quot; queue.</p>
+                  </div>
+                ) : (
+                  <div className="space-y-4">
+                    <AnimatePresence mode="popLayout">
+                      {filtered.map((testimonial) => (
+                        <motion.div
+                          key={testimonial.id}
+                          initial={{ opacity: 0, y: 15 }}
+                          animate={{ opacity: 1, y: 0 }}
+                          exit={{ opacity: 0, scale: 0.95 }}
+                          className="p-6 md:p-8 rounded-2xl bg-white dark:bg-zinc-900/30 border border-zinc-200/50 dark:border-zinc-900 shadow-sm flex flex-col md:flex-row md:items-start justify-between gap-6"
                         >
-                          <Trash2 className="w-3.5 h-3.5" />
-                        </button>
-                      </div>
-                    </motion.div>
-                  ))}
-                </AnimatePresence>
-              </div>
+                          <div className="flex items-start space-x-4 flex-1">
+                            <GradientAvatar
+                              name={testimonial.name}
+                              photoUrl={testimonial.photo_url || testimonial.avatar_url}
+                              size={46}
+                            />
+                            <div className="space-y-3 flex-1 text-left">
+                              <div>
+                                <h3 className="font-display font-bold text-base text-zinc-900 dark:text-zinc-50">{testimonial.name}</h3>
+                                {testimonial.business_name && (
+                                  <p className="text-xs font-mono text-zinc-400 uppercase tracking-wide">{testimonial.business_name}</p>
+                                )}
+                              </div>
+                              
+                              {/* Rating */}
+                              <div className="flex space-x-1">
+                                {Array.from({ length: 5 }).map((_, i) => (
+                                  <Star
+                                    key={i}
+                                    className={`w-3.5 h-3.5 ${
+                                      i < testimonial.rating
+                                        ? "fill-orange-500 text-orange-500 dark:fill-amber-400 dark:text-amber-400"
+                                        : "text-zinc-200 dark:text-zinc-800"
+                                    }`}
+                                  />
+                                ))}
+                              </div>
+
+                              {/* Review */}
+                              <p className="text-sm text-zinc-600 dark:text-zinc-300 leading-relaxed font-sans italic">
+                                &quot;{testimonial.review}&quot;
+                              </p>
+
+                              <div className="text-[10px] text-zinc-400 font-mono">
+                                Submitted: {new Date(testimonial.created_at).toLocaleString()}
+                              </div>
+                            </div>
+                          </div>
+
+                          {/* Actions */}
+                          <div className="flex md:flex-col gap-2 shrink-0 justify-end border-t md:border-t-0 pt-4 md:pt-0 border-zinc-100 dark:border-zinc-900">
+                            {testimonial.status !== "approved" && (
+                              <button
+                                onClick={() => updateStatus(testimonial.id, "approved")}
+                                className="flex-1 md:flex-none inline-flex items-center justify-center space-x-1.5 px-4 py-2.5 rounded-lg bg-emerald-500/10 hover:bg-emerald-500 text-emerald-600 dark:text-emerald-400 hover:text-white text-xs font-mono font-bold uppercase transition-all"
+                                title="Approve Review"
+                              >
+                                <Check className="w-3.5 h-3.5" />
+                                <span>Approve</span>
+                              </button>
+                            )}
+                            {testimonial.status !== "rejected" && (
+                              <button
+                                onClick={() => updateStatus(testimonial.id, "rejected")}
+                                className="flex-1 md:flex-none inline-flex items-center justify-center space-x-1.5 px-4 py-2.5 rounded-lg bg-zinc-100 dark:bg-zinc-800/80 hover:bg-zinc-200 dark:hover:bg-zinc-800 text-zinc-600 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-zinc-200 text-xs font-mono font-bold uppercase transition-all"
+                                title="Reject Review"
+                              >
+                                <X className="w-3.5 h-3.5" />
+                                <span>Reject</span>
+                              </button>
+                            )}
+                            <button
+                              onClick={() => deleteTestimonial(testimonial.id)}
+                              className="px-4 py-2.5 rounded-lg bg-red-500/10 hover:bg-red-500 text-red-600 dark:text-red-400 hover:text-white text-xs font-mono font-bold uppercase transition-all flex items-center justify-center"
+                              title="Delete Permanently"
+                            >
+                              <Trash2 className="w-3.5 h-3.5" />
+                            </button>
+                          </div>
+                        </motion.div>
+                      ))}
+                    </AnimatePresence>
+                  </div>
+                )}
+              </>
+            )}
+
+            {dashboardView === "inquiries" && (
+              <>
+                {/* Status Tabs for Inquiries */}
+                <div className="flex space-x-2 border-b border-zinc-200 dark:border-zinc-900/40 pb-3">
+                  {(["unread", "read", "archived"] as const).map((tab) => {
+                    const count = inquiries.filter((i) => i.status === tab).length;
+                    return (
+                      <button
+                        key={tab}
+                        onClick={() => setInquiryTab(tab)}
+                        className={`px-5 py-2.5 rounded-xl font-mono text-xs font-bold uppercase transition-all flex items-center space-x-2 ${
+                          inquiryTab === tab
+                            ? "bg-zinc-900 dark:bg-zinc-50 text-white dark:text-zinc-950 shadow-md"
+                            : "text-zinc-400 hover:text-zinc-900 dark:hover:text-zinc-50 hover:bg-zinc-100 dark:hover:bg-zinc-900"
+                        }`}
+                      >
+                        <span>{tab}</span>
+                        <span className={`px-1.5 py-0.5 rounded-md text-[10px] ${inquiryTab === tab ? "bg-zinc-700 dark:bg-zinc-200" : "bg-zinc-200 dark:bg-zinc-800"}`}>
+                          {count}
+                        </span>
+                      </button>
+                    );
+                  })}
+                </div>
+
+                {/* Inquiries List */}
+                {loading ? (
+                  <div className="flex flex-col items-center justify-center py-24 space-y-4">
+                    <div className="w-8 h-8 rounded-full border-2 border-orange-500/25 border-t-orange-500 animate-spin" />
+                    <p className="text-xs font-mono tracking-wider text-zinc-400">LOADING DATABASE ENTRIES...</p>
+                  </div>
+                ) : inquiries.filter((i) => i.status === inquiryTab).length === 0 ? (
+                  <div className="border border-dashed border-zinc-200 dark:border-zinc-800 rounded-2xl p-16 text-center text-zinc-400 space-y-3 bg-white/40 dark:bg-zinc-900/10">
+                    <Clock className="w-8 h-8 text-zinc-300 dark:text-zinc-700 mx-auto stroke-[1.5]" />
+                    <p className="text-sm">No inquiries in the &quot;{inquiryTab}&quot; queue.</p>
+                  </div>
+                ) : (
+                  <div className="space-y-4">
+                    <AnimatePresence mode="popLayout">
+                      {inquiries.filter((i) => i.status === inquiryTab).map((inquiry) => (
+                        <motion.div
+                          key={inquiry.id}
+                          initial={{ opacity: 0, y: 15 }}
+                          animate={{ opacity: 1, y: 0 }}
+                          exit={{ opacity: 0, scale: 0.95 }}
+                          className="p-6 md:p-8 rounded-2xl bg-white dark:bg-zinc-900/30 border border-zinc-200/50 dark:border-zinc-900 shadow-sm flex flex-col md:flex-row md:items-start justify-between gap-6"
+                        >
+                          <div className="flex items-start space-x-4 flex-1">
+                            <div className="space-y-3 flex-1 text-left">
+                              <div>
+                                <h3 className="font-display font-bold text-base text-zinc-900 dark:text-zinc-50">{inquiry.name}</h3>
+                                {inquiry.business_name && (
+                                  <p className="text-xs font-mono text-zinc-400 uppercase tracking-wide">{inquiry.business_name}</p>
+                                )}
+                              </div>
+                              
+                              <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 text-sm text-zinc-600 dark:text-zinc-400">
+                                <div><strong className="text-zinc-900 dark:text-zinc-200">Email:</strong> <a href={`mailto:${inquiry.email}`} className="text-indigo-500">{inquiry.email}</a></div>
+                                {inquiry.phone && <div><strong className="text-zinc-900 dark:text-zinc-200">Phone:</strong> {inquiry.country_code} {inquiry.phone}</div>}
+                                <div><strong className="text-zinc-900 dark:text-zinc-200">Service:</strong> <span className="font-mono text-xs">{inquiry.service}</span></div>
+                              </div>
+
+                              <p className="text-sm text-zinc-600 dark:text-zinc-300 leading-relaxed font-sans mt-2 bg-zinc-50 dark:bg-zinc-900/50 p-4 rounded-xl border border-zinc-100 dark:border-zinc-800">
+                                {inquiry.message}
+                              </p>
+
+                              <div className="text-[10px] text-zinc-400 font-mono mt-2">
+                                Submitted: {new Date(inquiry.created_at).toLocaleString()}
+                              </div>
+                            </div>
+                          </div>
+
+                          {/* Actions */}
+                          <div className="flex md:flex-col gap-2 shrink-0 justify-end border-t md:border-t-0 pt-4 md:pt-0 border-zinc-100 dark:border-zinc-900">
+                            {inquiry.status !== "read" && (
+                              <button
+                                onClick={() => updateInquiryStatus(inquiry.id, "read")}
+                                className="flex-1 md:flex-none inline-flex items-center justify-center space-x-1.5 px-4 py-2.5 rounded-lg bg-emerald-500/10 hover:bg-emerald-500 text-emerald-600 dark:text-emerald-400 hover:text-white text-xs font-mono font-bold uppercase transition-all"
+                              >
+                                <Check className="w-3.5 h-3.5" />
+                                <span>Mark Read</span>
+                              </button>
+                            )}
+                            {inquiry.status !== "archived" && (
+                              <button
+                                onClick={() => updateInquiryStatus(inquiry.id, "archived")}
+                                className="flex-1 md:flex-none inline-flex items-center justify-center space-x-1.5 px-4 py-2.5 rounded-lg bg-zinc-100 dark:bg-zinc-800/80 hover:bg-zinc-200 dark:hover:bg-zinc-800 text-zinc-600 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-zinc-200 text-xs font-mono font-bold uppercase transition-all"
+                              >
+                                <span>Archive</span>
+                              </button>
+                            )}
+                            <button
+                              onClick={() => deleteInquiry(inquiry.id)}
+                              className="px-4 py-2.5 rounded-lg bg-red-500/10 hover:bg-red-500 text-red-600 dark:text-red-400 hover:text-white text-xs font-mono font-bold uppercase transition-all flex items-center justify-center"
+                            >
+                              <Trash2 className="w-3.5 h-3.5" />
+                            </button>
+                          </div>
+                        </motion.div>
+                      ))}
+                    </AnimatePresence>
+                  </div>
+                )}
+              </>
             )}
           </div>
 
