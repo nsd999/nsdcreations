@@ -4,6 +4,7 @@ import React, { useState, useEffect } from "react";
 import Link from "next/link";
 import { Navbar } from "@/components/Navbar";
 import { Footer } from "@/components/Footer";
+import { PhoneInput } from "@/components/PhoneInput";
 import { servicesData } from "@/lib/services-data";
 import { ImageWithNSDFallback } from "@/components/ImageWithNSDFallback";
 import { Testimonials } from "@/components/Testimonials";
@@ -1024,12 +1025,9 @@ export default function HomePage() {
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
                       <div className="flex flex-col space-y-1.5">
                         <label className="text-[11px] font-mono font-bold uppercase tracking-wider text-zinc-400 dark:text-zinc-500">Phone / WhatsApp Number</label>
-                        <input
-                          type="text"
+                        <PhoneInput
                           value={formData.phone}
-                          onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
-                          className="px-4.5 py-3 rounded-xl border border-zinc-200 dark:border-zinc-800 bg-zinc-50 dark:bg-zinc-950 text-xs md:text-sm text-zinc-900 dark:text-zinc-100 focus:outline-none focus:border-indigo-500"
-                          placeholder="+91 99999 88888"
+                          onChange={(val) => setFormData({ ...formData, phone: val })}
                         />
                       </div>
                       <div className="flex flex-col space-y-1.5">

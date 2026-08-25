@@ -5,6 +5,7 @@ import Link from "next/link";
 import { Navbar } from "@/components/Navbar";
 import { Footer } from "@/components/Footer";
 import { ScrollReveal } from "@/components/ScrollReveal";
+import { PhoneInput } from "@/components/PhoneInput";
 import { 
   Mail, 
   Phone, 
@@ -19,7 +20,6 @@ export default function ContactPage() {
   const [formData, setFormData] = useState({
     name: "",
     email: "",
-    countryCode: "+91",
     phone: "",
     businessName: "",
     service: "website-development",
@@ -42,9 +42,11 @@ export default function ContactPage() {
     if (!formData.name || !formData.email || !formData.message) return;
 
     // Validate Phone if provided
-    if (formData.phone && !/^\d{10}$/.test(formData.phone)) {
-      setErrorMsg("Phone number must be exactly 10 digits");
-      return;
+    if (formData.phone && !/^\+\d+\s\d{10}$/.test(formData.phone)) {
+      if (formData.phone.split(' ')[1]?.length !== 10) {
+        setErrorMsg("Phone number must be exactly 10 digits");
+        return;
+      }
     }
 
     setLoading(true);
@@ -70,7 +72,6 @@ export default function ContactPage() {
       setFormData({
         name: "",
         email: "",
-        countryCode: "+91",
         phone: "",
         businessName: "",
         service: formData.service,
@@ -194,28 +195,11 @@ export default function ContactPage() {
                   <label htmlFor="phone" className="block text-[11px] font-mono font-bold tracking-wider text-zinc-400 dark:text-zinc-500 uppercase mb-2">
                     Phone Number
                   </label>
-                  <div className="flex space-x-2">
-                    <select
-                      id="countryCode"
-                      value={formData.countryCode}
-                      onChange={handleChange}
-                      className="w-1/3 px-4.5 py-3.5 rounded-2xl bg-zinc-50 dark:bg-zinc-950/60 border border-zinc-200 dark:border-zinc-900/60 text-xs md:text-sm text-zinc-900 dark:text-zinc-100 focus:outline-none focus:border-indigo-500"
-                    >
-                      <option value="+91">+91 (IN)</option>
-                      <option value="+1">+1 (US)</option>
-                      <option value="+44">+44 (UK)</option>
-                      <option value="+971">+971 (AE)</option>
-                      <option value="+61">+61 (AU)</option>
-                    </select>
-                    <input
-                      type="text"
-                      id="phone"
-                      value={formData.phone}
-                      onChange={handleChange}
-                      placeholder="9876543210"
-                      className="w-2/3 px-4.5 py-3.5 rounded-2xl bg-zinc-50 dark:bg-zinc-950/60 border border-zinc-200 dark:border-zinc-900/60 text-xs md:text-sm text-zinc-900 dark:text-zinc-100 placeholder-zinc-400 focus:outline-none focus:border-indigo-500"
-                    />
-                  </div>
+                  <PhoneInput
+                    value={formData.phone}
+                    onChange={(val) => setFormData({ ...formData, phone: val })}
+                    className="w-full px-4.5 py-3.5 rounded-2xl bg-zinc-50 dark:bg-zinc-950/60 border border-zinc-200 dark:border-zinc-900/60 text-xs md:text-sm text-zinc-900 dark:text-zinc-100 placeholder-zinc-400 focus-within:border-indigo-500"
+                  />
                 </div>
 
                 <div>
