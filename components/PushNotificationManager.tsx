@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Bell, X, Sparkles } from 'lucide-react';
+import { Bell, X } from 'lucide-react';
 
 function urlBase64ToUint8Array(base64String: string) {
   const padding = '='.repeat((4 - base64String.length % 4) % 4);
@@ -199,7 +199,7 @@ export function PushNotificationManager() {
             </div>
             
             <p className="text-sm text-zinc-600 dark:text-zinc-400 mb-6 leading-relaxed">
-              Want to scale your business? Allow notifications to receive a curated, highly actionable growth tip every 4 hours from our UX & Marketing experts.
+              Allow notifications to receive updates on our latest projects, insights, and exclusive content directly from our team.
             </p>
 
             <div className="flex space-x-3">
@@ -207,8 +207,7 @@ export function PushNotificationManager() {
                 onClick={handleSubscribe}
                 className="flex-1 bg-zinc-900 dark:bg-white text-white dark:text-zinc-900 py-2.5 rounded-lg text-sm font-semibold hover:opacity-90 transition-opacity flex items-center justify-center space-x-2 group"
               >
-                <span>Yes, Send Me Tips</span>
-                <Sparkles className="w-4 h-4 group-hover:text-indigo-400 transition-colors" />
+                <span>Enable Notifications</span>
               </button>
             </div>
           </div>

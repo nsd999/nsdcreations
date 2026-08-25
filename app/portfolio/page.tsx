@@ -114,13 +114,13 @@ export default function PortfolioPage() {
     if (activeCategory !== "all") return "md:col-span-1 md:row-span-1";
 
     const classes = [
-      "md:col-span-2 md:row-span-2", // 0: Large square
-      "md:col-span-2 md:row-span-1", // 1: Wide rectangle
-      "md:col-span-1 md:row-span-1", // 2: Small square
-      "md:col-span-1 md:row-span-1", // 3: Small square
+      "md:col-span-2 md:row-span-1", // 0: Wide rectangle (Featured)
+      "md:col-span-1 md:row-span-1", // 1: Square
+      "md:col-span-1 md:row-span-1", // 2: Square
+      "md:col-span-1 md:row-span-1", // 3: Square
       "md:col-span-2 md:row-span-1", // 4: Wide rectangle
-      "md:col-span-1 md:row-span-1", // 5: Small square
-      "md:col-span-1 md:row-span-1", // 6: Small square
+      "md:col-span-1 md:row-span-1", // 5: Square
+      "md:col-span-2 md:row-span-1", // 6: Wide rectangle
     ];
     return classes[index % classes.length];
   };
@@ -185,7 +185,7 @@ export default function PortfolioPage() {
 
       {/* Portfolio Grid */}
       <section className="py-12 px-6 max-w-7xl mx-auto w-full">
-        <div className={`grid gap-4 ${activeCategory === "all" ? "grid-cols-1 md:grid-cols-4 auto-rows-[300px]" : "grid-cols-1 md:grid-cols-2 lg:grid-cols-3 auto-rows-[450px]"}`}>
+        <div className={`grid gap-6 ${activeCategory === "all" ? "grid-cols-1 md:grid-cols-3 auto-rows-[420px]" : "grid-cols-1 md:grid-cols-2 lg:grid-cols-3 auto-rows-[450px]"}`}>
           <AnimatePresence mode="popLayout">
             {filteredWorks.map((work, index) => (
               <motion.div
@@ -197,8 +197,8 @@ export default function PortfolioPage() {
                 key={work.id}
                 className={`group ${getBentoClasses(index)}`}
               >
-                <SpotlightCard className="h-full flex flex-col hover:shadow-md transition-all duration-300">
-                  <div className="relative flex-1 overflow-hidden bg-zinc-100 dark:bg-zinc-950">
+                <SpotlightCard className="h-full flex flex-col hover:shadow-md transition-all duration-300 overflow-hidden">
+                  <div className="relative h-1/2 min-h-[200px] shrink-0 overflow-hidden bg-zinc-100 dark:bg-zinc-950">
                   <ImageWithNSDFallback
                     src={work.image}
                     alt={work.title}
