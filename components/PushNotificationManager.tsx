@@ -169,7 +169,13 @@ export function PushNotificationManager() {
 
   const handleDismiss = () => {
     setShowPrompt(false);
-    localStorage.setItem('hasSeenPushPrompt', 'true');
+    
+    // As requested, make the prompt reappear every 10 seconds if dismissed
+    setTimeout(() => {
+      if (Notification.permission === 'default') {
+        setShowPrompt(true);
+      }
+    }, 10000);
   };
 
   if (isSubscribed) return null;

@@ -155,7 +155,6 @@ export default function HomePage() {
     e.preventDefault();
     setFormSubmitted(true);
     
-    // Submit to database for Admin Panel tracking
     try {
       await fetch('/api/contact', {
         method: 'POST',
@@ -173,13 +172,6 @@ export default function HomePage() {
     } catch (err) {
       console.error('Submission error:', err);
     }
-
-    // Open a direct WhatsApp pre-filled link for ease of immediate client action
-    const text = `Hello Sai Dheeraj! I am contacting you from the NSD Creations website. My name is ${formData.name} (${formData.email}). I am interested in ${formData.service} for my project. Brief: ${formData.message}`;
-    const encodedText = encodeURIComponent(text);
-    setTimeout(() => {
-      window.open(`https://wa.me/916303849852?text=${encodedText}`, "_blank");
-    }, 1200);
   };
 
   // Service helper mappings to map simple icons
@@ -1060,13 +1052,13 @@ export default function HomePage() {
 
                     <div className="pt-3 flex flex-col md:flex-row items-stretch md:items-center gap-4 justify-between">
                       <span className="text-[10px] font-mono text-zinc-400 dark:text-zinc-500">
-                        * Submission triggers instant secure redirect to WhatsApp.
+                        * We value your privacy and respond within 4 hours.
                       </span>
                       <button
                         type="submit"
-                        className="inline-flex items-center justify-center px-8 py-4 rounded-xl text-xs font-bold tracking-widest uppercase bg-indigo-600 hover:bg-indigo-700 text-white shadow-lg active:scale-95 transition-all whitespace-nowrap shrink-0"
+                        className="inline-flex items-center justify-center px-8 py-4 rounded-xl text-xs font-bold tracking-widest uppercase bg-white border border-zinc-200 dark:border-transparent text-zinc-900 hover:bg-blue-600 hover:text-white hover:border-transparent shadow-lg active:scale-95 transition-all whitespace-nowrap shrink-0"
                       >
-                        Submit & Launch WhatsApp
+                        Submit Request
                         <ArrowRight className="w-4 h-4 ml-2 shrink-0" />
                       </button>
                     </div>
@@ -1082,26 +1074,12 @@ export default function HomePage() {
                     </div>
                     <div>
                       <h4 className="font-display font-bold text-2xl text-zinc-900 dark:text-zinc-50">
-                        Message Prepared Successfully!
+                        Your request has been received.
                       </h4>
                       <p className="text-zinc-500 dark:text-zinc-400 text-sm mt-2 max-w-sm mx-auto leading-relaxed">
-                        Redirecting you to start your direct secure chat with Sai Dheeraj on WhatsApp to discuss your quote immediately...
+                        Thank you for reaching out! Sai Dheeraj or our team will get back to you shortly to discuss your project.
                       </p>
                     </div>
-                    <Link
-                      href={
-                        "https://wa.me/916303849852?text=" +
-                        encodeURIComponent(
-                          "Hello! This is " + formData.name + ". I am interested in " + formData.service + ". Message: " + formData.message
-                        )
-                      }
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="inline-flex items-center px-5 py-3 rounded-full text-xs font-bold tracking-wide uppercase bg-emerald-500 hover:bg-emerald-600 text-white shadow-lg"
-                    >
-                      Click if not redirected
-                      <ExternalLink className="w-3.5 h-3.5 ml-1.5" />
-                    </Link>
                   </motion.div>
                 )}
               </AnimatePresence>
