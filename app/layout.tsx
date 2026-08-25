@@ -3,6 +3,7 @@ import "./globals.css";
 import { ThemeProvider } from "@/components/ThemeProvider";
 import { LoadingWrapper } from "@/components/LoadingWrapper";
 import { ServiceWorkerRegister } from "@/components/ServiceWorkerRegister";
+import { PushNotificationManager } from "@/components/PushNotificationManager";
 import { FilmGrain } from "@/components/FilmGrain";
 import { GlobalReviewProvider } from "@/components/GlobalReviewProvider";
 
@@ -75,6 +76,7 @@ export default function RootLayout({
             <LoadingWrapper>
               <FilmGrain />
               {children}
+              <PushNotificationManager />
               <ServiceWorkerRegister />
             </LoadingWrapper>
           </GlobalReviewProvider>
@@ -83,4 +85,3 @@ export default function RootLayout({
     </html>
   );
 }
-
