@@ -30,6 +30,10 @@ export default function TipDetailsClient({ slug }: { slug: string }) {
     return null;
   }
 
+  const relatedTips = tipsData
+    .filter((t) => t.category === tip.category && t.slug !== tip.slug)
+    .slice(0, 3);
+
   const whatsappMessage = encodeURIComponent(
     `Hi, I have seen this tip "${tip.title}" and I have found it useful. Thank you NSD Creations.`
   );
@@ -197,6 +201,36 @@ export default function TipDetailsClient({ slug }: { slug: string }) {
           </div>
         </div>
       </section>
+
+      {/* Related Tips List */}
+      {relatedTips.length > 0 && (
+        <section className="py-20 px-6 border-t border-zinc-200/50 dark:border-zinc-900/50 max-w-7xl mx-auto w-full">
+          <h3 className="font-display font-bold text-xl text-zinc-900 dark:text-zinc-100 mb-6">
+            Related Tips
+          </h3>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+            {relatedTips.map((rel) => (
+              <Link
+                key={rel.slug}
+                href={`/tips/${rel.category.toLowerCase()}/${rel.slug}`}
+                className="group p-5 rounded-2xl bg-white dark:bg-[#09090b] border border-zinc-200/60 dark:border-zinc-900/60 hover:border-indigo-500/50 dark:hover:border-indigo-400/50 transition-all flex flex-col justify-between h-full"
+              >
+                <div>
+                  <h4 className="font-display font-bold text-sm text-zinc-900 dark:text-zinc-100 mb-1.5 group-hover:text-indigo-600 dark:group-hover:text-indigo-400 transition-colors">
+                    {rel.title}
+                  </h4>
+                  <p className="text-zinc-500 dark:text-zinc-400 text-xs leading-relaxed line-clamp-2">
+                    {rel.excerpt}
+                  </p>
+                </div>
+                <span className="text-[10px] font-mono text-indigo-500 dark:text-indigo-400 font-bold mt-4 block">
+                  READ TIP &rarr;
+                </span>
+              </Link>
+            ))}
+          </div>
+        </section>
+      )}
 
       {/* Review Submission Component */}
       <Testimonials contextSlug={slug} />

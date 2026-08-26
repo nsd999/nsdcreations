@@ -177,9 +177,9 @@ export default function PortfolioPage() {
       </section>
 
       {/* Kinetic Divider */}
-      <section className="py-4 border-y border-zinc-200/40 dark:border-zinc-900/40 bg-zinc-50 dark:bg-zinc-900/20 overflow-hidden">
-        <KineticMarquee baseVelocity={3} className="text-zinc-900 dark:text-zinc-100 font-bold text-lg md:text-xl uppercase tracking-widest">
-          <span className="opacity-50 mx-4">•</span> CREATIVE EXCELLENCE <span className="opacity-50 mx-4">•</span> PRODUCTION GRADE <span className="opacity-50 mx-4">•</span> HIGH PERFORMANCE <span className="opacity-50 mx-4">•</span> TACTILE DESIGN
+      <section className="py-8 bg-zinc-100 dark:bg-[#09090b] overflow-hidden border-y border-zinc-200/50 dark:border-zinc-900/50">
+        <KineticMarquee baseVelocity={1} className="text-zinc-900 dark:text-zinc-100 font-bold text-lg md:text-xl uppercase tracking-widest">
+          <span className="mx-8 text-indigo-500">❖</span> CREATIVE EXCELLENCE <span className="opacity-50 mx-4">•</span> PRODUCTION GRADE <span className="opacity-50 mx-4">•</span> HIGH PERFORMANCE <span className="opacity-50 mx-4">•</span> TACTILE DESIGN
         </KineticMarquee>
       </section>
 

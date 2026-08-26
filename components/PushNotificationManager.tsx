@@ -110,28 +110,30 @@ export function PushNotificationManager() {
   function playNSDReviewNotification() {
     const audioCtx = new (window.AudioContext || (window as any).webkitAudioContext)();
     
-    function playTone(freq: number, startTime: number, duration: number, volume: number) {
+    // Helper function to play a single pleasant tone (bell-like chime)
+    function playTone(freq: number, startTime: number, duration: number) {
       const osc = audioCtx.createOscillator();
       const gainNode = audioCtx.createGain();
       
-      osc.type = 'triangle';
-      osc.frequency.setValueAtTime(freq, audioCtx.currentTime + startTime);
+      osc.type = 'sine';
+      osc.frequency.setValueAtTime(freq, startTime);
       
-      gainNode.gain.setValueAtTime(0.001, audioCtx.currentTime + startTime);
-      gainNode.gain.linearRampToValueAtTime(volume, audioCtx.currentTime + startTime + 0.05);
-      gainNode.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + startTime + duration);
+      // Smooth attack and release
+      gainNode.gain.setValueAtTime(0, startTime);
+      gainNode.gain.linearRampToValueAtTime(0.2, startTime + 0.1);
+      gainNode.gain.exponentialRampToValueAtTime(0.001, startTime + duration);
       
       osc.connect(gainNode);
       gainNode.connect(audioCtx.destination);
       
-      osc.start(audioCtx.currentTime + startTime);
-      osc.stop(audioCtx.currentTime + startTime + duration);
+      osc.start(startTime);
+      osc.stop(startTime + duration);
     }
-  
-    playTone(523.25, 0.0, 0.4, 0.1);  // C5
-    playTone(659.25, 0.08, 0.4, 0.1); // E5
-    playTone(783.99, 0.16, 0.8, 0.15); // G5
-    playTone(1046.50, 0.20, 1.2, 0.12); // C6
+    
+    const now = audioCtx.currentTime;
+    playTone(523.25, now, 1.5);       // C5
+    playTone(659.25, now + 0.15, 1.5); // E5
+    playTone(783.99, now + 0.3, 2.0);  // G5 (lingers slightly longer)
   }
 
   const handleSubscribe = async () => {
