@@ -171,56 +171,61 @@ export function PushNotificationManager() {
 
   const handleDismiss = () => {
     setShowPrompt(false);
-    
-    // As requested, make the prompt reappear every 10 seconds if dismissed
-    setTimeout(() => {
-      if (Notification.permission === 'default') {
-        setShowPrompt(true);
-      }
-    }, 10000);
   };
 
   if (isSubscribed) return null;
 
   return (
-    <AnimatePresence>
-      {showPrompt && (
-        <motion.div
-          initial={{ opacity: 0, y: 50, scale: 0.9 }}
-          animate={{ opacity: 1, y: 0, scale: 1 }}
-          exit={{ opacity: 0, y: 20, scale: 0.95 }}
-          className="fixed bottom-6 right-6 z-50 w-[380px] p-1 rounded-2xl bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500 shadow-2xl"
-        >
-          <div className="bg-white dark:bg-zinc-950 p-6 rounded-xl relative overflow-hidden h-full w-full">
-            <button 
-              onClick={handleDismiss}
-              className="absolute top-4 right-4 text-zinc-400 hover:text-zinc-900 dark:hover:text-white transition-colors"
-            >
-              <X className="w-4 h-4" />
-            </button>
-
-            <div className="flex items-center space-x-3 mb-4">
-              <div className="w-10 h-10 rounded-full bg-indigo-500/10 flex items-center justify-center text-indigo-500">
-                <Bell className="w-5 h-5" />
-              </div>
-              <h3 className="text-lg font-bold text-zinc-900 dark:text-white">Unlock 50 Growth Tips</h3>
-            </div>
-            
-            <p className="text-sm text-zinc-600 dark:text-zinc-400 mb-6 leading-relaxed">
-              Allow notifications to receive updates on our latest projects, insights, and exclusive content directly from our team.
-            </p>
-
-            <div className="flex space-x-3">
-              <button
-                onClick={handleSubscribe}
-                className="flex-1 bg-zinc-900 dark:bg-white text-white dark:text-zinc-900 py-2.5 rounded-lg text-sm font-semibold hover:opacity-90 transition-opacity flex items-center justify-center space-x-2 group"
+    <div className="fixed bottom-6 right-6 z-50 flex flex-col items-end space-y-4">
+      <AnimatePresence>
+        {showPrompt && (
+          <motion.div
+            initial={{ opacity: 0, y: 20, scale: 0.95 }}
+            animate={{ opacity: 1, y: 0, scale: 1 }}
+            exit={{ opacity: 0, y: 10, scale: 0.95 }}
+            className="w-[320px] md:w-[380px] p-1 rounded-2xl bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500 shadow-2xl origin-bottom-right"
+          >
+            <div className="bg-white dark:bg-zinc-950 p-6 rounded-xl relative overflow-hidden h-full w-full">
+              <button 
+                onClick={handleDismiss}
+                className="absolute top-4 right-4 text-zinc-400 hover:text-zinc-900 dark:hover:text-white transition-colors"
               >
-                <span>Enable Notifications</span>
+                <X className="w-4 h-4" />
               </button>
+
+              <div className="flex items-center space-x-3 mb-4">
+                <div className="w-10 h-10 rounded-full bg-indigo-500/10 flex items-center justify-center text-indigo-500">
+                  <Bell className="w-5 h-5" />
+                </div>
+                <h3 className="text-lg font-bold text-zinc-900 dark:text-white">Unlock 50 Growth Tips</h3>
+              </div>
+              
+              <p className="text-sm text-zinc-600 dark:text-zinc-400 mb-6 leading-relaxed">
+                Allow notifications to receive updates on our latest projects, insights, and exclusive content directly from our team.
+              </p>
+
+              <div className="flex space-x-3">
+                <button
+                  onClick={handleSubscribe}
+                  className="flex-1 bg-zinc-900 dark:bg-white text-white dark:text-zinc-900 py-2.5 rounded-lg text-sm font-semibold hover:opacity-90 transition-opacity flex items-center justify-center space-x-2 group"
+                >
+                  <span>Enable Notifications</span>
+                </button>
+              </div>
             </div>
-          </div>
-        </motion.div>
-      )}
-    </AnimatePresence>
+          </motion.div>
+        )}
+      </AnimatePresence>
+
+      <motion.button
+        whileHover={{ scale: 1.05 }}
+        whileTap={{ scale: 0.95 }}
+        onClick={() => setShowPrompt(!showPrompt)}
+        className="w-14 h-14 bg-zinc-900 dark:bg-white text-white dark:text-zinc-900 rounded-full shadow-2xl flex items-center justify-center border-2 border-transparent hover:border-indigo-500/50 transition-all focus:outline-none"
+        aria-label="Toggle notifications prompt"
+      >
+        {showPrompt ? <X className="w-6 h-6" /> : <Bell className="w-6 h-6" />}
+      </motion.button>
+    </div>
   );
 }
