@@ -114,13 +114,15 @@ export default async function ServicePricingPage({ params }: Props) {
           name: "NSD Creations",
           url: "https://nsdcreations.vercel.app",
         },
-        offers: service.packages.map((pkg) => ({
-          "@type": "Offer",
-          name: pkg.name,
-          price: pkg.price.replace(/[₹,+]/g, "").trim(),
-          priceCurrency: "INR",
-          description: pkg.idealFor ?? pkg.name,
-        })),
+        offers: service.packages
+          .filter((pkg) => /^(?:₹)?[\d,]+(?:\.\d{1,2})?$/.test(pkg.price.replace(/\s/g, "")))
+          .map((pkg) => ({
+            "@type": "Offer",
+            name: pkg.name,
+            price: pkg.price.replace(/[₹,]/g, "").trim(),
+            priceCurrency: "INR",
+            description: pkg.idealFor ?? pkg.name,
+          })),
       },
       ...(service.faqs && service.faqs.length > 0
         ? [
