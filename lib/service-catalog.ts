@@ -33,3 +33,8 @@ export async function getServiceBySlug(slug: string) {
   const services = await getServicesWithOverrides();
   return services.find((service) => service.slug === slug) || null;
 }
+
+export async function getServiceById(id: string) {
+  const services = await getServicesWithOverrides();
+  return services.find((service) => service.id === id || service.slug === id) || null;
+}
