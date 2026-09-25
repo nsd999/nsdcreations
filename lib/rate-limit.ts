@@ -4,7 +4,7 @@ import { createHmac } from "node:crypto";
 import { getSupabaseAdmin } from "@/lib/supabase-admin";
 
 function getSecret() {
-  return process.env.ADMIN_SESSION_SECRET || process.env.SUPABASE_SERVICE_ROLE_KEY || "";
+  return process.env.ADMIN_SESSION_SECRET || process.env.SUPABASE_SECRET_KEY || process.env.SUPABASE_SERVICE_ROLE_KEY || "";
 }
 
 function hashKey(value: string) {
