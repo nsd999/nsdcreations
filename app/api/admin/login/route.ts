@@ -31,7 +31,10 @@ export async function POST(request: Request) {
 
     setAdminCookie(response, result.token);
     return response;
-  } catch {
+  } catch (error: any) {
+    if (error?.message === "ADMIN_SESSION_SECRET_NOT_CONFIGURED") {
+      return NextResponse.json({ error: "Admin authentication is not configured." }, { status: 503 });
+    }
     return NextResponse.json({ error: "Invalid credentials." }, { status: 401 });
   }
 }
