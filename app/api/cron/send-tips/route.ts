@@ -3,26 +3,24 @@ import { getSupabaseAdmin } from '@/lib/supabase-admin';
 import webpush from 'web-push';
 import { tipsData } from '@/lib/tips-data';
 
-// Initialize web-push with VAPID keys
-webpush.setVapidDetails(
-  'mailto:nsd.creations.official@gmail.com',
-  process.env.NEXT_PUBLIC_VAPID_PUBLIC_KEY!,
-  process.env.VAPID_PRIVATE_KEY!
-);
-
 export async function GET(req: Request) {
   try {
-    // 1. Verify this is a valid cron request (if using Vercel Cron)
     const authHeader = req.headers.get('authorization');
-    // If you set CRON_SECRET in Vercel, it sends `Bearer <CRON_SECRET>`
-    if (
-      process.env.CRON_SECRET &&
-      authHeader !== `Bearer ${process.env.CRON_SECRET}`
-    ) {
+    const cronSecret = process.env.CRON_SECRET;
+    if (!cronSecret || authHeader !== `Bearer ${cronSecret}`) {
       return new NextResponse('Unauthorized', { status: 401 });
     }
 
-    // 2. Initialize Supabase Client
+    if (!process.env.NEXT_PUBLIC_VAPID_PUBLIC_KEY || !process.env.VAPID_PRIVATE_KEY) {
+      return NextResponse.json({ error: 'VAPID keys not configured' }, { status: 503 });
+    }
+
+    webpush.setVapidDetails(
+      'mailto:nsd.creations.official@gmail.com',
+      process.env.NEXT_PUBLIC_VAPID_PUBLIC_KEY,
+      process.env.VAPID_PRIVATE_KEY
+    );
+
     const supabase = getSupabaseAdmin();
 
     // 3. Fetch all active subscriptions
