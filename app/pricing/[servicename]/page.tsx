@@ -322,17 +322,41 @@ export default async function ServicePricingPage({ params }: Props) {
                     </ul>
 
                     {/* CTA */}
-                    <Link
-                      href="/contact"
-                      className={`w-full py-4 rounded-xl text-sm font-bold flex items-center justify-center transition-all mt-auto ${
-                        isPopular
-                          ? "bg-indigo-600 hover:bg-indigo-700 text-white shadow-lg shadow-indigo-500/25"
-                          : "bg-zinc-900 hover:bg-zinc-800 dark:bg-white dark:hover:bg-zinc-200 text-white dark:text-zinc-900"
-                      }`}
-                    >
-                      Get Started
-                      <ArrowRight className="w-4 h-4 ml-2" />
-                    </Link>
+                    {pkg.price.includes("+") || /–|-/.test(pkg.price.replace("₹", "")) ? (
+                      <Link
+                        href={
+                          "/contact?service=" +
+                          encodeURIComponent(service.name) +
+                          "&package=" +
+                          encodeURIComponent(pkg.name)
+                        }
+                        className={`w-full py-4 rounded-xl text-sm font-bold flex items-center justify-center transition-all mt-auto ${
+                          isPopular
+                            ? "bg-indigo-600 hover:bg-indigo-700 text-white shadow-lg shadow-indigo-500/25"
+                            : "bg-zinc-900 hover:bg-zinc-800 dark:bg-white dark:hover:bg-zinc-200 text-white dark:text-zinc-900"
+                        }`}
+                      >
+                        Request Custom Quote
+                        <ArrowRight className="w-4 h-4 ml-2" />
+                      </Link>
+                    ) : (
+                      <Link
+                        href={
+                          "/book/" +
+                          service.slug +
+                          "/" +
+                          encodeURIComponent(pkg.name)
+                        }
+                        className={`w-full py-4 rounded-xl text-sm font-bold flex items-center justify-center transition-all mt-auto ${
+                          isPopular
+                            ? "bg-indigo-600 hover:bg-indigo-700 text-white shadow-lg shadow-indigo-500/25"
+                            : "bg-zinc-900 hover:bg-zinc-800 dark:bg-white dark:hover:bg-zinc-200 text-white dark:text-zinc-900"
+                        }`}
+                      >
+                        Reserve This Plan
+                        <ArrowRight className="w-4 h-4 ml-2" />
+                      </Link>
+                    )}
                   </div>
                 </div>
               </ScrollReveal>
