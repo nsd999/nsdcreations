@@ -20,6 +20,20 @@ function clean(value: unknown, max = 1000) {
 
 export async function POST(request: Request) {
   try {
+    if (!process.env.RAZORPAY_KEY_ID || !process.env.RAZORPAY_KEY_SECRET) {
+      return NextResponse.json(
+        { error: "Payments are not configured yet. Please request a custom quote." },
+        { status: 503 },
+      );
+    }
+
+    if (!process.env.NEXT_PUBLIC_SUPABASE_URL || !process.env.SUPABASE_SERVICE_ROLE_KEY) {
+      return NextResponse.json(
+        { error: "Booking service is not configured yet. Please try again later." },
+        { status: 503 },
+      );
+    }
+
     if (!(await consumeRateLimit(request, 'razorpay-create-order', 8, 600))) return rateLimitResponse();
     const body = await request.json();
     const serviceId = clean(body.serviceId, 120);
@@ -186,7 +200,29 @@ export async function POST(request: Request) {
       );
     }
 
-    console.error("Create order error:", error?.message || "unknown");
+    const code = error?.code || "";
+    const description = error?.description || "";
+    console.error("Create order error:", {
+      message: error?.message || "unknown",
+      code,
+      description,
+      status: error?.status || null,
+    });
+
+    if (error?.message === "RAZORPAY_REQUEST_FAILED") {
+      return NextResponse.json(
+        { error: "Razorpay rejected the payment order. Please verify the Razorpay Test/Live credentials and account configuration." },
+        { status: 502 },
+      );
+    }
+
+    if (error?.message === "Server database configuration is incomplete.") {
+      return NextResponse.json(
+        { error: "Booking service is not configured yet. Please try again later." },
+        { status: 503 },
+      );
+    }
+
     return NextResponse.json({ error: "Unable to start secure payment." }, { status: 500 });
   }
 }
