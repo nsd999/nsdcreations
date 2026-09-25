@@ -21,6 +21,7 @@ export async function GET(
     .select("*")
     .eq("id", bookingId)
     .eq("access_token_hash", hashToken(token))
+    .gt("access_token_expires_at", new Date().toISOString())
     .single();
 
   if (error || !booking) {
