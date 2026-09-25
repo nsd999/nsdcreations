@@ -2,6 +2,7 @@ import React from "react";
 import { notFound } from "next/navigation";
 import { Metadata } from "next";
 import { tipsData } from "@/lib/tips-data";
+import { getCmsTipBySlug } from "@/lib/public-cms";
 import TipsPage from "@/app/tips/page";
 import TipDetailsClient from "./TipDetailsClient";
 
@@ -50,7 +51,7 @@ export default async function DynamicTipsPage({ params }: { params: Promise<{ sl
   const resolvedParams = await params;
   const slugSegments = resolvedParams.slug || [];
 
-  let tip = null;
+  let tip: any = null;
   let isCategory = false;
 
   if (slugSegments.length === 1) {
@@ -59,10 +60,12 @@ export default async function DynamicTipsPage({ params }: { params: Promise<{ sl
       isCategory = true;
     } else {
       tip = tipsData.find((t) => t.slug.toLowerCase() === rawParam);
+      if (!tip) tip = await getCmsTipBySlug(rawParam);
     }
   } else if (slugSegments.length === 2) {
     const tipSlug = slugSegments[1].toLowerCase();
     tip = tipsData.find((t) => t.slug.toLowerCase() === tipSlug);
+    if (!tip) tip = await getCmsTipBySlug(tipSlug);
   }
 
   if (isCategory) {
@@ -97,7 +100,7 @@ export default async function DynamicTipsPage({ params }: { params: Promise<{ sl
           type="application/ld+json"
           dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
         />
-        <TipDetailsClient slug={tip.slug} />
+        <TipDetailsClient slug={tip.slug} tipOverride={tip} />
       </>
     );
   }
