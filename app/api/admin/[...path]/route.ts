@@ -471,6 +471,7 @@ export async function POST(
 
       const token = randomBytes(32).toString("base64url");
       const tokenHash = createHash("sha256").update(token).digest("hex");
+      const accessTokenExpiresAt = new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toISOString();
       const bookingReference = "NSD-QT-" + new Date().toISOString().slice(0, 10).replace(/-/g, "") + "-" + Math.random().toString(36).slice(2, 8).toUpperCase();
 
       const { data: booking, error: bookingError } = await db
@@ -505,6 +506,7 @@ export async function POST(
           booking_status: "AWAITING_PAYMENT",
           payment_status: "PENDING",
           access_token_hash: tokenHash,
+          access_token_expires_at: accessTokenExpiresAt,
           notes: quote.notes || null,
         })
         .select("id,booking_reference")
