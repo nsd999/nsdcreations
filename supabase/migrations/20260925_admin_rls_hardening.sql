@@ -105,3 +105,18 @@ $$;
 
 revoke all on function public.consume_rate_limit(text, integer, integer) from public, anon, authenticated;
 grant execute on function public.consume_rate_limit(text, integer, integer) to service_role;
+
+
+alter table if exists public.cms_tips add column if not exists scheduled_for timestamptz;
+alter table if exists public.notification_campaigns add column if not exists status text not null default 'sent';
+alter table if exists public.notification_campaigns add column if not exists recipient_ids jsonb not null default '[]'::jsonb;
+
+do $$
+begin
+  if to_regclass('public.notification_campaigns') is not null then
+    alter table public.notification_campaigns drop constraint if exists notification_campaigns_status_check;
+    alter table public.notification_campaigns add constraint notification_campaigns_status_check
+      check (status in ('scheduled','sent','failed'));
+  end if;
+exception when duplicate_object then null;
+end $$;
