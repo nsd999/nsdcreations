@@ -2,10 +2,8 @@ import "server-only";
 
 import { cookies } from "next/headers";
 import { createHash, createHmac, randomBytes, scrypt as nodeScrypt } from "node:crypto";
-import { promisify } from "node:util";
 import { getSupabaseAdmin } from "@/lib/supabase-admin";
 
-const scrypt = promisify(nodeScrypt);
 
 export const ADMIN_COOKIE = "nsd_admin_session";
 export const ADMIN_SESSION_TTL_SECONDS = 60 * 60 * 8;
@@ -27,9 +25,23 @@ function hashValue(value: string) {
   return createHash("sha256").update(value).digest("hex");
 }
 
+function scryptAsync(
+  password: string,
+  salt: Buffer,
+  keyLength: number,
+  options: { N: number; r: number; p: number; maxmem?: number },
+) {
+  return new Promise<Buffer>((resolve, reject) => {
+    nodeScrypt(password, salt, keyLength, options, (error, derivedKey) => {
+      if (error) return reject(error);
+      resolve(derivedKey);
+    });
+  });
+}
+
 async function hashPassword(password: string) {
   const salt = randomBytes(16);
-  const derived = (await scrypt(password, salt, 64, {
+  const derived = (await scryptAsync(password, salt, 64, {
     N: 32768,
     r: 8,
     p: 1,
@@ -61,7 +73,7 @@ async function verifyPassword(password: string, encoded: string) {
   }
 
   try {
-    const derived = (await scrypt(password, salt, expected.length, {
+    const derived = (await scryptAsync(password, salt, expected.length, {
       N,
       r,
       p,
