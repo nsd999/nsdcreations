@@ -107,6 +107,10 @@ export async function GET(
         notificationNewToday,
         subscribersActive,
         reviewNewToday,
+        subscribersInactive,
+        subscribersNewMonth,
+        subscribersActiveNewMonth,
+        todayPaymentRows,
         confirmedMonthRows,
         bookingFinancialRows,
         monthPayments,
@@ -120,6 +124,10 @@ export async function GET(
         countRows(db, "push_subscriptions", "id", [["gte", "created_at", todayIso]]),
         countRows(db, "push_subscriptions", "id", [["eq", "status", "active"]]),
         countRows(db, "testimonials", "id", [["eq", "status", "pending"], ["gte", "created_at", todayIso]]),
+        countRows(db, "push_subscriptions", "id", [["eq", "status", "inactive"]]),
+        countRows(db, "push_subscriptions", "id", [["gte", "created_at", monthIso]]),
+        countRows(db, "push_subscriptions", "id", [["eq", "status", "active"], ["gte", "created_at", monthIso]]),
+        db.from("booking_payments").select("amount_paise,status,created_at").gte("created_at", todayIso),
         db.from("service_bookings").select("id,total_amount_paise,advance_amount_paise,balance_amount_paise,booking_status,created_at").gte("created_at", monthIso),
         db.from("service_bookings").select("total_amount_paise,advance_amount_paise,balance_amount_paise,booking_status").in("booking_status", ["CONFIRMED","IN_PROGRESS","ON_HOLD","COMPLETED"]),
         db.from("booking_payments").select("amount_paise,status,created_at").gte("created_at", monthIso),
@@ -128,6 +136,11 @@ export async function GET(
       const financial = bookingFinancialRows.data || [];
       const projectValueMonth = financial.reduce((sum: number, row: any) => sum + money(row.total_amount_paise), 0);
       const balanceOutstanding = financial.reduce((sum: number, row: any) => sum + money(row.balance_amount_paise), 0);
+
+      const todayPaymentRowsData = todayPaymentRows.data || [];
+      const advanceRevenueToday = todayPaymentRowsData
+        .filter((row: any) => row.status === "verified")
+        .reduce((sum: number, row: any) => sum + money(row.amount_paise), 0);
 
       const monthPaymentRows = monthPayments.data || [];
       const advanceCollectedMonth = monthPaymentRows
@@ -143,10 +156,13 @@ export async function GET(
           bookings: bookingsToday,
           pendingPayments,
           successfulPayments: successfulPaymentsToday,
-          advanceRevenuePaise: advanceCollectedMonth,
+          advanceRevenuePaise: advanceRevenueToday,
           outstandingBalancePaise: balanceOutstanding,
-          notificationRegistrations: notificationNewToday,
-          activeSubscribers: subscribersActive,
+          notificationRegistrations: subscribersActive,
+          notificationRegistrationsNewToday: notificationNewToday,
+          notificationRegistrationsInactive: subscribersInactive,
+          notificationRegistrationsNewMonth: subscribersNewMonth,
+          notificationRegistrationsActiveNewMonth: subscribersActiveNewMonth,
           newReviews: reviewNewToday,
         },
         month: {
