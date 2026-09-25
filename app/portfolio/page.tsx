@@ -22,7 +22,20 @@ import {
 } from "lucide-react";
 import { motion, AnimatePresence } from "motion/react";
 
-type PortfolioWork = {\n  id: string | number;\n  title: string;\n  category: string;\n  client: string;\n  type: string;\n  image: string;\n  description: string;\n  link: string;\n  tech: string[];\n  featured?: boolean;\n};\n\nexport default function PortfolioPage() {
+type PortfolioWork = {
+  id: string | number;
+  title: string;
+  category: string;
+  client: string;
+  type: string;
+  image: string;
+  description: string;
+  link: string;
+  tech: string[];
+  featured?: boolean;
+};
+
+export default function PortfolioPage() {
   const [activeCategory, setActiveCategory] = useState<string>("all");
   const [cmsWorks, setCmsWorks] = useState<PortfolioWork[]>([]);
 
