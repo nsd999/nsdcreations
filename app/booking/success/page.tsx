@@ -15,7 +15,7 @@ function money(paise: number) {
 }
 
 export default function BookingSuccessPage() {
-  const [state, setState] = useState<{ loading: boolean; booking?: any; error?: string }>({
+  const [state, setState] = useState<{ loading: boolean; booking?: any; token?: string; error?: string }>({
     loading: true,
   });
 
@@ -40,7 +40,7 @@ export default function BookingSuccessPage() {
         if (!response.ok) throw new Error(data.error || "Unable to load booking.");
         return data;
       })
-      .then((data) => setState({ loading: false, booking: data.booking }))
+      .then((data) => setState({ loading: false, booking: data.booking, token }))
       .catch((error) => setState({ loading: false, error: error.message }));
   }, []);
 
@@ -99,7 +99,7 @@ export default function BookingSuccessPage() {
 
               <div className="flex flex-col sm:flex-row gap-3">
                 <a
-                  href={"/api/bookings/" + encodeURIComponent(state.booking.id) + "/receipt?token=" + encodeURIComponent(new URLSearchParams(window.location.search).get("token") || "")}
+                  href={"/api/bookings/" + encodeURIComponent(state.booking.id) + "/receipt?token=" + encodeURIComponent(state.token || "")}
                   className="flex-1 py-3 rounded-xl border border-zinc-800 flex items-center justify-center gap-2"
                   download
                 >
