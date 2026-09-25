@@ -98,13 +98,14 @@ export default function BookingSuccessPage() {
               </div>
 
               <div className="flex flex-col sm:flex-row gap-3">
-                <button
-                  onClick={() => window.print()}
+                <a
+                  href={"/api/bookings/" + encodeURIComponent(state.booking.id) + "/receipt?token=" + encodeURIComponent(new URLSearchParams(window.location.search).get("token") || "")}
                   className="flex-1 py-3 rounded-xl border border-zinc-800 flex items-center justify-center gap-2"
+                  download
                 >
                   <Printer className="w-4 h-4" />
-                  Print / Save Receipt
-                </button>
+                  Download Receipt
+                </a>
                 <a
                   href="https://wa.me/916303849852"
                   target="_blank"
