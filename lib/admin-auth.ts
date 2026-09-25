@@ -1,7 +1,7 @@
 import "server-only";
 
 import { cookies } from "next/headers";
-import { createHash, randomBytes, scrypt as nodeScrypt } from "node:crypto";
+import { createHash, createHmac, randomBytes, scrypt as nodeScrypt } from "node:crypto";
 import { promisify } from "node:util";
 import { getSupabaseAdmin } from "@/lib/supabase-admin";
 
@@ -22,6 +22,8 @@ type AdminSession = {
 };
 
 function hashValue(value: string) {
+  const secret = process.env.ADMIN_SESSION_SECRET;
+  if (secret) return createHmac("sha256", secret).update(value).digest("hex");
   return createHash("sha256").update(value).digest("hex");
 }
 
