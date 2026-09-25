@@ -236,13 +236,6 @@ ON public.testimonials
 FOR INSERT 
 WITH CHECK (status = 'pending');
 
--- 3. Allow admins to manage all testimonials (assuming email or service role, or full access for development)
-CREATE POLICY "Allow admin operations" 
-ON public.testimonials
-FOR ALL 
-USING (true)
-WITH CHECK (true);
-
 -- ENABLE REALTIME
 alter publication supabase_realtime add table testimonials;
 
@@ -256,7 +249,7 @@ CREATE TABLE IF NOT EXISTS public.contact_submissions (
   business_name TEXT,
   service TEXT,
   message TEXT NOT NULL,
-  status TEXT NOT NULL DEFAULT 'unread' CHECK (status IN ('unread', 'read', 'archived')),
+  status TEXT NOT NULL DEFAULT 'unread' CHECK (status IN ('unread','contacted','qualified','proposal_sent','won','lost','archived','read')),
   created_at TIMESTAMP WITH TIME ZONE DEFAULT timezone('utc'::text, now()) NOT NULL
 );
 
@@ -270,10 +263,4 @@ ON public.contact_submissions
 FOR INSERT 
 WITH CHECK (true);
 
--- 2. Allow admins to manage all submissions
-CREATE POLICY "Allow admin operations for contact submissions" 
-ON public.contact_submissions
-FOR ALL 
-USING (true)
-WITH CHECK (true);
 `;

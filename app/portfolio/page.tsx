@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import Link from "next/link";
 import { Navbar } from "@/components/Navbar";
 import { Footer } from "@/components/Footer";
@@ -22,8 +22,29 @@ import {
 } from "lucide-react";
 import { motion, AnimatePresence } from "motion/react";
 
+type PortfolioWork = {
+  id: string | number;
+  title: string;
+  category: string;
+  client: string;
+  type: string;
+  image: string;
+  description: string;
+  link: string;
+  tech: string[];
+  featured?: boolean;
+};
+
 export default function PortfolioPage() {
   const [activeCategory, setActiveCategory] = useState<string>("all");
+  const [cmsWorks, setCmsWorks] = useState<PortfolioWork[]>([]);
+
+  useEffect(() => {
+    fetch("/api/public/portfolio")
+      .then((response) => response.json())
+      .then((data) => setCmsWorks(Array.isArray(data.items) ? data.items : []))
+      .catch(() => undefined);
+  }, []);
 
   const portfolioWorks = [
     {
@@ -105,9 +126,10 @@ export default function PortfolioPage() {
     }
   ];
 
+  const combinedWorks: PortfolioWork[] = [...cmsWorks, ...portfolioWorks];
   const filteredWorks = activeCategory === "all"
-    ? portfolioWorks
-    : portfolioWorks.filter(w => w.category === activeCategory);
+    ? combinedWorks
+    : combinedWorks.filter(w => w.category === activeCategory);
 
   const getBentoClasses = (index: number) => {
     // If not showing all, fallback to a normal uniform grid

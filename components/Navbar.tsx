@@ -4,7 +4,7 @@ import React, { useState, useEffect } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useTheme } from "@/components/ThemeProvider";
-import { Sun, Moon, Laptop, Menu, X, ArrowRight } from "lucide-react";
+import { Sun, Moon, Menu, X, ArrowRight } from "lucide-react";
 import { motion, AnimatePresence } from "motion/react";
 import { NsdLogo } from "./NsdLogo";
 import { useGlobalReview } from "./GlobalReviewProvider";
@@ -44,7 +44,7 @@ export function Navbar() {
   const getThemeIcon = () => {
     if (theme === "dark") return <Moon className="w-4 h-4" />;
     if (theme === "light") return <Sun className="w-4 h-4" />;
-    return <Laptop className="w-4 h-4" />;
+    return <Moon className="w-4 h-4" />;
   };
 
   return (
@@ -145,7 +145,6 @@ export function Navbar() {
                     {[
                       { id: "light", label: "Light", icon: <Sun className="w-3.5 h-3.5" /> },
                       { id: "dark", label: "Dark", icon: <Moon className="w-3.5 h-3.5" /> },
-                      { id: "system", label: "System", icon: <Laptop className="w-3.5 h-3.5" /> },
                     ].map((opt) => (
                       <button
                         key={opt.id}

@@ -1,8 +1,10 @@
 import { NextResponse } from 'next/server';
+import { consumeRateLimit, rateLimitResponse } from '@/lib/rate-limit';
 import { supabase } from '@/lib/supabase';
 
 export async function POST(request: Request) {
   try {
+    if (!(await consumeRateLimit(request, 'contact', 8, 600))) return rateLimitResponse();
     const body = await request.json();
     
     // Validate request body

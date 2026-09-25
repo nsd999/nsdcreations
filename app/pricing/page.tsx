@@ -3,6 +3,7 @@ import Link from "next/link";
 import { Navbar } from "@/components/Navbar";
 import { Footer } from "@/components/Footer";
 import { servicesData } from "@/lib/services-data";
+import { getServicesWithOverrides } from "@/lib/service-catalog";
 import { ScrollReveal } from "@/components/ScrollReveal";
 import { Metadata } from "next";
 import {
@@ -179,7 +180,8 @@ const structuredData = {
   ],
 };
 
-export default function PricingPage() {
+export default async function PricingPage() {
+  const services = await getServicesWithOverrides();
   const groupedServices: Record<string, typeof servicesData> = {
     Creative: [],
     "Brand & Marketing": [],
@@ -187,7 +189,7 @@ export default function PricingPage() {
     Technology: [],
   };
 
-  servicesData.forEach((service) => {
+  services.forEach((service) => {
     if (groupedServices[service.categoryGroup] !== undefined) {
       groupedServices[service.categoryGroup].push(service);
     }

@@ -1,6 +1,7 @@
 import React from "react";
 import { notFound } from "next/navigation";
 import { servicesData } from "@/lib/services-data";
+import { getServiceBySlug } from "@/lib/service-catalog";
 import { Metadata } from "next";
 import { Navbar } from "@/components/Navbar";
 import { Footer } from "@/components/Footer";
@@ -31,9 +32,7 @@ export async function generateStaticParams() {
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const resolvedParams = await params;
-  const service = servicesData.find(
-    (s) => s.slug === resolvedParams.servicename
-  );
+  const service = await getServiceBySlug(resolvedParams.servicename);
 
   if (!service) {
     return { title: "Service Not Found | NSD Creations" };
@@ -71,9 +70,7 @@ function packagesGridClass(count: number): string {
 
 export default async function ServicePricingPage({ params }: Props) {
   const resolvedParams = await params;
-  const service = servicesData.find(
-    (s) => s.slug === resolvedParams.servicename
-  );
+  const service = await getServiceBySlug(resolvedParams.servicename);
 
   if (!service) {
     notFound();
@@ -114,13 +111,15 @@ export default async function ServicePricingPage({ params }: Props) {
           name: "NSD Creations",
           url: "https://nsdcreations.vercel.app",
         },
-        offers: service.packages.map((pkg) => ({
-          "@type": "Offer",
-          name: pkg.name,
-          price: pkg.price.replace(/[₹,+]/g, "").trim(),
-          priceCurrency: "INR",
-          description: pkg.idealFor ?? pkg.name,
-        })),
+        offers: service.packages
+          .filter((pkg) => /^(?:₹)?[\d,]+(?:\.\d{1,2})?$/.test(pkg.price.replace(/\s/g, "")))
+          .map((pkg) => ({
+            "@type": "Offer",
+            name: pkg.name,
+            price: pkg.price.replace(/[₹,]/g, "").trim(),
+            priceCurrency: "INR",
+            description: pkg.idealFor ?? pkg.name,
+          })),
       },
       ...(service.faqs && service.faqs.length > 0
         ? [
@@ -322,17 +321,41 @@ export default async function ServicePricingPage({ params }: Props) {
                     </ul>
 
                     {/* CTA */}
-                    <Link
-                      href="/contact"
-                      className={`w-full py-4 rounded-xl text-sm font-bold flex items-center justify-center transition-all mt-auto ${
-                        isPopular
-                          ? "bg-indigo-600 hover:bg-indigo-700 text-white shadow-lg shadow-indigo-500/25"
-                          : "bg-zinc-900 hover:bg-zinc-800 dark:bg-white dark:hover:bg-zinc-200 text-white dark:text-zinc-900"
-                      }`}
-                    >
-                      Get Started
-                      <ArrowRight className="w-4 h-4 ml-2" />
-                    </Link>
+                    {pkg.price.includes("+") || /–|-/.test(pkg.price.replace("₹", "")) ? (
+                      <Link
+                        href={
+                          "/contact?service=" +
+                          encodeURIComponent(service.name) +
+                          "&package=" +
+                          encodeURIComponent(pkg.name)
+                        }
+                        className={`w-full py-4 rounded-xl text-sm font-bold flex items-center justify-center transition-all mt-auto ${
+                          isPopular
+                            ? "bg-indigo-600 hover:bg-indigo-700 text-white shadow-lg shadow-indigo-500/25"
+                            : "bg-zinc-900 hover:bg-zinc-800 dark:bg-white dark:hover:bg-zinc-200 text-white dark:text-zinc-900"
+                        }`}
+                      >
+                        Request Custom Quote
+                        <ArrowRight className="w-4 h-4 ml-2" />
+                      </Link>
+                    ) : (
+                      <Link
+                        href={
+                          "/book/" +
+                          service.slug +
+                          "/" +
+                          encodeURIComponent(pkg.name)
+                        }
+                        className={`w-full py-4 rounded-xl text-sm font-bold flex items-center justify-center transition-all mt-auto ${
+                          isPopular
+                            ? "bg-indigo-600 hover:bg-indigo-700 text-white shadow-lg shadow-indigo-500/25"
+                            : "bg-zinc-900 hover:bg-zinc-800 dark:bg-white dark:hover:bg-zinc-200 text-white dark:text-zinc-900"
+                        }`}
+                      >
+                        Reserve This Plan
+                        <ArrowRight className="w-4 h-4 ml-2" />
+                      </Link>
+                    )}
                   </div>
                 </div>
               </ScrollReveal>
