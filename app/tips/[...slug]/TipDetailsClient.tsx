@@ -22,9 +22,9 @@ import {
 } from "lucide-react";
 import { tipsData } from "@/lib/tips-data";
 
-export default function TipDetailsClient({ slug }: { slug: string }) {
+export default function TipDetailsClient({ slug, tipOverride }: { slug: string; tipOverride?: Tip | null }) {
   const [copied, setCopied] = useState(false);
-  const tip = tipsData.find((t) => t.slug === slug);
+  const tip = tipOverride || tipsData.find((t) => t.slug === slug);
 
   if (!tip) {
     return null;
