@@ -71,6 +71,7 @@ create table if not exists public.service_bookings (
     check (payment_status in ('PENDING','AUTHORIZED','CAPTURED','FAILED','REFUNDED','PARTIALLY_REFUNDED','MANUAL')),
   razorpay_order_id text unique,
   access_token_hash text unique,
+  access_token_expires_at timestamptz,
   razorpay_payment_id text,
   created_at timestamptz not null default timezone('utc'::text, now()),
   updated_at timestamptz not null default timezone('utc'::text, now()),
