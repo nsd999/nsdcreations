@@ -178,7 +178,7 @@ export async function GET(
           conversionRate: leadsMonth > 0 ? Number(((confirmedBookingsMonth / leadsMonth) * 100).toFixed(1)) : null,
         },
         system: {
-          supabase: Boolean(process.env.NEXT_PUBLIC_SUPABASE_URL && process.env.SUPABASE_SERVICE_ROLE_KEY),
+          supabase: Boolean(process.env.NEXT_PUBLIC_SUPABASE_URL && (process.env.SUPABASE_SECRET_KEY || process.env.SUPABASE_SERVICE_ROLE_KEY)),
           razorpay: Boolean(process.env.RAZORPAY_KEY_ID && process.env.RAZORPAY_KEY_SECRET),
           webhook: Boolean(process.env.RAZORPAY_WEBHOOK_SECRET),
           push: Boolean(process.env.NEXT_PUBLIC_VAPID_PUBLIC_KEY && process.env.VAPID_PRIVATE_KEY),
