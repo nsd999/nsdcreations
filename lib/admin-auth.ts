@@ -21,8 +21,10 @@ type AdminSession = {
 
 function hashValue(value: string) {
   const secret = process.env.ADMIN_SESSION_SECRET;
-  if (secret) return createHmac("sha256", secret).update(value).digest("hex");
-  return createHash("sha256").update(value).digest("hex");
+  if (!secret || secret.length < 32) {
+    throw new Error("ADMIN_SESSION_SECRET_NOT_CONFIGURED");
+  }
+  return createHmac("sha256", secret).update(value).digest("hex");
 }
 
 function scryptAsync(
