@@ -334,7 +334,7 @@ export async function POST(
 
       if (!title || !message) return NextResponse.json({ error: "Title and message are required." }, { status: 400 });
 
-      let query = db.from("push_subscriptions").select("id,endpoint,p256dh,auth,status").eq("status", "active");
+      let query = db.from("push_subscriptions").select("id,endpoint,p256dh,auth,status,failure_count").eq("status", "active");
       if (audience === "selected") query = query.in("id", selectedIds);
       const { data: subscriptions, error } = await query;
       if (error) return NextResponse.json({ error: "Unable to load subscribers." }, { status: 500 });
