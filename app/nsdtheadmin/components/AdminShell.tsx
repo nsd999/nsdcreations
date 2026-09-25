@@ -474,8 +474,26 @@ function ServicesView() {
   async function load(){const d=await api("services");setItems(d.items||[]);}
   useEffect(()=>{load();},[]);
   function updatePackage(serviceId:string,index:number,price:string){setItems(current=>current.map(s=>s.id!==serviceId?s:{...s,packages:s.packages.map((p:any,i:number)=>i===index?{...p,price}:p)}));}
-  async function save(s:any){setSaving(s.id);await api("services/"+s.id,{method:"PATCH",body:JSON.stringify({config:{active:s.active,featured:s.featured,startingPrice:s.startingPrice,pricingPrefix:s.pricingPrefix,pricingPeriod:s.pricingPeriod,packages:s.packages}})});setSaving("");}
-  return <div className="space-y-3">{items.map(s=><div key={s.id} className="rounded-2xl border border-white/10 bg-white/[0.02] p-5"><div className="flex flex-col lg:flex-row lg:items-start justify-between gap-4"><div><h3 className="font-display font-semibold">{s.name}</h3><p className="text-xs text-zinc-600 mt-1">{s.id} • {s.categoryGroup}</p></div><div className="flex items-center gap-3 text-xs"><label className="flex gap-2 items-center"><input type="checkbox" checked={s.active!==false} onChange={e=>setItems(cur=>cur.map(x=>x.id===s.id?{...x,active:e.target.checked}:x))}/>Active</label><label className="flex gap-2 items-center"><input type="checkbox" checked={Boolean(s.featured)} onChange={e=>setItems(cur=>cur.map(x=>x.id===s.id?{...x,featured:e.target.checked}:x))}/>Featured</label><button onClick={()=>save(s)} className="rounded-xl bg-indigo-600 px-3 py-2 text-xs">{saving===s.id?"Saving…":"Save"}</button></div></div><div className="grid sm:grid-cols-3 gap-2 mt-4">{s.packages.map((p:any,i:number)=><div key={p.name} className="rounded-xl border border-white/10 p-3"><div className="text-xs font-medium">{p.name}</div><input value={p.price} onChange={e=>updatePackage(s.id,i,e.target.value)} className="mt-2 w-full rounded-lg border border-white/10 bg-black/20 px-2 py-2 text-xs"/></div>)}</div><div className="mt-3 text-[10px] text-zinc-600">Use exact fixed prices for payable packages. Keep “+” and price ranges for quotation-only services.</div></div>)}</div>;
+  async function save(s:any){setSaving(s.id);await api("services/"+s.id,{method:"PATCH",body:JSON.stringify({config:{name:s.name,shortDescription:s.shortDescription,active:s.active,featured:s.featured,startingPrice:s.startingPrice,pricingPrefix:s.pricingPrefix,pricingPeriod:s.pricingPeriod,packages:s.packages}})});setSaving("");}
+  return <div className="space-y-3">{items.map(s=><div key={s.id} className="rounded-2xl border border-white/10 bg-white/[0.02] p-5">
+    <div className="flex flex-col lg:flex-row lg:items-start justify-between gap-4">
+      <div><h3 className="font-display font-semibold">{s.name}</h3><p className="text-xs text-zinc-600 mt-1">{s.id} • {s.categoryGroup}</p></div>
+      <div className="flex items-center gap-3 text-xs">
+        <label className="flex gap-2 items-center"><input type="checkbox" checked={s.active!==false} onChange={e=>setItems(cur=>cur.map(x=>x.id===s.id?{...x,active:e.target.checked}:x))}/>Active</label>
+        <label className="flex gap-2 items-center"><input type="checkbox" checked={Boolean(s.featured)} onChange={e=>setItems(cur=>cur.map(x=>x.id===s.id?{...x,featured:e.target.checked}:x))}/>Featured</label>
+        <button onClick={()=>save(s)} className="rounded-xl bg-indigo-600 px-3 py-2 text-xs">{saving===s.id?"Saving…":"Save"}</button>
+      </div>
+    </div>
+    <div className="grid md:grid-cols-2 gap-2 mt-4">
+      <input value={s.name} onChange={e=>setItems(cur=>cur.map(x=>x.id===s.id?{...x,name:e.target.value}:x))} placeholder="Service name" className="rounded-xl border border-white/10 bg-black/20 px-3 py-2.5 text-sm"/>
+      <input value={s.startingPrice||""} onChange={e=>setItems(cur=>cur.map(x=>x.id===s.id?{...x,startingPrice:e.target.value}:x))} placeholder="Starting price" className="rounded-xl border border-white/10 bg-black/20 px-3 py-2.5 text-sm"/>
+      <select value={s.pricingPrefix||"Starting from"} onChange={e=>setItems(cur=>cur.map(x=>x.id===s.id?{...x,pricingPrefix:e.target.value}:x))} className="rounded-xl border border-white/10 bg-[#0b0b10] px-3 py-2.5 text-sm"><option>Starting from</option><option>Fixed Price</option><option>Custom Quote</option></select>
+      <select value={s.pricingPeriod||""} onChange={e=>setItems(cur=>cur.map(x=>x.id===s.id?{...x,pricingPeriod:e.target.value}:x))} className="rounded-xl border border-white/10 bg-[#0b0b10] px-3 py-2.5 text-sm"><option value="">One-time</option><option value="/month">Monthly</option></select>
+      <textarea value={s.shortDescription||""} onChange={e=>setItems(cur=>cur.map(x=>x.id===s.id?{...x,shortDescription:e.target.value}:x))} placeholder="Short description" rows={3} className="md:col-span-2 rounded-xl border border-white/10 bg-black/20 px-3 py-2.5 text-sm"/>
+    </div>
+    <div className="grid sm:grid-cols-3 gap-2 mt-4">{s.packages.map((p:any,i:number)=><div key={p.name} className="rounded-xl border border-white/10 p-3"><div className="text-xs font-medium">{p.name}</div><input value={p.price} onChange={e=>updatePackage(s.id,i,e.target.value)} className="mt-2 w-full rounded-lg border border-white/10 bg-black/20 px-2 py-2 text-xs"/></div>)}</div>
+    <div className="mt-3 text-[10px] text-zinc-600">Use exact fixed prices for payable packages. Keep “+” and price ranges for quotation-only services.</div>
+  </div>)}</div>;
 }
 
 function TestimonialsView() {
