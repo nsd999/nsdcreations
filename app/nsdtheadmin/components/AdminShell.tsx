@@ -269,9 +269,9 @@ function DashboardView({ navigate }: { navigate: (path: string) => void }) {
         <Card title="New bookings" value={String(data.today.bookings)} sub="Today" icon={ClipboardList} />
         <Card title="Pending payments" value={String(data.today.pendingPayments)} sub="Awaiting payment" icon={CircleDollarSign} />
         <Card title="Successful payments" value={String(data.today.successfulPayments)} sub="Today" icon={Check} />
-        <Card title="Advance revenue" value={money(data.today.advanceRevenuePaise)} sub="Verified payments • month to date" icon={CircleDollarSign} />
+        <Card title="Advance revenue" value={money(data.today.advanceRevenuePaise)} sub="Verified payments • today" icon={CircleDollarSign} />
         <Card title="Balance outstanding" value={money(data.today.outstandingBalancePaise)} sub="Active confirmed work" icon={BarChart3} />
-        <Card title="Push registrations" value={String(data.today.activeSubscribers)} sub="Active devices" icon={Bell} />
+        <Card title="Push registrations" value={String(data.today.activeSubscribers)} sub={String(data.today.notificationRegistrationsNewToday) + " new today • " + String(data.today.notificationRegistrationsInactive) + " inactive"} icon={Bell} />
         <Card title="New reviews" value={String(data.today.newReviews)} sub="Today • pending review" icon={Star} />
       </div>
 
@@ -288,7 +288,11 @@ function DashboardView({ navigate }: { navigate: (path: string) => void }) {
             <Metric label="Failed payments" value={String(data.month.failedPayments)} />
             <Metric label="Refunded payments" value={String(data.month.refundedPayments)} />
           </div>
-          <div className="mt-5 border-t border-white/10 pt-4 text-xs text-zinc-500">Conversion rate: {data.month.conversionRate === null ? "No data yet" : data.month.conversionRate + "%"}</div>
+          <div className="mt-5 border-t border-white/10 pt-4 text-xs text-zinc-500 flex flex-wrap gap-x-4 gap-y-1">
+  <span>Conversion rate: {data.month.conversionRate === null ? "No data yet" : data.month.conversionRate + "%"}</span>
+  <span>Push registrations this month: {data.today.notificationRegistrationsNewMonth}</span>
+  <span>Active push registrations this month: {data.today.notificationRegistrationsActiveNewMonth}</span>
+</div>
         </section>
 
         <section className="rounded-2xl border border-white/10 bg-white/[0.025] p-5">
