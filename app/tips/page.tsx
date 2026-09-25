@@ -16,6 +16,20 @@ export default function TipsPage() {
   const [activeCategory, setActiveCategory] = useState("All");
   const [showMore, setShowMore] = useState(false);
   const [visibleCount, setVisibleCount] = useState(12);
+  const [allTips, setAllTips] = useState<Tip[]>(tipsData);
+
+  useEffect(() => {
+    fetch("/api/public/tips")
+      .then((response) => response.json())
+      .then((data) => {
+        const cmsTips = Array.isArray(data.items) ? data.items : [];
+        setAllTips((current) => {
+          const cmsSlugs = new Set(cmsTips.map((tip: any) => tip.slug));
+          return ([...cmsTips, ...current.filter((tip) => !cmsSlugs.has(tip.slug))] as Tip[]);
+        });
+      })
+      .catch(() => undefined);
+  }, []);
 
   useEffect(() => {
     if (pathname && pathname.startsWith("/tips/")) {
@@ -45,12 +59,12 @@ export default function TipsPage() {
   };
 
   const filteredTips = activeCategory === "All" 
-    ? tipsData 
-    : tipsData.filter(tip => tip.category.toLowerCase() === activeCategory.toLowerCase());
+    ? allTips 
+    : allTips.filter(tip => tip.category.toLowerCase() === activeCategory.toLowerCase());
 
   const otherTips = activeCategory === "All"
     ? []
-    : tipsData.filter(tip => tip.category.toLowerCase() !== activeCategory.toLowerCase());
+    : allTips.filter(tip => tip.category.toLowerCase() !== activeCategory.toLowerCase());
 
   const getCategoryHero = (category: string) => {
     switch (category) {
