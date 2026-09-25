@@ -1,8 +1,13 @@
 import "server-only";
-import { servicesData } from "@/lib/services-data";
+import { servicesData, ServiceDetail } from "@/lib/services-data";
 import { getSupabaseAdmin } from "@/lib/supabase-admin";
 
-function merge(service: any, override: any) {
+export type RuntimeService = ServiceDetail & {
+  active?: boolean;
+  featured?: boolean;
+};
+
+function merge(service: ServiceDetail, override: any): RuntimeService {
   if (!override?.config) return service;
 
   return {
@@ -11,30 +16,34 @@ function merge(service: any, override: any) {
     packages: Array.isArray(override.config.packages) ? override.config.packages : service.packages,
     active: override.config.active !== false,
     featured: override.config.featured === true,
-  };
+  } as RuntimeService;
 }
 
-export async function getServicesWithOverrides() {
+export async function getServicesWithOverrides(): Promise<RuntimeService[]> {
   try {
     const db = getSupabaseAdmin();
-    const { data, error } = await db.from("admin_service_overrides").select("service_id,config");
+    const { data, error } = await db
+      .from("admin_service_overrides")
+      .select("service_id,config");
+
     if (error) return servicesData;
 
     const map = new Map((data || []).map((row: any) => [row.service_id, row]));
+
     return servicesData
       .map((service) => merge(service, map.get(service.id)))
-      .filter((service: any) => service.active !== false);
+      .filter((service) => service.active !== false);
   } catch {
     return servicesData;
   }
 }
 
-export async function getServiceBySlug(slug: string) {
+export async function getServiceBySlug(slug: string): Promise<RuntimeService | null> {
   const services = await getServicesWithOverrides();
   return services.find((service) => service.slug === slug) || null;
 }
 
-export async function getServiceById(id: string) {
+export async function getServiceById(id: string): Promise<RuntimeService | null> {
   const services = await getServicesWithOverrides();
   return services.find((service) => service.id === id || service.slug === id) || null;
 }
