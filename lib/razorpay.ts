@@ -30,7 +30,23 @@ export async function razorpayRequest<T>(path: string, init: RequestInit = {}): 
   let parsed: unknown = null;
   try { parsed = JSON.parse(body); } catch {}
 
-  if (!response.ok) throw new Error("RAZORPAY_REQUEST_FAILED");
+  if (!response.ok) {
+    const errorBody = parsed && typeof parsed === "object"
+      ? parsed as { error?: { code?: string; description?: string } }
+      : {};
+    const code = errorBody.error?.code || "UNKNOWN";
+    const description = errorBody.error?.description || "Razorpay request was rejected.";
+    console.error("Razorpay API rejected request:", {
+      status: response.status,
+      code,
+      description,
+    });
+    const err = new Error("RAZORPAY_REQUEST_FAILED");
+    (err as Error & { status?: number; code?: string; description?: string }).status = response.status;
+    (err as Error & { status?: number; code?: string; description?: string }).code = code;
+    (err as Error & { status?: number; code?: string; description?: string }).description = description;
+    throw err;
+  }
   return parsed as T;
 }
 
@@ -55,7 +71,6 @@ export async function createRazorpayOrder(input: {
       amount: input.amountPaise,
       currency: input.currency,
       receipt: input.receipt,
-      payment_capture: 1,
       notes: input.notes || {},
     }),
   });
