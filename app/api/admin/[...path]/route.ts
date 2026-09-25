@@ -348,9 +348,37 @@ export async function POST(
       const url = String(body.url || "/").trim().slice(0, 500);
       const type = String(body.notificationType || "announcement").trim().slice(0, 40);
       const audience = body.audience === "selected" ? "selected" : "all";
-      const selectedIds = Array.isArray(body.subscriberIds) ? body.subscriberIds.filter((value: any) => typeof value === "string").slice(0, 500) : [];
+      const selectedIds = Array.isArray(body.subscriberIds)
+        ? body.subscriberIds.filter((value: any) => typeof value === "string").slice(0, 500)
+        : [];
+      const scheduledFor = body.scheduledFor ? new Date(body.scheduledFor).toISOString() : null;
+      const futureSchedule = scheduledFor && new Date(scheduledFor).getTime() > Date.now();
 
       if (!title || !message) return NextResponse.json({ error: "Title and message are required." }, { status: 400 });
+      if (audience === "selected" && selectedIds.length === 0) {
+        return NextResponse.json({ error: "Select at least one subscriber." }, { status: 400 });
+      }
+
+      if (futureSchedule) {
+        const { data: scheduledCampaign, error: scheduleError } = await db.from("notification_campaigns").insert({
+          title,
+          body: message,
+          url,
+          notification_type: type,
+          audience,
+          recipient_ids: selectedIds,
+          recipients_count: 0,
+          sent_count: 0,
+          failed_count: 0,
+          scheduled_for: scheduledFor,
+          status: "scheduled",
+          created_by: admin.userId,
+        }).select("*").single();
+
+        if (scheduleError) return NextResponse.json({ error: "Unable to schedule notification." }, { status: 500 });
+        await writeAuditLog(admin, "NOTIFICATION_SCHEDULED", "Push notification campaign scheduled.", request, scheduledCampaign.id);
+        return NextResponse.json({ success: true, scheduled: true, campaign: scheduledCampaign });
+      }
 
       let query = db.from("push_subscriptions").select("id,endpoint,p256dh,auth,status,failure_count").eq("status", "active");
       if (audience === "selected") query = query.in("id", selectedIds);
@@ -559,6 +587,8 @@ export async function POST(
       const content = Array.isArray(body.content) ? body.content : [];
       if (!title || !slug || !excerpt) return NextResponse.json({ error: "Title, slug and excerpt are required." }, { status: 400 });
 
+      const scheduledFor = body.scheduledFor ? new Date(body.scheduledFor).toISOString() : null;
+      const publishImmediately = body.status === "published" && !scheduledFor;
       const { data, error } = await db.from("cms_tips").insert({
         title,
         slug,
@@ -568,7 +598,8 @@ export async function POST(
         image: body.image ? String(body.image).slice(0, 500) : null,
         author: body.author ? String(body.author).slice(0, 120) : "NSD Creations",
         status: body.status || "draft",
-        published_at: body.status === "published" ? new Date().toISOString() : null,
+        published_at: publishImmediately ? new Date().toISOString() : null,
+        scheduled_for: scheduledFor,
         featured: Boolean(body.featured),
       }).select("*").single();
 
@@ -719,7 +750,14 @@ export async function PATCH(
       if (body.author !== undefined) update.author = String(body.author).slice(0, 120);
       if (body.status !== undefined && allowed.includes(body.status)) {
         update.status = body.status;
-        update.published_at = body.status === "published" ? new Date().toISOString() : null;
+        update.published_at = body.status === "published" && !body.scheduledFor ? new Date().toISOString() : null;
+      }
+      if (body.scheduledFor !== undefined) {
+        update.scheduled_for = body.scheduledFor ? new Date(body.scheduledFor).toISOString() : null;
+        if (body.scheduledFor && new Date(body.scheduledFor).getTime() > Date.now()) {
+          update.status = "draft";
+          update.published_at = null;
+        }
       }
       if (body.featured !== undefined) update.featured = Boolean(body.featured);
       update.updated_at = new Date().toISOString();
