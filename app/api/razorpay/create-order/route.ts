@@ -44,7 +44,7 @@ export async function POST(request: Request) {
       return NextResponse.json({ error: "Please enter a valid email address." }, { status: 400 });
     }
 
-    const pricing = calculateBookingPricing(serviceId, packageId, selectedOptions);
+    const pricing = await calculateBookingPricing(serviceId, packageId, selectedOptions);
     const db = getSupabaseAdmin();
 
     let booking: any = null;
