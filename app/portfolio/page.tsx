@@ -22,9 +22,9 @@ import {
 } from "lucide-react";
 import { motion, AnimatePresence } from "motion/react";
 
-export default function PortfolioPage() {
+type PortfolioWork = {\n  id: string | number;\n  title: string;\n  category: string;\n  client: string;\n  type: string;\n  image: string;\n  description: string;\n  link: string;\n  tech: string[];\n  featured?: boolean;\n};\n\nexport default function PortfolioPage() {
   const [activeCategory, setActiveCategory] = useState<string>("all");
-  const [cmsWorks, setCmsWorks] = useState<any[]>([]);
+  const [cmsWorks, setCmsWorks] = useState<PortfolioWork[]>([]);
 
   useEffect(() => {
     fetch("/api/public/portfolio")
@@ -113,7 +113,7 @@ export default function PortfolioPage() {
     }
   ];
 
-  const combinedWorks = [...cmsWorks, ...portfolioWorks];
+  const combinedWorks: PortfolioWork[] = [...cmsWorks, ...portfolioWorks];
   const filteredWorks = activeCategory === "all"
     ? combinedWorks
     : combinedWorks.filter(w => w.category === activeCategory);
