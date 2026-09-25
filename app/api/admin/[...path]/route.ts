@@ -395,6 +395,97 @@ export async function POST(
       return NextResponse.json({ success: true, recipients: (subscriptions || []).length, sent, failed, campaign });
     }
 
+    if (resource === "quotes" && id && action === "generate-payment") {
+      const recentAdmin = await requireRecentAdminAuthentication(request);
+      const { data: quote } = await db
+        .from("service_quotes")
+        .select("*")
+        .eq("id", id)
+        .single();
+
+      if (!quote) return NextResponse.json({ error: "Quote not found." }, { status: 404 });
+      if (quote.status !== "ACCEPTED") return NextResponse.json({ error: "Quote must be accepted before payment can be generated." }, { status: 409 });
+      if (Number(quote.total_paise || 0) <= 0 || Number(quote.advance_amount_paise || 0) <= 0) {
+        return NextResponse.json({ error: "Quote does not have a payable advance." }, { status: 422 });
+      }
+
+      if (quote.booking_id) {
+        const { data: existingBooking } = await db.from("service_bookings").select("id,booking_reference,razorpay_order_id").eq("id", quote.booking_id).maybeSingle();
+        if (existingBooking) {
+          return NextResponse.json({
+            bookingId: existingBooking.id,
+            bookingReference: existingBooking.booking_reference,
+            paymentUrl: "/quote/" + quote.id + "/pay",
+            existing: true,
+          });
+        }
+      }
+
+      const token = crypto.randomUUID().replace(/-/g, "") + crypto.randomUUID().replace(/-/g, "");
+      const tokenHash = require("node:crypto").createHash("sha256").update(token).digest("hex");
+      const bookingReference = "NSD-QT-" + new Date().toISOString().slice(0, 10).replace(/-/g, "") + "-" + Math.random().toString(36).slice(2, 8).toUpperCase();
+
+      const { data: booking, error: bookingError } = await db
+        .from("service_bookings")
+        .insert({
+          booking_reference: bookingReference,
+          customer_name: quote.customer_name,
+          customer_email: quote.customer_email,
+          customer_phone: "",
+          service_id: quote.service_id,
+          service_name_snapshot: quote.service_id,
+          package_id: "CUSTOM_QUOTE",
+          package_name_snapshot: "Approved Custom Quote",
+          selected_options: { quoteId: quote.id, scope: quote.scope, lineItems: quote.line_items || [] },
+          pricing_snapshot: {
+            version: "quote-1",
+            quoteId: quote.id,
+            quoteReference: quote.quote_reference,
+            subtotalPaise: quote.subtotal_paise,
+            discountPaise: quote.discount_paise,
+            taxPaise: quote.tax_paise,
+            totalPaise: quote.total_paise,
+            advancePercentage: quote.advance_percentage,
+            advanceAmountPaise: quote.advance_amount_paise,
+            balanceAmountPaise: quote.balance_amount_paise,
+          },
+          total_amount_paise: quote.total_paise,
+          advance_percentage: quote.advance_percentage,
+          advance_amount_paise: quote.advance_amount_paise,
+          balance_amount_paise: quote.balance_amount_paise,
+          currency: "INR",
+          booking_status: "AWAITING_PAYMENT",
+          payment_status: "PENDING",
+          access_token_hash: tokenHash,
+          notes: quote.notes || null,
+        })
+        .select("id,booking_reference")
+        .single();
+
+      if (bookingError || !booking) return NextResponse.json({ error: "Unable to create quote payment booking." }, { status: 500 });
+
+      const order = await createRazorpayOrder({
+        amountPaise: Number(quote.advance_amount_paise),
+        currency: "INR",
+        receipt: booking.booking_reference,
+        notes: { booking_id: booking.id, quote_id: quote.id, quote_reference: quote.quote_reference },
+      });
+
+      await db.from("service_bookings").update({ razorpay_order_id: order.id, updated_at: new Date().toISOString() }).eq("id", booking.id);
+      await db.from("service_quotes").update({ booking_id: booking.id, updated_at: new Date().toISOString() }).eq("id", quote.id);
+
+      await writeAuditLog(recentAdmin, "QUOTE_CONVERTED", "Approved quote converted to an advance payment booking.", request, quote.id);
+
+      return NextResponse.json({
+        bookingId: booking.id,
+        bookingReference: booking.booking_reference,
+        accessToken: token,
+        paymentUrl: "/quote/" + quote.id + "/pay?token=" + encodeURIComponent(token),
+        keyId: process.env.RAZORPAY_KEY_ID || null,
+        order: { id: order.id, amount: order.amount, currency: order.currency },
+      });
+    }
+
     if (resource === "manual-payment" && id) {
       const recentAdmin = await requireRecentAdminAuthentication(request);
       const amountPaise = Math.round(Number(body.amountPaise || 0));
