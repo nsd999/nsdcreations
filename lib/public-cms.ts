@@ -8,6 +8,7 @@ export async function getPublishedCmsTips() {
       .from("cms_tips")
       .select("id,slug,category,title,excerpt,content,image,author,published_at,featured")
       .eq("status", "published")
+      .lte("published_at", new Date().toISOString())
       .order("published_at", { ascending: false });
 
     return data || [];
@@ -23,6 +24,7 @@ export async function getCmsTipBySlug(slug: string) {
       .from("cms_tips")
       .select("id,slug,category,title,excerpt,content,image,author,published_at,featured")
       .eq("status", "published")
+      .lte("published_at", new Date().toISOString())
       .eq("slug", slug)
       .maybeSingle();
 
