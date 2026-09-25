@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import { createHash, randomBytes } from "node:crypto";
 import { getSupabaseAdmin } from "@/lib/supabase-admin";
 import { calculateBookingPricing } from "@/lib/pricing-engine";
+import { consumeRateLimit, rateLimitResponse } from "@/lib/rate-limit";
 import { createRazorpayOrder, fetchRazorpayOrder, getRazorpayPublicKey } from "@/lib/razorpay";
 
 function hashToken(value: string) {
@@ -19,6 +20,7 @@ function clean(value: unknown, max = 1000) {
 
 export async function POST(request: Request) {
   try {
+    if (!(await consumeRateLimit(request, 'razorpay-create-order', 8, 600))) return rateLimitResponse();
     const body = await request.json();
     const serviceId = clean(body.serviceId, 120);
     const packageId = clean(body.packageId, 160);
