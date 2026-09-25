@@ -1,12 +1,11 @@
 "use client";
 
 import { FormEvent, useEffect, useState } from "react";
-import { useRouter, useSearchParams } from "next/navigation";
+import { useRouter } from "next/navigation";
 import { LockKeyhole, Loader2, ShieldCheck } from "lucide-react";
 
 export default function AdminLoginPage() {
   const router = useRouter();
-  const search = useSearchParams();
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
@@ -39,7 +38,7 @@ export default function AdminLoginPage() {
         return;
       }
 
-      const next = search.get("next");
+      const next = new URLSearchParams(window.location.search).get("next");
       router.replace(next && next.startsWith("/nsdtheadmin/") ? next : "/nsdtheadmin/dashboard");
     } catch {
       setError("Invalid credentials.");
