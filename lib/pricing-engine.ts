@@ -1,4 +1,5 @@
-import { servicesData, ServiceDetail, ServicePackage } from "@/lib/services-data";
+import { ServiceDetail, ServicePackage } from "@/lib/services-data";
+import { getServiceById } from "@/lib/service-catalog";
 
 export const PRICING_RULE_VERSION = "2026-09-25-v1";
 
@@ -45,22 +46,22 @@ function getAdvancePercentage(service: ServiceDetail, totalPaise: number) {
   return 50;
 }
 
-export function findServicePackage(serviceId: string, packageId: string) {
-  const service = servicesData.find((item) => item.id === serviceId || item.slug === serviceId);
+export async function findServicePackage(serviceId: string, packageId: string) {
+  const service = await getServiceById(serviceId);
   if (!service) return null;
 
-  const pkg = service.packages.find((item) => item.name === packageId);
+  const pkg = service.packages.find((item: ServicePackage) => item.name === packageId);
   if (!pkg) return null;
 
   return { service, pkg };
 }
 
-export function calculateBookingPricing(
+export async function calculateBookingPricing(
   serviceId: string,
   packageId: string,
   selectedOptions: Record<string, unknown> = {},
-): BookingPricing {
-  const result = findServicePackage(serviceId, packageId);
+): Promise<BookingPricing> {
+  const result = await findServicePackage(serviceId, packageId);
   if (!result) throw new Error("SERVICE_OR_PACKAGE_NOT_FOUND");
 
   const { service, pkg } = result;
