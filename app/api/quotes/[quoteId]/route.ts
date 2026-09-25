@@ -22,5 +22,22 @@ export async function GET(
 
   if (error || !quote) return NextResponse.json({ error: "Quote not found." }, { status: 404 });
 
-  return NextResponse.json({ quote });
+  let payment = null;
+  if (quote.booking_id) {
+    const { data: booking } = await db
+      .from("service_bookings")
+      .select("razorpay_order_id,advance_amount_paise")
+      .eq("id", quote.booking_id)
+      .maybeSingle();
+
+    if (booking?.razorpay_order_id) {
+      payment = {
+        orderId: booking.razorpay_order_id,
+        amountPaise: Number(booking.advance_amount_paise || quote.advance_amount_paise),
+        keyId: process.env.RAZORPAY_KEY_ID || null,
+      };
+    }
+  }
+
+  return NextResponse.json({ quote, payment });
 }
