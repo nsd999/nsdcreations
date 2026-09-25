@@ -1,4 +1,5 @@
 import { NextResponse } from "next/server";
+import { createHash, randomBytes } from "node:crypto";
 import webpush from "web-push";
 import { servicesData } from "@/lib/services-data";
 import { getSupabaseAdmin } from "@/lib/supabase-admin";
@@ -421,8 +422,8 @@ export async function POST(
         }
       }
 
-      const token = crypto.randomUUID().replace(/-/g, "") + crypto.randomUUID().replace(/-/g, "");
-      const tokenHash = require("node:crypto").createHash("sha256").update(token).digest("hex");
+      const token = randomBytes(32).toString("base64url");
+      const tokenHash = createHash("sha256").update(token).digest("hex");
       const bookingReference = "NSD-QT-" + new Date().toISOString().slice(0, 10).replace(/-/g, "") + "-" + Math.random().toString(36).slice(2, 8).toUpperCase();
 
       const { data: booking, error: bookingError } = await db
