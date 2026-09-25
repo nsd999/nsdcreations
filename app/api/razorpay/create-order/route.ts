@@ -97,6 +97,7 @@ export async function POST(request: Request) {
           booking_status: "AWAITING_PAYMENT",
           payment_status: "PENDING",
           access_token_hash: hashToken(accessToken),
+          access_token_expires_at: accessTokenExpiresAt,
           notes,
         })
         .select("*")
