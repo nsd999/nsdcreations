@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server';
-import { createClient } from '@supabase/supabase-js';
+import { getSupabaseAdmin } from '@/lib/supabase-admin';
 import webpush from 'web-push';
 import { tipsData } from '@/lib/tips-data';
 
@@ -23,11 +23,7 @@ export async function GET(req: Request) {
     }
 
     // 2. Initialize Supabase Client
-    const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL!;
-    const supabaseKey =
-      process.env.SUPABASE_SERVICE_ROLE_KEY ||
-      process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!;
-    const supabase = createClient(supabaseUrl, supabaseKey);
+    const supabase = getSupabaseAdmin();
 
     // 3. Fetch all active subscriptions
     const { data: subscriptions, error } = await supabase
@@ -76,7 +72,7 @@ export async function GET(req: Request) {
         // Optionally update last_tip_id
         await supabase
           .from('push_subscriptions')
-          .update({ last_tip_id: parseInt(tip.id, 10) || randomTipIndex })
+          .update({ last_tip_id: Number(tip.id) || randomTipIndex })
           .eq('endpoint', sub.endpoint);
           
       } catch (err: any) {
