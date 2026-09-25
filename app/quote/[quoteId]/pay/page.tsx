@@ -53,26 +53,27 @@ export default function QuotePayPage() {
   }, []);
 
   async function pay() {
-    if (!data?.quote?.booking_id) {
-      setError("This quote has not been converted into a payment request yet.");
+    if (!data?.quote?.booking_id || !data.payment?.orderId || !data.payment?.keyId) {
+      setError("This quote payment is not ready yet.");
       return;
     }
 
     setBusy(true);
-    try {
-      const booking = await fetch("/api/bookings/" + encodeURIComponent(data.quote.booking_id) + "?token=" + encodeURIComponent(data.token)).then((r) => r.json());
-      if (!booking.booking) throw new Error("Payment booking is unavailable.");
 
+    try {
       await loadCheckout();
 
       const checkout = new window.Razorpay!({
-        key: data.quote.booking_id ? booking.booking.razorpayOrderId ? undefined : undefined : undefined,
-        amount: data.quote.advance_amount_paise,
+        key: data.payment.keyId,
+        amount: data.payment.amountPaise,
         currency: "INR",
         name: "NSD Creations",
         description: "Approved custom quote " + data.quote.quote_reference,
-        order_id: data.orderId,
-        prefill: { name: data.quote.customer_name, email: data.quote.customer_email },
+        order_id: data.payment.orderId,
+        prefill: {
+          name: data.quote.customer_name,
+          email: data.quote.customer_email,
+        },
         theme: { color: "#7C6BFF" },
         modal: { ondismiss: () => setBusy(false) },
         handler: async (response: any) => {
@@ -88,8 +89,16 @@ export default function QuotePayPage() {
             }),
           }).then((r) => r.json());
 
-          if (!verification.success) throw new Error(verification.error || "Payment verification failed.");
-          router.replace("/booking/success?bookingId=" + encodeURIComponent(data.quote.booking_id) + "&token=" + encodeURIComponent(data.token));
+          if (!verification.success) {
+            throw new Error(verification.error || "Payment verification failed.");
+          }
+
+          router.replace(
+            "/booking/success?bookingId=" +
+              encodeURIComponent(data.quote.booking_id) +
+              "&token=" +
+              encodeURIComponent(data.token),
+          );
         },
       });
 
