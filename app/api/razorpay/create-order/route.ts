@@ -51,6 +51,7 @@ export async function POST(request: Request) {
 
     let booking: any = null;
     let accessToken: string | null = null;
+    let accessTokenExpiresAt: string | null = null;
     const requestedBookingId = clean(body.bookingId, 80);
 
     if (requestedBookingId) {
@@ -70,6 +71,7 @@ export async function POST(request: Request) {
 
     if (!booking) {
       accessToken = randomBytes(32).toString("base64url");
+      accessTokenExpiresAt = new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toISOString();
 
       const { data, error } = await db
         .from("service_bookings")
