@@ -1,5 +1,5 @@
 import { notFound } from "next/navigation";
-import { servicesData } from "@/lib/services-data";
+import { getServiceBySlug } from "@/lib/service-catalog";
 import { ServiceBookingFlow } from "@/components/ServiceBookingFlow";
 import { Navbar } from "@/components/Navbar";
 import { Footer } from "@/components/Footer";
@@ -10,7 +10,7 @@ export default async function BookingPage({
   params: Promise<{ servicename: string; package: string }>;
 }) {
   const { servicename, package: packageSlug } = await params;
-  const service = servicesData.find((item) => item.slug === servicename);
+  const service = await getServiceBySlug(servicename);
   const decodedPackage = decodeURIComponent(packageSlug);
   const pkg = service?.packages.find((item) => item.name === decodedPackage);
 
