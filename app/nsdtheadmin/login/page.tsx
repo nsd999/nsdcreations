@@ -8,7 +8,6 @@ export default function AdminLoginPage() {
   const router = useRouter();
   const search = useSearchParams();
   const [username, setUsername] = useState("");
-  const [usernameRequired, setUsernameRequired] = useState(false);
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
   const [busy, setBusy] = useState(false);
@@ -20,10 +19,6 @@ export default function AdminLoginPage() {
       })
       .catch(() => undefined);
 
-    fetch("/api/admin/public-config")
-      .then((response) => response.json())
-      .then((data) => setUsernameRequired(Boolean(data.usernameConfigured)))
-      .catch(() => undefined);
   }, [router]);
 
   async function submit(event: FormEvent) {
@@ -67,21 +62,18 @@ export default function AdminLoginPage() {
         </div>
 
         <form onSubmit={submit} className="space-y-4">
-          {usernameRequired && (
-            <div>
-              <label className="block text-xs font-medium text-zinc-400 mb-2" htmlFor="admin-username">
-                Username
-              </label>
-              <input
-                id="admin-username"
-                autoComplete="username"
-                value={username}
-                onChange={(e) => setUsername(e.target.value)}
-                required
-                className="w-full rounded-xl border border-white/10 bg-black/30 px-4 py-3 outline-none focus:border-indigo-400 text-sm"
-              />
-            </div>
-          )}
+          <div>
+            <label className="block text-xs font-medium text-zinc-400 mb-2" htmlFor="admin-username">
+              Username (optional)
+            </label>
+            <input
+              id="admin-username"
+              autoComplete="username"
+              value={username}
+              onChange={(e) => setUsername(e.target.value)}
+              className="w-full rounded-xl border border-white/10 bg-black/30 px-4 py-3 outline-none focus:border-indigo-400 text-sm"
+            />
+          </div>
 
           <div>
             <label className="block text-xs font-medium text-zinc-400 mb-2" htmlFor="admin-password">
