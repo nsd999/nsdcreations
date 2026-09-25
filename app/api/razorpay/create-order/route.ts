@@ -27,7 +27,7 @@ export async function POST(request: Request) {
       );
     }
 
-    if (!process.env.NEXT_PUBLIC_SUPABASE_URL || !process.env.SUPABASE_SERVICE_ROLE_KEY) {
+    if (!process.env.NEXT_PUBLIC_SUPABASE_URL || !(process.env.SUPABASE_SECRET_KEY || process.env.SUPABASE_SERVICE_ROLE_KEY)) {
       return NextResponse.json(
         { error: "Booking service is not configured yet. Please try again later." },
         { status: 503 },
