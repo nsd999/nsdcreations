@@ -1,6 +1,7 @@
 import React from "react";
 import { notFound } from "next/navigation";
 import { servicesData } from "@/lib/services-data";
+import { getServiceBySlug } from "@/lib/service-catalog";
 import { Metadata } from "next";
 import { Navbar } from "@/components/Navbar";
 import { Footer } from "@/components/Footer";
@@ -31,9 +32,7 @@ export async function generateStaticParams() {
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const resolvedParams = await params;
-  const service = servicesData.find(
-    (s) => s.slug === resolvedParams.servicename
-  );
+  const service = await getServiceBySlug(resolvedParams.servicename);
 
   if (!service) {
     return { title: "Service Not Found | NSD Creations" };
@@ -71,9 +70,7 @@ function packagesGridClass(count: number): string {
 
 export default async function ServicePricingPage({ params }: Props) {
   const resolvedParams = await params;
-  const service = servicesData.find(
-    (s) => s.slug === resolvedParams.servicename
-  );
+  const service = await getServiceBySlug(resolvedParams.servicename);
 
   if (!service) {
     notFound();
