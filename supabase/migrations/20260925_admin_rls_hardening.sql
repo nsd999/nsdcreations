@@ -37,3 +37,6 @@ drop trigger if exists booking_payments_mutation_guard on public.booking_payment
 create trigger booking_payments_mutation_guard
 before update or delete on public.booking_payments
 for each row execute function public.prevent_booking_payment_mutation();
+
+
+alter table if exists public.service_quotes add column if not exists access_token_hash text unique;
