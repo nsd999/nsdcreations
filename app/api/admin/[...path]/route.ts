@@ -12,6 +12,7 @@ import {
   writeAuditLog,
 } from "@/lib/admin-auth";
 import { createRazorpayOrder } from "@/lib/razorpay";
+import { consumeRateLimit, rateLimitResponse } from "@/lib/rate-limit";
 
 function money(paise: number) {
   return Math.round(Number(paise || 0));
@@ -331,6 +332,7 @@ export async function POST(
     const db = getSupabaseAdmin();
 
     if (resource === "notifications" && action === "send") {
+      if (!(await consumeRateLimit(request, "admin-notification-send", 10, 600))) return rateLimitResponse();
       if (!process.env.NEXT_PUBLIC_VAPID_PUBLIC_KEY || !process.env.VAPID_PRIVATE_KEY) {
         return NextResponse.json({ error: "Push notifications are not configured." }, { status: 503 });
       }
@@ -413,6 +415,7 @@ export async function POST(
     }
 
     if (resource === "quotes" && id && action === "generate-payment") {
+      if (!(await consumeRateLimit(request, "admin-quote-payment", 20, 600))) return rateLimitResponse();
       const recentAdmin = await requireRecentAdminAuthentication(request);
       const { data: quote } = await db
         .from("service_quotes")
@@ -504,6 +507,7 @@ export async function POST(
     }
 
     if (resource === "manual-payment" && id) {
+      if (!(await consumeRateLimit(request, "admin-manual-payment", 20, 600))) return rateLimitResponse();
       const recentAdmin = await requireRecentAdminAuthentication(request);
       const amountPaise = Math.round(Number(body.amountPaise || 0));
       const method = String(body.method || "").trim().slice(0, 50);
@@ -598,6 +602,7 @@ export async function POST(
     }
 
     if (resource === "quotes") {
+      if (!(await consumeRateLimit(request, "admin-quote-create", 20, 600))) return rateLimitResponse();
       const customerName = String(body.customerName || "").trim();
       const customerEmail = String(body.customerEmail || "").trim().toLowerCase();
       const serviceId = String(body.serviceId || "").trim();
