@@ -20,7 +20,7 @@ import {
   Instagram,
   MessageSquare
 } from "lucide-react";
-import { tipsData } from "@/lib/tips-data";
+import { Tip, tipsData } from "@/lib/tips-data";
 
 export default function TipDetailsClient({ slug, tipOverride }: { slug: string; tipOverride?: Tip | null }) {
   const [copied, setCopied] = useState(false);
