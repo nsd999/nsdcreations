@@ -22,6 +22,84 @@ export async function GET(req: Request) {
     );
 
     const supabase = getSupabaseAdmin();
+    const nowIso = new Date().toISOString();
+
+    // Publish due CMS tips.
+    await supabase
+      .from("cms_tips")
+      .update({
+        status: "published",
+        published_at: nowIso,
+        updated_at: nowIso,
+      })
+      .eq("status", "draft")
+      .lte("scheduled_for", nowIso);
+
+    // Deliver scheduled notification campaigns that are due.
+    const { data: scheduledCampaigns } = await supabase
+      .from("notification_campaigns")
+      .select("*")
+      .eq("status", "scheduled")
+      .lte("scheduled_for", nowIso)
+      .order("scheduled_for", { ascending: true })
+      .limit(20);
+
+    for (const campaign of scheduledCampaigns || []) {
+      let scheduledQuery = supabase
+        .from("push_subscriptions")
+        .select("id,endpoint,p256dh,auth,status")
+        .eq("status", "active");
+
+      if (campaign.audience === "selected" && Array.isArray(campaign.recipient_ids)) {
+        scheduledQuery = scheduledQuery.in("id", campaign.recipient_ids);
+      }
+
+      const { data: campaignSubscribers } = await scheduledQuery;
+      let campaignSent = 0;
+      let campaignFailed = 0;
+
+      for (const sub of campaignSubscribers || []) {
+        try {
+          await webpush.sendNotification(
+            {
+              endpoint: sub.endpoint,
+              keys: { p256dh: sub.p256dh, auth: sub.auth },
+            },
+            JSON.stringify({
+              title: campaign.title,
+              body: campaign.body,
+              icon: "/icon.png",
+              url: campaign.url?.startsWith("/") ? campaign.url : "/",
+              type: campaign.notification_type,
+            }),
+          );
+
+          campaignSent += 1;
+          await supabase.from("push_subscriptions").update({
+            last_notification_status: "sent",
+            last_notification_at: nowIso,
+            failure_count: 0,
+          }).eq("id", sub.id);
+        } catch (error: any) {
+          campaignFailed += 1;
+          const invalid = error?.statusCode === 404 || error?.statusCode === 410;
+          await supabase.from("push_subscriptions").update({
+            status: invalid ? "inactive" : "active",
+            last_notification_status: invalid ? "expired" : "failed",
+            last_notification_at: nowIso,
+            failure_count: 1,
+          }).eq("id", sub.id);
+        }
+      }
+
+      await supabase.from("notification_campaigns").update({
+        status: "sent",
+        recipients_count: (campaignSubscribers || []).length,
+        sent_count: campaignSent,
+        failed_count: campaignFailed,
+        sent_at: nowIso,
+      }).eq("id", campaign.id);
+    }
 
     // 3. Fetch all active subscriptions
     const { data: subscriptions, error } = await supabase
