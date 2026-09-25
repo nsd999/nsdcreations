@@ -13,7 +13,7 @@ export function getSupabaseAdmin(): SupabaseClient {
     throw new Error("Server database configuration is incomplete.");
   }
 
-  cached = createClient(url, serviceRoleKey, {
+  cached = createClient(url, secretKey, {
     auth: {
       autoRefreshToken: false,
       persistSession: false,
