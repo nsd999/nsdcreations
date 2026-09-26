@@ -343,7 +343,7 @@ export default async function PricingPage() {
                             {/* Price block */}
                             <div className="mb-5 pt-5 border-t border-zinc-100 dark:border-zinc-800">
                               <div className="text-xs font-medium text-zinc-400 dark:text-zinc-500 mb-1">
-                                Starting from
+                                {service.pricingPrefix}
                               </div>
                               <div className="flex items-baseline gap-1 flex-wrap">
                                 <span className="font-display font-bold text-2xl text-zinc-900 dark:text-white">
@@ -372,7 +372,7 @@ export default async function PricingPage() {
                                     </span>
                                   </li>
                                 ))}
-                              {(service.packages[0]?.features.length ?? 0) >
+                              {((service.packages.find((pkg) => pkg.isPopular) ?? service.packages[0])?.features.length ?? 0) >
                                 3 && (
                                 <li className="text-xs text-indigo-500 dark:text-indigo-400 font-medium pl-6">
                                   +{" "}
