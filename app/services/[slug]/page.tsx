@@ -1,10 +1,8 @@
-"use client";
-
-import React, { use, useState } from "react";
+import React from "react";
 import Link from "next/link";
 import { Navbar } from "@/components/Navbar";
 import { Footer } from "@/components/Footer";
-import { servicesData } from "@/lib/services-data";
+import { getServiceBySlug, getServicesWithOverrides } from "@/lib/service-catalog";
 import { 
   ArrowLeft, 
   CheckCircle, 
@@ -17,11 +15,14 @@ import {
   Rocket
 } from "lucide-react";
 
-export default function ServiceDetailPage({ params }: { params: Promise<{ slug: string }> }) {
-  const { slug } = use(params);
-  const service = servicesData.find((s) => s.slug === slug);
+export default async function ServiceDetailPage({ params }: { params: Promise<{ slug: string }> }) {
+  const { slug } = await params;
+  const service = await getServiceBySlug(slug);
 
-  const [faqOpen, setFaqOpen] = useState<number | null>(null);
+  const allServices = await getServicesWithOverrides();
+  const relatedServices = allServices
+    .filter((s) => s.slug !== slug && s.categoryGroup === service?.categoryGroup)
+    .slice(0, 3);
 
   if (!service) {
     return (
@@ -46,10 +47,7 @@ export default function ServiceDetailPage({ params }: { params: Promise<{ slug: 
     );
   }
 
-  // Find related services by category or siblings
-  const relatedServices = Object.values(servicesData)
-    .filter((s) => s.slug !== service.slug)
-    .slice(0, 3);
+
 
   return (
     <div className="flex-1 flex flex-col relative overflow-x-hidden">
@@ -153,22 +151,18 @@ export default function ServiceDetailPage({ params }: { params: Promise<{ slug: 
             </h2>
             <div className="space-y-3">
               {service.faqs.map((faq, index) => (
-                <div 
-                  key={index} 
-                  className="rounded-2xl border border-zinc-200/60 dark:border-zinc-900/60 bg-white dark:bg-[#09090b] overflow-hidden"
+                <details
+                  key={index}
+                  className="rounded-2xl border border-zinc-200/60 dark:border-zinc-900/60 bg-white dark:bg-[#09090b] overflow-hidden group"
                 >
-                  <button
-                    onClick={() => setFaqOpen(faqOpen === index ? null : index)}
-                    className="w-full flex items-center justify-between p-5 text-left text-xs md:text-sm font-semibold text-zinc-900 dark:text-zinc-100 font-display"
-                  >
+                  <summary className="w-full flex items-center justify-between p-5 text-left text-xs md:text-sm font-semibold text-zinc-900 dark:text-zinc-100 font-display cursor-pointer list-none [&::-webkit-details-marker]:hidden">
                     <span>{faq.question}</span>
-                  </button>
-                  {faqOpen === index && (
-                    <div className="px-5 pb-5 pt-1 text-zinc-500 dark:text-zinc-400 text-xs leading-relaxed border-t border-zinc-100 dark:border-zinc-900/60">
-                      {faq.answer}
-                    </div>
-                  )}
-                </div>
+                    <span className="ml-4 text-zinc-400 group-open:rotate-180 transition-transform">⌄</span>
+                  </summary>
+                  <div className="px-5 pb-5 pt-1 text-zinc-500 dark:text-zinc-400 text-xs leading-relaxed border-t border-zinc-100 dark:border-zinc-900/60">
+                    {faq.answer}
+                  </div>
+                </details>
               ))}
             </div>
           </div>
@@ -185,7 +179,7 @@ export default function ServiceDetailPage({ params }: { params: Promise<{ slug: 
               Key Deliverables
             </h3>
             <ul className="space-y-3">
-              {service.packages[1]?.features.slice(0, 5).map((del, i) => (
+              {(service.packages.find((pkg) => pkg.isPopular) ?? service.packages[0])?.features.slice(0, 5).map((del, i) => (
                 <li key={i} className="flex items-start text-xs md:text-sm text-zinc-600 dark:text-zinc-400 leading-relaxed">
                   <CheckCircle className="w-4 h-4 text-emerald-500 mr-2 shrink-0 mt-0.5" />
                   <span>{del}</span>
@@ -197,10 +191,10 @@ export default function ServiceDetailPage({ params }: { params: Promise<{ slug: 
           {/* Technologies Box */}
           <div className="p-6 rounded-3xl bg-zinc-50 dark:bg-[#09090b] border border-zinc-200/50 dark:border-zinc-900/50 shadow-sm">
             <h3 className="font-display font-bold text-base text-zinc-900 dark:text-zinc-50 mb-3">
-              Technologies We Use
+              Service Focus Areas
             </h3>
             <div className="flex flex-wrap gap-2">
-              {service.seo.keywords.slice(0, 6).map((tech) => (
+              {service.features.slice(0, 6).map((tech) => (
                 <span 
                   key={tech} 
                   className="px-3 py-1.5 rounded-lg bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 text-[11px] font-mono text-zinc-700 dark:text-zinc-300 font-semibold shadow-sm"
@@ -216,7 +210,7 @@ export default function ServiceDetailPage({ params }: { params: Promise<{ slug: 
             <div>
               <h3 className="font-display font-bold text-lg leading-tight">Ready to start this project?</h3>
               <p className="text-indigo-100 text-xs mt-2 leading-relaxed">
-                Contact us today to receive a precise quote contract and project scope for {service.name}.
+                Contact us today to receive a precise quote and project scope for {service.name}.
               </p>
             </div>
             <Link
