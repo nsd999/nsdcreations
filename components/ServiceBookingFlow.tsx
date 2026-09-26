@@ -98,7 +98,10 @@ export function ServiceBookingFlow({
       const stored = sessionStorage.getItem(
         "nsd_booking_" + service.id + "_" + pkg.name,
       );
-      const draft = stored ? JSON.parse(stored) : null;
+      let draft: { bookingId?: string; accessToken?: string } | null = null;
+      if (stored) {
+        try { draft = JSON.parse(stored); } catch { draft = null; }
+      }
 
       const orderResponse = await fetch("/api/razorpay/create-order", {
         method: "POST",
@@ -273,11 +276,11 @@ export function ServiceBookingFlow({
 
             {step === 2 && (
               <div className="space-y-4">
-                <input value={details.name} onChange={(e) => update("name", e.target.value)} placeholder="Your name *" className="w-full rounded-xl border border-zinc-800 bg-zinc-900 px-4 py-3 text-sm text-white placeholder:text-zinc-600 outline-none focus:border-indigo-500" />
-                <input value={details.email} onChange={(e) => update("email", e.target.value)} placeholder="Email address *" type="email" className="w-full rounded-xl border border-zinc-800 bg-zinc-900 px-4 py-3 text-sm text-white placeholder:text-zinc-600 outline-none focus:border-indigo-500" />
-                <input value={details.phone} onChange={(e) => update("phone", e.target.value)} placeholder="WhatsApp / mobile *" className="w-full rounded-xl border border-zinc-800 bg-zinc-900 px-4 py-3 text-sm text-white placeholder:text-zinc-600 outline-none focus:border-indigo-500" />
-                <input value={details.businessName} onChange={(e) => update("businessName", e.target.value)} placeholder="Business / brand name" className="w-full rounded-xl border border-zinc-800 bg-zinc-900 px-4 py-3 text-sm text-white placeholder:text-zinc-600 outline-none focus:border-indigo-500" />
-                <textarea value={details.requirement} onChange={(e) => update("requirement", e.target.value)} placeholder="What do you need delivered? *" rows={5} className="w-full rounded-xl border border-zinc-800 bg-zinc-900 px-4 py-3 text-sm text-white placeholder:text-zinc-600 outline-none focus:border-indigo-500 resize-y" />
+                <input value={details.name} onChange={(e) => update("name", e.target.value)} aria-label="Your name" autoComplete="name" placeholder="Your name *" className="w-full rounded-xl border border-zinc-800 bg-zinc-900 px-4 py-3 text-sm text-white placeholder:text-zinc-600 outline-none focus:border-indigo-500" />
+                <input value={details.email} onChange={(e) => update("email", e.target.value)} aria-label="Email address" autoComplete="email" placeholder="Email address *" type="email" className="w-full rounded-xl border border-zinc-800 bg-zinc-900 px-4 py-3 text-sm text-white placeholder:text-zinc-600 outline-none focus:border-indigo-500" />
+                <input value={details.phone} onChange={(e) => update("phone", e.target.value)} aria-label="WhatsApp or mobile number" autoComplete="tel" inputMode="tel" placeholder="WhatsApp / mobile *" className="w-full rounded-xl border border-zinc-800 bg-zinc-900 px-4 py-3 text-sm text-white placeholder:text-zinc-600 outline-none focus:border-indigo-500" />
+                <input value={details.businessName} onChange={(e) => update("businessName", e.target.value)} aria-label="Business or brand name" autoComplete="organization" placeholder="Business / brand name" className="w-full rounded-xl border border-zinc-800 bg-zinc-900 px-4 py-3 text-sm text-white placeholder:text-zinc-600 outline-none focus:border-indigo-500" />
+                <textarea value={details.requirement} onChange={(e) => update("requirement", e.target.value)} aria-label="Project requirement" placeholder="What do you need delivered? *" rows={5} className="w-full rounded-xl border border-zinc-800 bg-zinc-900 px-4 py-3 text-sm text-white placeholder:text-zinc-600 outline-none focus:border-indigo-500 resize-y" />
                 <input value={details.preferredDeliveryDate} onChange={(e) => update("preferredDeliveryDate", e.target.value)} type="date" className="w-full rounded-xl border border-zinc-800 bg-zinc-900 px-4 py-3 text-sm text-white placeholder:text-zinc-600 outline-none focus:border-indigo-500" />
                 <textarea value={details.notes} onChange={(e) => update("notes", e.target.value)} placeholder="Additional notes (optional)" rows={3} className="w-full rounded-xl border border-zinc-800 bg-zinc-900 px-4 py-3 text-sm text-white placeholder:text-zinc-600 outline-none focus:border-indigo-500 resize-y" />
                 <div className="flex gap-3 pt-2">
