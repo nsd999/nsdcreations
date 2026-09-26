@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useMemo } from "react";
+import React, { useEffect, useState, useMemo } from "react";
 import Link from "next/link";
 import { Navbar } from "@/components/Navbar";
 import { Footer } from "@/components/Footer";
@@ -30,6 +30,18 @@ const CATEGORIES = ["All", "Creative", "Branding", "Marketing", "Automation", "T
 export default function ServicesPage() {
   const [activeCategory, setActiveCategory] = useState("All");
   const [searchQuery, setSearchQuery] = useState("");
+  const [services, setServices] = useState<ServiceDetail[]>(servicesData);
+
+  useEffect(() => {
+    let cancelled = false;
+    fetch("/api/public/services", { cache: "no-store" })
+      .then((response) => response.ok ? response.json() : null)
+      .then((payload) => {
+        if (!cancelled && Array.isArray(payload?.services)) setServices(payload.services);
+      })
+      .catch(() => undefined);
+    return () => { cancelled = true; };
+  }, []);
 
   const getServiceIcon = (iconName: string) => {
     switch (iconName) {
@@ -52,24 +64,24 @@ export default function ServicesPage() {
   };
 
   const filteredServices = useMemo(() => {
-    let result = servicesData;
+    let result = services;
 
     if (activeCategory !== "All") {
-      result = result.filter(s => {
-        if (activeCategory === "Branding") return s.categoryGroup === "Brand & Marketing" && s.slug.includes("brand") || s.slug.includes("design");
-        if (activeCategory === "Marketing") return s.categoryGroup === "Brand & Marketing" && !s.slug.includes("brand") && !s.slug.includes("design");
-        return s.categoryGroup === activeCategory;
-      });
-      
-      // Handle the split between Brand & Marketing as requested by the category filter labels
       if (activeCategory === "Branding") {
-          result = servicesData.filter(s => s.slug === "branding-brand-identity" || s.slug === "poster-designing" || s.slug === "graphic-designing");
-      }
-      if (activeCategory === "Marketing") {
-          result = servicesData.filter(s => s.slug === "social-media-management" || s.slug === "digital-marketing");
-      }
-      if (activeCategory === "Creative") {
-          result = servicesData.filter(s => s.categoryGroup === "Creative");
+        result = services.filter(
+          (s) =>
+            s.slug === "branding-brand-identity" ||
+            s.slug === "poster-designing" ||
+            s.slug === "graphic-designing",
+        );
+      } else if (activeCategory === "Marketing") {
+        result = services.filter(
+          (s) =>
+            s.slug === "social-media-management" ||
+            s.slug === "digital-marketing",
+        );
+      } else {
+        result = services.filter((s) => s.categoryGroup === activeCategory);
       }
     }
 
@@ -83,7 +95,7 @@ export default function ServicesPage() {
     }
 
     return result;
-  }, [activeCategory, searchQuery]);
+  }, [activeCategory, searchQuery, services]);
 
   return (
     <div className="flex-1 flex flex-col relative overflow-x-hidden">
@@ -105,7 +117,7 @@ export default function ServicesPage() {
             </span>
           </h1>
           <p className="text-zinc-500 dark:text-zinc-400 text-sm md:text-base leading-relaxed">
-            Explore our 16 specialized services across creative, branding, marketing, automation and technology.
+            Explore our full range of specialized services across creative, branding, marketing, automation and technology.
           </p>
         </ScrollReveal>
       </section>
