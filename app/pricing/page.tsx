@@ -359,7 +359,7 @@ export default async function PricingPage() {
 
                             {/* Top 3 features preview */}
                             <ul className="space-y-2 mb-6">
-                              {service.packages[0]?.features
+                              {(service.packages.find((pkg) => pkg.isPopular) ?? service.packages[0])?.features
                                 .slice(0, 3)
                                 .map((feature, i) => (
                                   <li
@@ -376,8 +376,8 @@ export default async function PricingPage() {
                                 3 && (
                                 <li className="text-xs text-indigo-500 dark:text-indigo-400 font-medium pl-6">
                                   +{" "}
-                                  {service.packages[0].features.length - 3}{" "}
-                                  more in Starter plan
+                                  {((service.packages.find((pkg) => pkg.isPopular) ?? service.packages[0])?.features.length ?? 0) - 3}{" "}
+                                  more in selected package
                                 </li>
                               )}
                             </ul>
