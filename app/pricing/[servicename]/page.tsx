@@ -215,10 +215,10 @@ export default async function ServicePricingPage({ params }: Props) {
               )}
             </div>
             <Link
-              href="/contact"
+              href="#packages"
               className="inline-flex items-center justify-center px-6 py-3.5 rounded-full text-sm font-bold tracking-widest uppercase bg-indigo-600 hover:bg-indigo-700 text-white shadow-lg shadow-indigo-500/20 active:scale-95 transition-all"
             >
-              Get a Quote
+              Explore Packages
               <ArrowRight className="w-4 h-4 ml-2" />
             </Link>
             <Link
@@ -232,7 +232,7 @@ export default async function ServicePricingPage({ params }: Props) {
       </section>
 
       {/* ── PRICING PACKAGES ── */}
-      <section className="py-16 px-6 max-w-7xl mx-auto w-full">
+      <section id="packages" className="py-16 px-6 max-w-7xl mx-auto w-full">
         <ScrollReveal direction="up" className="text-center mb-12">
           <h2 className="font-display font-bold text-3xl text-zinc-900 dark:text-zinc-50 mb-3">
             Choose Your Package
