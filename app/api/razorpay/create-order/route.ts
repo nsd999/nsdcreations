@@ -4,6 +4,7 @@ import { getSupabaseAdmin } from "@/lib/supabase-admin";
 import { calculateBookingPricing } from "@/lib/pricing-engine";
 import { consumeRateLimit, rateLimitResponse } from "@/lib/rate-limit";
 import { createRazorpayOrder, fetchRazorpayOrder, getRazorpayPublicKey } from "@/lib/razorpay";
+import { sendAdminPushNotification } from "@/lib/admin-notifications";
 
 function hashToken(value: string) {
   return createHash("sha256").update(value).digest("hex");
@@ -64,6 +65,7 @@ export async function POST(request: Request) {
     const db = getSupabaseAdmin();
 
     let booking: any = null;
+    let createdNewBooking = false;
     let accessToken: string | null = null;
     let accessTokenExpiresAt: string | null = null;
     const requestedBookingId = clean(body.bookingId, 80);
@@ -124,10 +126,20 @@ export async function POST(request: Request) {
       }
 
       booking = data;
+      createdNewBooking = true;
     }
 
     if (booking.booking_status === "CONFIRMED" || booking.payment_status === "CAPTURED") {
       return NextResponse.json({ error: "This booking is already confirmed." }, { status: 409 });
+    }
+
+    if (createdNewBooking) {
+      await sendAdminPushNotification({
+        title: "New booking received",
+        body: booking.booking_reference + " • " + customerName + " • " + pricing.serviceName,
+        url: "/nsdtheadmin/bookings/" + booking.id,
+        type: "new_booking",
+      });
     }
 
     let order: any = null;
