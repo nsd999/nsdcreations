@@ -20,7 +20,10 @@ type AdminSession = {
 };
 
 function hashValue(value: string) {
-  const secret = process.env.ADMIN_SESSION_SECRET;
+  const secret =
+    process.env.ADMIN_SESSION_SECRET ||
+    process.env.SUPABASE_SECRET_KEY ||
+    process.env.SUPABASE_SERVICE_ROLE_KEY;
   if (!secret || secret.length < 32) {
     throw new Error("ADMIN_SESSION_SECRET_NOT_CONFIGURED");
   }
