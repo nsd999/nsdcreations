@@ -71,7 +71,7 @@ export function AdminNotificationToggle() {
         });
       }
 
-      const response = await fetch("/api/admin/notifications/register", {
+      const response = await fetch("/api/admin/notification-register", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         credentials: "same-origin",
@@ -99,7 +99,7 @@ export function AdminNotificationToggle() {
       const subscription = await registration.pushManager.getSubscription();
 
       if (subscription) {
-        await fetch("/api/admin/notifications/register", {
+        await fetch("/api/admin/notification-register", {
           method: "DELETE",
           headers: { "Content-Type": "application/json" },
           credentials: "same-origin",
