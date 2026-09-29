@@ -6,7 +6,6 @@ import { LockKeyhole, Loader2, ShieldCheck } from "lucide-react";
 
 export default function AdminLoginPage() {
   const router = useRouter();
-  const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
   const [busy, setBusy] = useState(false);
@@ -29,7 +28,7 @@ export default function AdminLoginPage() {
       const response = await fetch("/api/admin/login", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ username, password }),
+        body: JSON.stringify({ username: "", password }),
       });
       const data = await response.json();
 
@@ -61,19 +60,6 @@ export default function AdminLoginPage() {
         </div>
 
         <form onSubmit={submit} className="space-y-4">
-          <div>
-            <label className="block text-xs font-medium text-zinc-400 mb-2" htmlFor="admin-username">
-              Username (optional)
-            </label>
-            <input
-              id="admin-username"
-              autoComplete="username"
-              value={username}
-              onChange={(e) => setUsername(e.target.value)}
-              className="w-full rounded-xl border border-white/10 bg-black/30 px-4 py-3 outline-none focus:border-indigo-400 text-sm"
-            />
-          </div>
-
           <div>
             <label className="block text-xs font-medium text-zinc-400 mb-2" htmlFor="admin-password">
               Password
