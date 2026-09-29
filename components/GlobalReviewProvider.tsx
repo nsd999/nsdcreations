@@ -148,7 +148,7 @@ export function GlobalReviewProvider({ children }: { children: ReactNode }) {
     }
 
     try {
-      const { error } = await supabase.from("testimonials").insert([
+      const { data: createdReview, error } = await supabase.from("testimonials").insert([
         {
           name: cleanName,
           business_name: cleanBusiness || null,
@@ -159,9 +159,18 @@ export function GlobalReviewProvider({ children }: { children: ReactNode }) {
           status: "pending",
           context_slug: contextSlug || null
         }
-      ]);
+      ]).select("id").single();
 
       if (error) throw error;
+
+      if (createdReview?.id) {
+        fetch("/api/reviews/notify-admin", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ reviewId: createdReview.id }),
+          keepalive: true,
+        }).catch(() => undefined);
+      }
 
       localStorage.setItem("nsd_last_testimonial_submission", Date.now().toString());
       setFormSuccess(true);
