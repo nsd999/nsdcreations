@@ -88,7 +88,7 @@ export default async function DynamicTipsPage({ params }: { params: Promise<{ sl
         "name": "NSD Creations",
         "logo": {
           "@type": "ImageObject",
-          "url": "https://nsdcreations.vercel.app/nsdlogo.png"
+          "url": "https://nsdcreations.vercel.app/icons/icon-512.png"
         }
       },
       "url": `https://nsdcreations.vercel.app/tips/${tip.category.toLowerCase()}/${tip.slug}`
