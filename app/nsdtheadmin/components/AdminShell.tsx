@@ -113,15 +113,307 @@ async function api(path: string, init?: RequestInit) {
   return data;
 }
 
-function Card({ title, value, sub, icon: Icon }: { title: string; value: string; sub?: string; icon: any }) {
+type DashboardMetricKey =
+  | "leads"
+  | "bookings"
+  | "pendingPayments"
+  | "successfulPayments"
+  | "advanceRevenue"
+  | "balanceOutstanding"
+  | "pushRegistrations"
+  | "reviews";
+
+function Card({
+  title,
+  value,
+  sub,
+  icon: Icon,
+  onClick,
+}: {
+  title: string;
+  value: string;
+  sub?: string;
+  icon: any;
+  onClick?: () => void;
+}) {
   return (
-    <div className="rounded-2xl border border-white/10 bg-white/[0.035] p-5">
+    <button
+      type="button"
+      onClick={onClick}
+      className={"w-full text-left rounded-2xl border border-white/10 bg-white/[0.035] p-5 transition-colors" + (onClick ? " cursor-pointer hover:bg-white/[0.055] focus:outline-none focus:ring-1 focus:ring-indigo-400/50" : "")}
+      aria-label={onClick ? "View details for " + title : title}
+    >
       <div className="flex items-center justify-between gap-4">
         <span className="text-xs font-medium text-zinc-500">{title}</span>
         <Icon className="w-4 h-4 text-indigo-400" />
       </div>
       <div className="mt-3 text-2xl font-display font-bold">{value}</div>
       {sub && <div className="mt-1 text-[11px] text-zinc-500">{sub}</div>}
+    </button>
+  );
+}
+
+function DashboardMetricModal({
+  metric,
+  data,
+  onClose,
+}: {
+  metric: DashboardMetricKey;
+  data: any;
+  onClose: () => void;
+}) {
+  const [loading, setLoading] = useState(true);
+  const [payload, setPayload] = useState<any>(null);
+  const [error, setError] = useState("");
+
+  const config = {
+    leads: {
+      title: "New leads",
+      description: "Recent lead submissions and their current status.",
+    },
+    bookings: {
+      title: "New bookings",
+      description: "Recent bookings created today.",
+    },
+    pendingPayments: {
+      title: "Pending payments",
+      description: "Payments currently awaiting completion.",
+    },
+    successfulPayments: {
+      title: "Successful payments",
+      description: "Verified payments recorded today.",
+    },
+    advanceRevenue: {
+      title: "Advance revenue",
+      description: "Verified payment records contributing to today's collected amount.",
+    },
+    balanceOutstanding: {
+      title: "Balance outstanding",
+      description: "Confirmed and active work with an unpaid balance.",
+    },
+    pushRegistrations: {
+      title: "Push registrations",
+      description: "Notification registrations, activity, and delivery status.",
+    },
+    reviews: {
+      title: "New reviews",
+      description: "Reviews currently waiting for admin review.",
+    },
+  }[metric];
+
+  useEffect(() => {
+    let cancelled = false;
+
+    async function load() {
+      setLoading(true);
+      setError("");
+
+      try {
+        let result: any;
+
+        if (metric === "leads") {
+          result = await api("leads?limit=8");
+        } else if (metric === "bookings") {
+          result = await api("bookings?limit=8");
+        } else if (metric === "pendingPayments") {
+          result = await api("payments?status=pending&limit=8");
+        } else if (metric === "successfulPayments" || metric === "advanceRevenue") {
+          result = await api("payments?status=verified&limit=8");
+        } else if (metric === "pushRegistrations") {
+          result = await api("notification-subscribers?limit=8");
+        } else if (metric === "reviews") {
+          result = await api("testimonials?status=pending&limit=8");
+        } else {
+          result = await api("bookings?limit=25");
+        }
+
+        if (!cancelled) setPayload(result);
+      } catch (e: any) {
+        if (!cancelled) setError(e?.message || "Unable to load details.");
+      } finally {
+        if (!cancelled) setLoading(false);
+      }
+    }
+
+    load();
+    return () => {
+      cancelled = true;
+    };
+  }, [metric]);
+
+  useEffect(() => {
+    function onKeyDown(event: KeyboardEvent) {
+      if (event.key === "Escape") onClose();
+    }
+
+    document.addEventListener("keydown", onKeyDown);
+    return () => document.removeEventListener("keydown", onKeyDown);
+  }, [onClose]);
+
+  const items = payload?.items || [];
+
+  function renderRows() {
+    if (metric === "leads") {
+      return items.map((item: any) => (
+        <div key={item.id} className="rounded-xl border border-white/10 bg-white/[0.02] p-3">
+          <div className="flex items-start justify-between gap-3">
+            <div>
+              <div className="text-sm font-medium">{item.name || "Unnamed lead"}</div>
+              <div className="text-xs text-zinc-500 mt-1">{item.email || "No email"}{item.business_name ? " • " + item.business_name : ""}</div>
+            </div>
+            <Badge tone={getTone(String(item.status || ""))}>{item.status || "unknown"}</Badge>
+          </div>
+          {item.message && <p className="text-xs text-zinc-400 mt-2 line-clamp-3">{item.message}</p>}
+          <div className="text-[10px] text-zinc-600 mt-2">{dateTime(item.created_at)}</div>
+        </div>
+      ));
+    }
+
+    if (metric === "bookings") {
+      return items.map((item: any) => (
+        <div key={item.id} className="rounded-xl border border-white/10 bg-white/[0.02] p-3">
+          <div className="flex items-start justify-between gap-3">
+            <div>
+              <div className="text-sm font-medium">{item.booking_reference}</div>
+              <div className="text-xs text-zinc-500 mt-1">{item.customer_name} • {item.service_name_snapshot}</div>
+            </div>
+            <Badge tone={getTone(String(item.booking_status || ""))}>{item.booking_status}</Badge>
+          </div>
+          <div className="grid grid-cols-3 gap-2 mt-3 text-xs">
+            <div><span className="text-zinc-600 block">Total</span>{money(item.total_amount_paise)}</div>
+            <div><span className="text-zinc-600 block">Advance</span>{money(item.advance_amount_paise)}</div>
+            <div><span className="text-zinc-600 block">Balance</span>{money(item.balance_amount_paise)}</div>
+          </div>
+          <div className="text-[10px] text-zinc-600 mt-2">{dateTime(item.created_at)}</div>
+        </div>
+      ));
+    }
+
+    if (metric === "pendingPayments" || metric === "successfulPayments" || metric === "advanceRevenue") {
+      return items.map((item: any) => (
+        <div key={item.id} className="rounded-xl border border-white/10 bg-white/[0.02] p-3">
+          <div className="flex items-start justify-between gap-3">
+            <div>
+              <div className="text-sm font-medium">{item.service_bookings?.booking_reference || "Payment record"}</div>
+              <div className="text-xs text-zinc-500 mt-1">{item.service_bookings?.customer_name || "Unknown customer"}</div>
+            </div>
+            <Badge tone={getTone(String(item.status || ""))}>{item.status}</Badge>
+          </div>
+          <div className="flex items-center justify-between mt-3 text-xs">
+            <span className="text-zinc-600">Amount</span>
+            <span className="font-semibold">{money(item.amount_paise)}</span>
+          </div>
+          <div className="text-[10px] text-zinc-600 mt-2">
+            {item.method || item.source || "—"}{item.reference ? " • " + item.reference : ""} • {dateTime(item.paid_at || item.created_at)}
+          </div>
+        </div>
+      ));
+    }
+
+    if (metric === "balanceOutstanding") {
+      const outstanding = items
+        .filter((item: any) => Number(item.balance_amount_paise || 0) > 0)
+        .sort((a: any, b: any) => Number(b.balance_amount_paise || 0) - Number(a.balance_amount_paise || 0))
+        .slice(0, 8);
+
+      return outstanding.map((item: any) => (
+        <div key={item.id} className="rounded-xl border border-white/10 bg-white/[0.02] p-3">
+          <div className="flex items-start justify-between gap-3">
+            <div>
+              <div className="text-sm font-medium">{item.booking_reference}</div>
+              <div className="text-xs text-zinc-500 mt-1">{item.customer_name} • {item.service_name_snapshot}</div>
+            </div>
+            <Badge tone={getTone(String(item.booking_status || ""))}>{item.booking_status}</Badge>
+          </div>
+          <div className="flex items-center justify-between mt-3">
+            <span className="text-xs text-zinc-600">Outstanding balance</span>
+            <span className="font-semibold text-amber-200">{money(item.balance_amount_paise)}</span>
+          </div>
+        </div>
+      ));
+    }
+
+    if (metric === "pushRegistrations") {
+      return items.map((item: any) => (
+        <div key={item.id} className="rounded-xl border border-white/10 bg-white/[0.02] p-3">
+          <div className="flex items-start justify-between gap-3">
+            <div>
+              <div className="text-sm font-medium">{item.user_agent ? item.user_agent.split(" ")[0] : "Subscriber"}</div>
+              <div className="text-xs text-zinc-500 mt-1">Registered {dateTime(item.created_at)}</div>
+            </div>
+            <Badge tone={getTone(String(item.status || ""))}>{item.status}</Badge>
+          </div>
+          <div className="text-[10px] text-zinc-600 mt-2">Last seen {dateTime(item.last_seen_at)}{item.last_notification_status ? " • Notification: " + item.last_notification_status : ""}</div>
+        </div>
+      ));
+    }
+
+    if (metric === "reviews") {
+      return items.map((item: any) => (
+        <div key={item.id} className="rounded-xl border border-white/10 bg-white/[0.02] p-3">
+          <div className="flex items-start justify-between gap-3">
+            <div>
+              <div className="text-sm font-medium">{item.name}</div>
+              <div className="text-xs text-zinc-500 mt-1">{item.business_name || "Customer review"}</div>
+            </div>
+            <Badge tone="amber">Pending</Badge>
+          </div>
+          <p className="text-xs text-zinc-400 mt-2 line-clamp-4">{item.review}</p>
+          <div className="text-[10px] text-zinc-600 mt-2">{item.rating ? "★".repeat(Math.min(5, Math.max(1, Number(item.rating)))) + " • " : ""}{dateTime(item.created_at)}</div>
+        </div>
+      ));
+    }
+
+    return [];
+  }
+
+  return (
+    <div className="fixed inset-0 z-[100] flex items-end md:items-center justify-center p-0 md:p-6" role="dialog" aria-modal="true" aria-labelledby="dashboard-metric-title">
+      <button type="button" aria-label="Close details" className="absolute inset-0 bg-black/70 backdrop-blur-sm" onClick={onClose} />
+      <motion.div
+        initial={{ opacity: 0, y: 24, scale: 0.985 }}
+        animate={{ opacity: 1, y: 0, scale: 1 }}
+        transition={{ duration: 0.18 }}
+        className="relative w-full md:max-w-2xl max-h-[88vh] overflow-hidden rounded-t-3xl md:rounded-3xl border border-white/10 bg-[#0b0b10] shadow-2xl"
+      >
+        <div className="flex items-start justify-between gap-4 p-5 border-b border-white/10">
+          <div>
+            <p className="text-[10px] font-mono uppercase tracking-[0.18em] text-indigo-300">Metric details</p>
+            <h3 id="dashboard-metric-title" className="text-lg font-display font-semibold mt-1">{config.title}</h3>
+            <p className="text-xs text-zinc-500 mt-1">{config.description}</p>
+          </div>
+          <button type="button" onClick={onClose} className="shrink-0 p-2 rounded-xl border border-white/10 text-zinc-500 hover:text-white" aria-label="Close">
+            <X className="w-4 h-4" />
+          </button>
+        </div>
+
+        <div className="p-5 overflow-y-auto max-h-[calc(88vh-92px)]">
+          <div className="grid grid-cols-2 gap-3 mb-5">
+            <div className="rounded-xl border border-white/10 bg-white/[0.025] p-3">
+              <div className="text-[10px] uppercase tracking-wider text-zinc-600">Current value</div>
+              <div className="mt-1 text-xl font-display font-bold">{metric === "advanceRevenue" ? money(data.today.advanceRevenuePaise) : metric === "balanceOutstanding" ? money(data.today.outstandingBalancePaise) : metric === "pushRegistrations" ? String(data.today.activeSubscribers) : metric === "reviews" ? String(data.today.newReviews) : metric === "leads" ? String(data.today.leads) : metric === "bookings" ? String(data.today.bookings) : metric === "pendingPayments" ? String(data.today.pendingPayments) : String(data.today.successfulPayments)}</div>
+            </div>
+            <div className="rounded-xl border border-white/10 bg-white/[0.025] p-3">
+              <div className="text-[10px] uppercase tracking-wider text-zinc-600">Scope</div>
+              <div className="mt-1 text-sm font-medium">{metric === "leads" || metric === "bookings" || metric === "successfulPayments" || metric === "advanceRevenue" || metric === "reviews" ? "Today" : metric === "pushRegistrations" ? "Active registrations" : metric === "pendingPayments" ? "Awaiting payment" : "Active confirmed work"}</div>
+            </div>
+          </div>
+
+          {loading ? (
+            <div className="py-12 text-center text-sm text-zinc-500">Loading detailed information…</div>
+          ) : error ? (
+            <div className="rounded-xl border border-red-500/20 bg-red-500/10 p-4 text-sm text-red-300">{error}</div>
+          ) : metric === "balanceOutstanding" && !renderRows().length ? (
+            <Empty text="No outstanding balances found." />
+          ) : !renderRows().length ? (
+            <Empty text="No records found for this metric." />
+          ) : (
+            <div className="space-y-2.5">
+              {renderRows()}
+            </div>
+          )}
+        </div>
+      </motion.div>
     </div>
   );
 }
@@ -233,6 +525,7 @@ export default function AdminShell({ initialPath, admin }: { initialPath: string
 function DashboardView({ navigate }: { navigate: (path: string) => void }) {
   const [data, setData] = useState<any>(null);
   const [loading, setLoading] = useState(true);
+  const [metric, setMetric] = useState<DashboardMetricKey | null>(null);
 
   async function load() {
     setLoading(true);
@@ -265,14 +558,14 @@ function DashboardView({ navigate }: { navigate: (path: string) => void }) {
       </div>
 
       <div className="grid grid-cols-2 xl:grid-cols-4 gap-4">
-        <Card title="New leads" value={String(data.today.leads)} sub="Today" icon={Users} />
-        <Card title="New bookings" value={String(data.today.bookings)} sub="Today" icon={ClipboardList} />
-        <Card title="Pending payments" value={String(data.today.pendingPayments)} sub="Awaiting payment" icon={CircleDollarSign} />
-        <Card title="Successful payments" value={String(data.today.successfulPayments)} sub="Today" icon={Check} />
-        <Card title="Advance revenue" value={money(data.today.advanceRevenuePaise)} sub="Verified payments • today" icon={CircleDollarSign} />
-        <Card title="Balance outstanding" value={money(data.today.outstandingBalancePaise)} sub="Active confirmed work" icon={BarChart3} />
-        <Card title="Push registrations" value={String(data.today.activeSubscribers)} sub={String(data.today.notificationRegistrationsNewToday) + " new today • " + String(data.today.notificationRegistrationsInactive) + " inactive"} icon={Bell} />
-        <Card title="New reviews" value={String(data.today.newReviews)} sub="Today • pending review" icon={Star} />
+        <Card title="New leads" value={String(data.today.leads)} sub="Today" icon={Users} onClick={() => setMetric("leads")} />
+        <Card title="New bookings" value={String(data.today.bookings)} sub="Today" icon={ClipboardList} onClick={() => setMetric("bookings")} />
+        <Card title="Pending payments" value={String(data.today.pendingPayments)} sub="Awaiting payment" icon={CircleDollarSign} onClick={() => setMetric("pendingPayments")} />
+        <Card title="Successful payments" value={String(data.today.successfulPayments)} sub="Today" icon={Check} onClick={() => setMetric("successfulPayments")} />
+        <Card title="Advance revenue" value={money(data.today.advanceRevenuePaise)} sub="Verified payments • today" icon={CircleDollarSign} onClick={() => setMetric("advanceRevenue")} />
+        <Card title="Balance outstanding" value={money(data.today.outstandingBalancePaise)} sub="Active confirmed work" icon={BarChart3} onClick={() => setMetric("balanceOutstanding")} />
+        <Card title="Push registrations" value={String(data.today.activeSubscribers)} sub={String(data.today.notificationRegistrationsNewToday) + " new today • " + String(data.today.notificationRegistrationsInactive) + " inactive"} icon={Bell} onClick={() => setMetric("pushRegistrations")} />
+        <Card title="New reviews" value={String(data.today.newReviews)} sub="Today • pending review" icon={Star} onClick={() => setMetric("reviews")} />
       </div>
 
       <div className="grid lg:grid-cols-2 gap-4">
@@ -312,6 +605,7 @@ function DashboardView({ navigate }: { navigate: (path: string) => void }) {
           </div>
         </section>
       </div>
+      {metric && <DashboardMetricModal metric={metric} data={data} onClose={() => setMetric(null)} />}
     </div>
   );
 }
