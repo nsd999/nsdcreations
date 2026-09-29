@@ -391,7 +391,7 @@ function DashboardMetricModal({
           <div className="grid grid-cols-2 gap-3 mb-5">
             <div className="rounded-xl border border-white/10 bg-white/[0.025] p-3">
               <div className="text-[10px] uppercase tracking-wider text-zinc-600">Current value</div>
-              <div className="mt-1 text-xl font-display font-bold">{metric === "advanceRevenue" ? money(data.today.advanceRevenuePaise) : metric === "balanceOutstanding" ? money(data.today.outstandingBalancePaise) : metric === "pushRegistrations" ? String(data.today.activeSubscribers) : metric === "reviews" ? String(data.today.newReviews) : metric === "leads" ? String(data.today.leads) : metric === "bookings" ? String(data.today.bookings) : metric === "pendingPayments" ? String(data.today.pendingPayments) : String(data.today.successfulPayments)}</div>
+              <div className="mt-1 text-xl font-display font-bold">{metric === "advanceRevenue" ? money(data.today.advanceRevenuePaise) : metric === "balanceOutstanding" ? money(data.today.outstandingBalancePaise) : metric === "pushRegistrations" ? String(data.today.notificationRegistrations) : metric === "reviews" ? String(data.today.newReviews) : metric === "leads" ? String(data.today.leads) : metric === "bookings" ? String(data.today.bookings) : metric === "pendingPayments" ? String(data.today.pendingPayments) : String(data.today.successfulPayments)}</div>
             </div>
             <div className="rounded-xl border border-white/10 bg-white/[0.025] p-3">
               <div className="text-[10px] uppercase tracking-wider text-zinc-600">Scope</div>
