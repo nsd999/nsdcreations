@@ -1,6 +1,7 @@
 import { NextResponse } from 'next/server';
 import { consumeRateLimit, rateLimitResponse } from '@/lib/rate-limit';
 import { supabase } from '@/lib/supabase';
+import { sendAdminPushNotification } from '@/lib/admin-notifications';
 
 export async function POST(request: Request) {
   try {
@@ -49,6 +50,13 @@ export async function POST(request: Request) {
         { status: 500 }
       );
     }
+
+    await sendAdminPushNotification({
+      title: "New lead received",
+      body: name + " submitted a new enquiry" + (businessName ? " • " + businessName : "") + ".",
+      url: "/nsdtheadmin/leads",
+      type: "new_lead",
+    });
     
     return NextResponse.json(
       { success: true, message: 'Request submitted successfully' },
