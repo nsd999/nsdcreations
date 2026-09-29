@@ -6,6 +6,7 @@ import {
   fetchRazorpayPayment,
   verifyRazorpaySignature,
 } from "@/lib/razorpay";
+import { sendAdminPushNotification } from "@/lib/admin-notifications";
 
 function hashToken(value: string) {
   return createHash("sha256").update(value).digest("hex");
@@ -120,6 +121,13 @@ export async function POST(request: Request) {
       })
       .eq("id", booking.id)
       .neq("payment_status", "CAPTURED");
+
+    await sendAdminPushNotification({
+      title: "Payment received",
+      body: booking.booking_reference + " • " + booking.customer_name + " • ₹" + (Number(payment.amount || 0) / 100).toLocaleString("en-IN", { maximumFractionDigits: 2 }),
+      url: "/nsdtheadmin/payments",
+      type: "payment_verified",
+    });
 
     return NextResponse.json({
       success: true,
