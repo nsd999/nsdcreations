@@ -167,253 +167,219 @@ function DashboardMetricModal({
   const [error, setError] = useState("");
 
   const config = {
-    leads: {
-      title: "New leads",
-      description: "Recent lead submissions and their current status.",
-    },
-    bookings: {
-      title: "New bookings",
-      description: "Recent bookings created today.",
-    },
-    pendingPayments: {
-      title: "Pending payments",
-      description: "Payments currently awaiting completion.",
-    },
-    successfulPayments: {
-      title: "Successful payments",
-      description: "Verified payments recorded today.",
-    },
-    advanceRevenue: {
-      title: "Advance revenue",
-      description: "Verified payment records contributing to today's collected amount.",
-    },
-    balanceOutstanding: {
-      title: "Balance outstanding",
-      description: "Confirmed and active work with an unpaid balance.",
-    },
-    pushRegistrations: {
-      title: "Push registrations",
-      description: "Notification registrations, activity, and delivery status.",
-    },
-    reviews: {
-      title: "New reviews",
-      description: "Reviews currently waiting for admin review.",
-    },
+    leads: { title: "New leads", description: "Recent lead submissions and their current status." },
+    bookings: { title: "New bookings", description: "Recent bookings created today." },
+    pendingPayments: { title: "Pending payments", description: "Payments currently awaiting completion." },
+    successfulPayments: { title: "Successful payments", description: "Verified payments recorded today." },
+    advanceRevenue: { title: "Advance revenue", description: "Verified payment records contributing to today's collected amount." },
+    balanceOutstanding: { title: "Balance outstanding", description: "Confirmed and active work with an unpaid balance." },
+    pushRegistrations: { title: "Push registrations", description: "Notification registrations, activity, and delivery status." },
+    reviews: { title: "New reviews", description: "Reviews currently waiting for admin review." },
   }[metric];
 
   useEffect(() => {
     let cancelled = false;
 
-    async function load() {
-      setLoading(true);
-      setError("");
-
+    (async () => {
       try {
-        let result: any;
+        setLoading(true);
+        setError("");
 
-        if (metric === "leads") {
-          result = await api("leads?limit=8");
-        } else if (metric === "bookings") {
-          result = await api("bookings?limit=8");
-        } else if (metric === "pendingPayments") {
-          result = await api("payments?status=pending&limit=8");
-        } else if (metric === "successfulPayments" || metric === "advanceRevenue") {
-          result = await api("payments?status=verified&limit=8");
-        } else if (metric === "pushRegistrations") {
-          result = await api("notification-subscribers?limit=8");
-        } else if (metric === "reviews") {
-          result = await api("testimonials?status=pending&limit=8");
-        } else {
-          result = await api("bookings?limit=25");
-        }
+        const path =
+          metric === "leads" ? "leads?limit=8" :
+          metric === "bookings" ? "bookings?limit=8" :
+          metric === "pendingPayments" ? "payments?status=pending&limit=8" :
+          metric === "successfulPayments" || metric === "advanceRevenue" ? "payments?status=verified&limit=8" :
+          metric === "pushRegistrations" ? "notification-subscribers?limit=8" :
+          metric === "reviews" ? "testimonials?status=pending&limit=8" :
+          "bookings?limit=25";
 
+        const result = await api(path);
         if (!cancelled) setPayload(result);
       } catch (e: any) {
         if (!cancelled) setError(e?.message || "Unable to load details.");
       } finally {
         if (!cancelled) setLoading(false);
       }
-    }
+    })();
 
-    load();
     return () => {
       cancelled = true;
     };
   }, [metric]);
 
   useEffect(() => {
-    function onKeyDown(event: KeyboardEvent) {
+    const handler = (event: KeyboardEvent) => {
       if (event.key === "Escape") onClose();
-    }
-
-    document.addEventListener("keydown", onKeyDown);
-    return () => document.removeEventListener("keydown", onKeyDown);
+    };
+    window.addEventListener("keydown", handler);
+    return () => window.removeEventListener("keydown", handler);
   }, [onClose]);
 
-  const items = payload?.items || [];
+  const items = Array.isArray(payload?.items) ? payload.items : [];
 
-  function renderRows() {
-    if (metric === "leads") {
-      return items.map((item: any) => (
+  let rows: React.ReactNode[] = [];
+
+  if (metric === "balanceOutstanding") {
+    rows = items
+      .filter((item: any) => Number(item.balance_amount_paise || 0) > 0)
+      .sort((a: any, b: any) => Number(b.balance_amount_paise || 0) - Number(a.balance_amount_paise || 0))
+      .slice(0, 8)
+      .map((item: any) => (
         <div key={item.id} className="rounded-xl border border-white/10 bg-white/[0.02] p-3">
           <div className="flex items-start justify-between gap-3">
             <div>
-              <div className="text-sm font-medium">{item.name || "Unnamed lead"}</div>
-              <div className="text-xs text-zinc-500 mt-1">{item.email || "No email"}{item.business_name ? " • " + item.business_name : ""}</div>
+              <div className="text-sm font-medium">{item.booking_reference || "Booking"}</div>
+              <div className="text-xs text-zinc-500 mt-1">{item.customer_name || "Unknown customer"}{item.service_name_snapshot ? " • " + item.service_name_snapshot : ""}</div>
             </div>
-            <Badge tone={getTone(String(item.status || ""))}>{item.status || "unknown"}</Badge>
+            <Badge tone={getTone(String(item.booking_status || ""))}>{item.booking_status || "unknown"}</Badge>
           </div>
-          {item.message && <p className="text-xs text-zinc-400 mt-2 line-clamp-3">{item.message}</p>}
-          <div className="text-[10px] text-zinc-600 mt-2">{dateTime(item.created_at)}</div>
-        </div>
-      ));
-    }
-
-    if (metric === "bookings") {
-      return items.map((item: any) => (
-        <div key={item.id} className="rounded-xl border border-white/10 bg-white/[0.02] p-3">
-          <div className="flex items-start justify-between gap-3">
-            <div>
-              <div className="text-sm font-medium">{item.booking_reference}</div>
-              <div className="text-xs text-zinc-500 mt-1">{item.customer_name} • {item.service_name_snapshot}</div>
-            </div>
-            <Badge tone={getTone(String(item.booking_status || ""))}>{item.booking_status}</Badge>
-          </div>
-          <div className="grid grid-cols-3 gap-2 mt-3 text-xs">
-            <div><span className="text-zinc-600 block">Total</span>{money(item.total_amount_paise)}</div>
-            <div><span className="text-zinc-600 block">Advance</span>{money(item.advance_amount_paise)}</div>
-            <div><span className="text-zinc-600 block">Balance</span>{money(item.balance_amount_paise)}</div>
-          </div>
-          <div className="text-[10px] text-zinc-600 mt-2">{dateTime(item.created_at)}</div>
-        </div>
-      ));
-    }
-
-    if (metric === "pendingPayments" || metric === "successfulPayments" || metric === "advanceRevenue") {
-      return items.map((item: any) => (
-        <div key={item.id} className="rounded-xl border border-white/10 bg-white/[0.02] p-3">
-          <div className="flex items-start justify-between gap-3">
-            <div>
-              <div className="text-sm font-medium">{item.service_bookings?.booking_reference || "Payment record"}</div>
-              <div className="text-xs text-zinc-500 mt-1">{item.service_bookings?.customer_name || "Unknown customer"}</div>
-            </div>
-            <Badge tone={getTone(String(item.status || ""))}>{item.status}</Badge>
-          </div>
-          <div className="flex items-center justify-between mt-3 text-xs">
-            <span className="text-zinc-600">Amount</span>
-            <span className="font-semibold">{money(item.amount_paise)}</span>
-          </div>
-          <div className="text-[10px] text-zinc-600 mt-2">
-            {item.method || item.source || "—"}{item.reference ? " • " + item.reference : ""} • {dateTime(item.paid_at || item.created_at)}
-          </div>
-        </div>
-      ));
-    }
-
-    if (metric === "balanceOutstanding") {
-      const outstanding = items
-        .filter((item: any) => Number(item.balance_amount_paise || 0) > 0)
-        .sort((a: any, b: any) => Number(b.balance_amount_paise || 0) - Number(a.balance_amount_paise || 0))
-        .slice(0, 8);
-
-      return outstanding.map((item: any) => (
-        <div key={item.id} className="rounded-xl border border-white/10 bg-white/[0.02] p-3">
-          <div className="flex items-start justify-between gap-3">
-            <div>
-              <div className="text-sm font-medium">{item.booking_reference}</div>
-              <div className="text-xs text-zinc-500 mt-1">{item.customer_name} • {item.service_name_snapshot}</div>
-            </div>
-            <Badge tone={getTone(String(item.booking_status || ""))}>{item.booking_status}</Badge>
-          </div>
-          <div className="flex items-center justify-between mt-3">
-            <span className="text-xs text-zinc-600">Outstanding balance</span>
+          <div className="mt-3 flex items-center justify-between text-xs">
+            <span className="text-zinc-600">Outstanding balance</span>
             <span className="font-semibold text-amber-200">{money(item.balance_amount_paise)}</span>
           </div>
+          <div className="text-[10px] text-zinc-600 mt-2">{dateTime(item.created_at)}</div>
         </div>
       ));
-    }
-
-    if (metric === "pushRegistrations") {
-      return items.map((item: any) => (
-        <div key={item.id} className="rounded-xl border border-white/10 bg-white/[0.02] p-3">
-          <div className="flex items-start justify-between gap-3">
-            <div>
-              <div className="text-sm font-medium">{item.user_agent ? item.user_agent.split(" ")[0] : "Subscriber"}</div>
-              <div className="text-xs text-zinc-500 mt-1">Registered {dateTime(item.created_at)}</div>
-            </div>
-            <Badge tone={getTone(String(item.status || ""))}>{item.status}</Badge>
+  } else if (metric === "leads") {
+    rows = items.map((item: any) => (
+      <div key={item.id} className="rounded-xl border border-white/10 bg-white/[0.02] p-3">
+        <div className="flex items-start justify-between gap-3">
+          <div>
+            <div className="text-sm font-medium">{item.name || "Unnamed lead"}</div>
+            <div className="text-xs text-zinc-500 mt-1">{item.email || "No email"}{item.business_name ? " • " + item.business_name : ""}</div>
           </div>
-          <div className="text-[10px] text-zinc-600 mt-2">Last seen {dateTime(item.last_seen_at)}{item.last_notification_status ? " • Notification: " + item.last_notification_status : ""}</div>
+          <Badge tone={getTone(String(item.status || ""))}>{item.status || "unknown"}</Badge>
         </div>
-      ));
-    }
-
-    if (metric === "reviews") {
-      return items.map((item: any) => (
-        <div key={item.id} className="rounded-xl border border-white/10 bg-white/[0.02] p-3">
-          <div className="flex items-start justify-between gap-3">
-            <div>
-              <div className="text-sm font-medium">{item.name}</div>
-              <div className="text-xs text-zinc-500 mt-1">{item.business_name || "Customer review"}</div>
-            </div>
-            <Badge tone="amber">Pending</Badge>
+        {item.message ? <p className="text-xs text-zinc-400 mt-2 line-clamp-3">{item.message}</p> : null}
+        <div className="text-[10px] text-zinc-600 mt-2">{dateTime(item.created_at)}</div>
+      </div>
+    ));
+  } else if (metric === "bookings") {
+    rows = items.map((item: any) => (
+      <div key={item.id} className="rounded-xl border border-white/10 bg-white/[0.02] p-3">
+        <div className="flex items-start justify-between gap-3">
+          <div>
+            <div className="text-sm font-medium">{item.booking_reference || "Booking"}</div>
+            <div className="text-xs text-zinc-500 mt-1">{item.customer_name || "Unknown customer"}{item.service_name_snapshot ? " • " + item.service_name_snapshot : ""}</div>
           </div>
-          <p className="text-xs text-zinc-400 mt-2 line-clamp-4">{item.review}</p>
-          <div className="text-[10px] text-zinc-600 mt-2">{item.rating ? "★".repeat(Math.min(5, Math.max(1, Number(item.rating)))) + " • " : ""}{dateTime(item.created_at)}</div>
+          <Badge tone={getTone(String(item.booking_status || ""))}>{item.booking_status || "unknown"}</Badge>
         </div>
-      ));
-    }
-
-    return [];
+        <div className="grid grid-cols-3 gap-2 mt-3 text-xs">
+          <div><span className="text-zinc-600 block">Total</span>{money(item.total_amount_paise)}</div>
+          <div><span className="text-zinc-600 block">Advance</span>{money(item.advance_amount_paise)}</div>
+          <div><span className="text-zinc-600 block">Balance</span>{money(item.balance_amount_paise)}</div>
+        </div>
+        <div className="text-[10px] text-zinc-600 mt-2">{dateTime(item.created_at)}</div>
+      </div>
+    ));
+  } else if (metric === "pendingPayments" || metric === "successfulPayments" || metric === "advanceRevenue") {
+    rows = items.map((item: any) => (
+      <div key={item.id} className="rounded-xl border border-white/10 bg-white/[0.02] p-3">
+        <div className="flex items-start justify-between gap-3">
+          <div>
+            <div className="text-sm font-medium">{item.service_bookings?.booking_reference || "Payment record"}</div>
+            <div className="text-xs text-zinc-500 mt-1">{item.service_bookings?.customer_name || "Unknown customer"}</div>
+          </div>
+          <Badge tone={getTone(String(item.status || ""))}>{item.status || "unknown"}</Badge>
+        </div>
+        <div className="mt-3 flex items-center justify-between text-xs">
+          <span className="text-zinc-600">Amount</span>
+          <span className="font-semibold">{money(item.amount_paise)}</span>
+        </div>
+        <div className="text-[10px] text-zinc-600 mt-2">
+          {item.method || item.source || "—"}{item.reference ? " • " + item.reference : ""} • {dateTime(item.paid_at || item.created_at)}
+        </div>
+      </div>
+    ));
+  } else if (metric === "pushRegistrations") {
+    rows = items.map((item: any) => (
+      <div key={item.id} className="rounded-xl border border-white/10 bg-white/[0.02] p-3">
+        <div className="flex items-start justify-between gap-3">
+          <div>
+            <div className="text-sm font-medium">{item.user_agent ? item.user_agent.split(" ")[0] : "Subscriber"}</div>
+            <div className="text-xs text-zinc-500 mt-1">Registered {dateTime(item.created_at)}</div>
+          </div>
+          <Badge tone={getTone(String(item.status || ""))}>{item.status || "unknown"}</Badge>
+        </div>
+        <div className="text-[10px] text-zinc-600 mt-2">Last seen {dateTime(item.last_seen_at)}{item.last_notification_status ? " • Notification: " + item.last_notification_status : ""}</div>
+      </div>
+    ));
+  } else if (metric === "reviews") {
+    rows = items.map((item: any) => (
+      <div key={item.id} className="rounded-xl border border-white/10 bg-white/[0.02] p-3">
+        <div className="flex items-start justify-between gap-3">
+          <div>
+            <div className="text-sm font-medium">{item.name || "Customer"}</div>
+            <div className="text-xs text-zinc-500 mt-1">{item.business_name || "Customer review"}</div>
+          </div>
+          <Badge tone="amber">Pending</Badge>
+        </div>
+        <p className="text-xs text-zinc-400 mt-2 line-clamp-4">{item.review || "No review text."}</p>
+        <div className="text-[10px] text-zinc-600 mt-2">{item.rating ? "★".repeat(Math.min(5, Math.max(1, Number(item.rating)))) + " • " : ""}{dateTime(item.created_at)}</div>
+      </div>
+    ));
   }
 
+  const currentValue =
+    metric === "advanceRevenue" ? money(data.today.advanceRevenuePaise) :
+    metric === "balanceOutstanding" ? money(data.today.outstandingBalancePaise) :
+    metric === "pushRegistrations" ? String(data.today.notificationRegistrations ?? 0) :
+    metric === "reviews" ? String(data.today.newReviews ?? 0) :
+    metric === "leads" ? String(data.today.leads ?? 0) :
+    metric === "bookings" ? String(data.today.bookings ?? 0) :
+    metric === "pendingPayments" ? String(data.today.pendingPayments ?? 0) :
+    String(data.today.successfulPayments ?? 0);
+
+  const scope =
+    metric === "pendingPayments" ? "Awaiting payment" :
+    metric === "pushRegistrations" ? "Active registrations" :
+    metric === "balanceOutstanding" ? "Active confirmed work" :
+    "Today";
+
   return (
-    <div className="fixed inset-0 z-[100] flex items-end md:items-center justify-center p-0 md:p-6" role="dialog" aria-modal="true" aria-labelledby="dashboard-metric-title">
-      <button type="button" aria-label="Close details" className="absolute inset-0 bg-black/70 backdrop-blur-sm" onClick={onClose} />
-      <motion.div
-        initial={{ opacity: 0, y: 24, scale: 0.985 }}
-        animate={{ opacity: 1, y: 0, scale: 1 }}
-        transition={{ duration: 0.18 }}
-        className="relative w-full md:max-w-2xl max-h-[88vh] overflow-hidden rounded-t-3xl md:rounded-3xl border border-white/10 bg-[#0b0b10] shadow-2xl"
+    <div className="fixed inset-0 z-[999] flex items-end md:items-center justify-center p-0 md:p-6">
+      <div className="absolute inset-0 bg-black/80 backdrop-blur-sm" onClick={onClose} aria-hidden="true" />
+      <section
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="dashboard-metric-title"
+        className="relative z-[1000] w-full md:max-w-2xl max-h-[88vh] overflow-hidden rounded-t-3xl md:rounded-3xl border border-white/10 bg-[#0b0b10] shadow-2xl"
       >
-        <div className="flex items-start justify-between gap-4 p-5 border-b border-white/10">
+        <div className="flex items-start justify-between gap-4 p-5 border-b border-white/10 bg-[#0b0b10]">
           <div>
             <p className="text-[10px] font-mono uppercase tracking-[0.18em] text-indigo-300">Metric details</p>
             <h3 id="dashboard-metric-title" className="text-lg font-display font-semibold mt-1">{config.title}</h3>
             <p className="text-xs text-zinc-500 mt-1">{config.description}</p>
           </div>
-          <button type="button" onClick={onClose} className="shrink-0 p-2 rounded-xl border border-white/10 text-zinc-500 hover:text-white" aria-label="Close">
+          <button type="button" onClick={onClose} className="shrink-0 p-2 rounded-xl border border-white/10 text-zinc-500 hover:text-white" aria-label="Close details">
             <X className="w-4 h-4" />
           </button>
         </div>
 
-        <div className="p-5 overflow-y-auto max-h-[calc(88vh-92px)]">
+        <div className="p-5 overflow-y-auto max-h-[calc(88vh-92px)] bg-[#0b0b10]">
           <div className="grid grid-cols-2 gap-3 mb-5">
             <div className="rounded-xl border border-white/10 bg-white/[0.025] p-3">
               <div className="text-[10px] uppercase tracking-wider text-zinc-600">Current value</div>
-              <div className="mt-1 text-xl font-display font-bold">{metric === "advanceRevenue" ? money(data.today.advanceRevenuePaise) : metric === "balanceOutstanding" ? money(data.today.outstandingBalancePaise) : metric === "pushRegistrations" ? String(data.today.notificationRegistrations) : metric === "reviews" ? String(data.today.newReviews) : metric === "leads" ? String(data.today.leads) : metric === "bookings" ? String(data.today.bookings) : metric === "pendingPayments" ? String(data.today.pendingPayments) : String(data.today.successfulPayments)}</div>
+              <div className="mt-1 text-xl font-display font-bold">{currentValue}</div>
             </div>
             <div className="rounded-xl border border-white/10 bg-white/[0.025] p-3">
               <div className="text-[10px] uppercase tracking-wider text-zinc-600">Scope</div>
-              <div className="mt-1 text-sm font-medium">{metric === "leads" || metric === "bookings" || metric === "successfulPayments" || metric === "advanceRevenue" || metric === "reviews" ? "Today" : metric === "pushRegistrations" ? "Active registrations" : metric === "pendingPayments" ? "Awaiting payment" : "Active confirmed work"}</div>
+              <div className="mt-1 text-sm font-medium">{scope}</div>
             </div>
           </div>
 
           {loading ? (
-            <div className="py-12 text-center text-sm text-zinc-500">Loading detailed information…</div>
+            <div className="rounded-xl border border-white/10 bg-white/[0.02] py-12 text-center text-sm text-zinc-500">Loading detailed information…</div>
           ) : error ? (
             <div className="rounded-xl border border-red-500/20 bg-red-500/10 p-4 text-sm text-red-300">{error}</div>
-          ) : metric === "balanceOutstanding" && !renderRows().length ? (
-            <Empty text="No outstanding balances found." />
-          ) : !renderRows().length ? (
-            <Empty text="No records found for this metric." />
+          ) : rows.length === 0 ? (
+            <Empty text={metric === "balanceOutstanding" ? "No outstanding balances found." : "No records found for this metric."} />
           ) : (
-            <div className="space-y-2.5">
-              {renderRows()}
-            </div>
+            <div className="space-y-2.5">{rows}</div>
           )}
         </div>
-      </motion.div>
+      </section>
     </div>
   );
 }
