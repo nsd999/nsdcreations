@@ -33,7 +33,13 @@ export async function POST(request: Request) {
     return response;
   } catch (error: any) {
     if (error?.message === "ADMIN_SESSION_SECRET_NOT_CONFIGURED") {
-      return NextResponse.json({ error: "Admin authentication is not configured." }, { status: 503 });
+      return NextResponse.json({ error: "Admin authentication is not configured. Set ADMIN_SESSION_SECRET (or the Supabase server secret) in Vercel Production and redeploy." }, { status: 503 });
+    }
+    if (error?.message === "Admin bootstrap credential is not configured.") {
+      return NextResponse.json({ error: "Admin credential is not configured. Set ADMIN_BOOTSTRAP_PASSWORD in Vercel Production and redeploy." }, { status: 503 });
+    }
+    if (error?.message === "Unable to initialise admin credential.") {
+      return NextResponse.json({ error: "Admin credential could not be initialised. Check the Supabase admin tables and server credentials." }, { status: 503 });
     }
     return NextResponse.json({ error: "Invalid credentials." }, { status: 401 });
   }
