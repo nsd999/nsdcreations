@@ -38,18 +38,7 @@ export const metadata = {
   verification: {
     google: "googlec7e73944ca34ef0b",
   },
-  icons: {
-    icon: [
-      { url: "/nsdlogo.png", type: "image/png" },
-      { url: "/icon.png", type: "image/png" },
-      { url: "/favicon.ico" },
-    ],
-    shortcut: ["/nsdlogo.png"],
-    apple: [
-      { url: "/nsdlogo.png", type: "image/png" },
-      { url: "/apple-icon.png", type: "image/png" },
-    ],
-  },
+  manifest: "/manifest.json",
 };
 
 export default function RootLayout({
@@ -64,9 +53,6 @@ export default function RootLayout({
       suppressHydrationWarning
     >
       <head>
-        <link rel="icon" href="/nsdlogo.png" type="image/png" />
-        <link rel="shortcut icon" href="/nsdlogo.png" type="image/png" />
-        <link rel="apple-touch-icon" href="/nsdlogo.png" type="image/png" />
         <link rel="preload" href="/nsdlogo.png" as="image" type="image/png" />
         <link rel="preload" href="/founder.png" as="image" type="image/png" />
       </head>
