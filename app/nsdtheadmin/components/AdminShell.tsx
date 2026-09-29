@@ -32,6 +32,7 @@ import {
   X,
 } from "lucide-react";
 import { motion } from "motion/react";
+import { AdminNotificationToggle } from "@/components/AdminNotificationToggle";
 
 type AdminIdentity = {
   sessionId: string;
@@ -461,7 +462,7 @@ export default function AdminShell({ initialPath, admin }: { initialPath: string
                 <h1 className="font-display font-semibold text-base md:text-lg">{sections.find((item) => item.id === section)?.label || "Dashboard"}</h1>
               </div>
             </div>
-            <Link href="/" target="_blank" className="hidden sm:flex items-center gap-2 text-xs text-zinc-500 hover:text-zinc-200"><ArrowLeft className="w-3.5 h-3.5" /> Public site</Link>
+            <div className="flex items-center gap-2"><AdminNotificationToggle /><Link href="/" target="_blank" className="hidden sm:flex items-center gap-2 text-xs text-zinc-500 hover:text-zinc-200"><ArrowLeft className="w-3.5 h-3.5" /> Public site</Link></div>
           </div>
         </header>
 
