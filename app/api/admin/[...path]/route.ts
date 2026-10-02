@@ -225,6 +225,8 @@ export async function GET(
       return NextResponse.json({ items: data || [], total: count || 0, page, limit });
     }
 
+    if (!id) return NextResponse.json({ error: "Missing identifier." }, { status: 400 });
+
     if (resource === "notification-subscribers") {
       let query = db.from("push_subscriptions").select("id,endpoint,created_at,last_seen_at,user_agent,status,last_notification_status,last_notification_at,failure_count", { count: "exact" });
       if (status) query = query.eq("status", status);
@@ -918,8 +920,7 @@ export async function DELETE(
     const resource = segments[0] || "";
     const id = segments[1];
     const db = getSupabaseAdmin();
-
-    if (!id) return NextResponse.json({ error: "Missing identifier." }, { status: 400 });
+    const body = await request.json().catch(() => ({}));
 
     if (resource === "notification-register") {
       const endpoint = typeof body?.endpoint === "string" ? body.endpoint : "";
