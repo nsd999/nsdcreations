@@ -61,10 +61,19 @@ async function countRows(db: any, table: string, field = "id", filters: Array<[s
 }
 
 async function effectiveServices() {
-  const db = getSupabaseAdmin();
-  const { data: overrides } = await db.from("admin_service_overrides").select("service_id,config");
-  const map = new Map((overrides || []).map((row: any) => [row.service_id, row]));
-  return servicesData.map((service) => mergeService(service, map.get(service.id)));
+  try {
+    const db = getSupabaseAdmin();
+    const { data: overrides, error } = await db.from("admin_service_overrides").select("service_id,config");
+    if (error) {
+      console.error("[admin/services] override lookup failed:", error.message);
+      return servicesData.map((service) => mergeService(service, null));
+    }
+    const map = new Map((overrides || []).map((row: any) => [row.service_id, row]));
+    return servicesData.map((service) => mergeService(service, map.get(service.id)));
+  } catch (error: any) {
+    console.error("[admin/services] Supabase unavailable:", error?.message || error);
+    return servicesData.map((service) => mergeService(service, null));
+  }
 }
 
 async function getSegments(params: Promise<{ path?: string[] }>) {
