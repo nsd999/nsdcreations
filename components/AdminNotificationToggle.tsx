@@ -151,7 +151,7 @@ export function AdminNotificationToggle() {
             </div>
           ) : permission === "denied" ? (
             <div className="mt-4 text-xs text-zinc-500">
-              Notifications are blocked by the browser. Re-enable them in the browser's site settings and try again.
+              Notifications are blocked by the browser. Re-enable them in the browser site settings and try again.
             </div>
           ) : (
             <button
