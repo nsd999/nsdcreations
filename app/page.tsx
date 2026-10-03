@@ -54,13 +54,14 @@ export default function HomePage() {
     message: ""
   });
 
-  // Portfolio works array (actual high-quality client assets and real case designs)
+  // Portfolio entries are intentionally labelled by verification/commission status.
   const portfolioWorks = [
     {
       id: 1,
       title: "Keerthy's Daycare & Kindergarten Promotional Video",
       category: "video",
       client: "Keerthy's Daycare & Kindergarten",
+      status: "Client work private",
       type: "Promotional & Marketing Videos",
       image: "/portfolio/daycare-promo.png",
       description: "High-retention promotional and marketing commercial video produced for Keerthy's Daycare & Kindergarten to boost enrollment and community engagement.",
@@ -71,6 +72,7 @@ export default function HomePage() {
       title: "Nutrition & Wellness Introduction Video",
       category: "video",
       client: "Shilpa Palli",
+      status: "Client work private",
       type: "Nutrition & Wellness Video",
       image: "/portfolio/nutrition-wellness.png",
       description: "Professional introduction video highlighting personalized nutrition and wellness advice, styled with clean layouts and visual guides.",
@@ -81,6 +83,7 @@ export default function HomePage() {
       title: "AI Memorial Tribute Video",
       category: "video",
       client: "Santhosh Juluri",
+      status: "Client work private",
       type: "AI Memorial Tribute Video",
       image: "/portfolio/tribute-memorial.png",
       description: "Deeply emotional tribute and legacy video utilizing AI-enhanced restored photographs and historical family records synchronized to custom soundscapes.",
@@ -90,7 +93,8 @@ export default function HomePage() {
       id: 4,
       title: "Interactive E-Commerce Interface",
       category: "web",
-      client: "NSD Labs",
+      client: "NSD Creations",
+      status: "Internal project",
       type: "E-Commerce Website",
       image: "/portfolio/ecommerce-web.png",
       description: "Hand-coded, lightning-fast storefront styled with professional, sleek layout structures and seamless navigation.",
@@ -100,7 +104,8 @@ export default function HomePage() {
       id: 5,
       title: "Corporate Identity Style Guide",
       category: "branding",
-      client: "Global Logistics Brand",
+      client: "NSD Creations",
+      status: "Concept/demo not commissioned",
       type: "Brand Guidelines",
       image: "/portfolio/branding-identity.png",
       description: "Premium vector graphics, core typography pairs, and standard color guidelines book.",
@@ -110,7 +115,8 @@ export default function HomePage() {
       id: 6,
       title: "Educational Seminar Flyer",
       category: "poster",
-      client: "Telangana Institution",
+      client: "NSD Creations",
+      status: "Concept/demo not commissioned",
       type: "Poster Design",
       image: "/portfolio/poster-design.png",
       description: "Bold layout, structured visual grid hierarchy, and print-optimized graphic design.",
@@ -120,7 +126,8 @@ export default function HomePage() {
       id: 7,
       title: "WhatsApp CRM Integration Flow",
       category: "automation",
-      client: "Local Retail Agency",
+      client: "NSD Creations",
+      status: "Concept/demo not commissioned",
       type: "AI & API Automation",
       image: "/portfolio/whatsapp-automation.png",
       description: "Automated direct customer query triggers linking WhatsApp Business API with digital data sheets.",
@@ -577,9 +584,11 @@ export default function HomePage() {
                   {/* Card Content */}
                   <div className="p-6 flex-1 flex flex-col justify-between">
                     <div>
-                      <span className="text-[10px] font-mono text-zinc-400 uppercase tracking-widest">
-                        Client: {work.client}
-                      </span>
+                      <div className="flex flex-wrap items-center gap-2 text-[10px] font-mono uppercase tracking-widest">
+                        <span className="text-zinc-400">{work.status}</span>
+                        <span className="text-zinc-300 dark:text-zinc-700">•</span>
+                        <span className="text-zinc-400">{work.status?.startsWith("Client work") ? "Client: " : "Project: "}{work.client}</span>
+                      </div>
                       <h3 className="font-display font-bold text-lg text-zinc-900 dark:text-zinc-100 mt-1 mb-2">
                         {work.title}
                       </h3>
@@ -589,8 +598,8 @@ export default function HomePage() {
                     </div>
 
                     <div className="mt-6 pt-4 border-t border-zinc-100 dark:border-zinc-900/80 flex items-center justify-between">
-                      <span className="text-xs font-mono text-indigo-600 dark:text-indigo-400 font-bold">
-                        Portfolio Case
+                      <span className="text-xs font-mono text-zinc-500 dark:text-zinc-400 font-bold">
+                        {work.status}
                       </span>
                       <Link
                         href={work.link}
