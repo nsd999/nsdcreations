@@ -141,9 +141,9 @@ export const servicesData: ServiceDetail[] = [
       { question: "How do I start?", answer: "Simply click 'Get a Quote' and tell us about your brand, product, and target audience." }
     ],
     seo: {
-      title: "AI Video Advertisement Pricing | NSD Creations",
-      description: "Explore AI video advertisement pricing from NSD Creations. Create professional AI-powered promotional videos for businesses, brands and campaigns.",
-      keywords: ["AI video ads", "social media commercials", "AI video production pricing", "video advertisements india"]
+      title: "AI Product Commercials Pricing | NSD Creations",
+      description: "Explore AI product commercial pricing from NSD Creations. Create photorealistic AI-powered product launch videos and social-ready visual campaigns.",
+      keywords: ["AI product commercials", "product video advertising", "AI product video pricing", "product launch videos india"]
     }
   },
   {
