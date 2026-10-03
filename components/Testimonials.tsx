@@ -3,7 +3,6 @@
 import React, { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "motion/react";
 import { Star, Quote, Plus } from "lucide-react";
-import { supabase } from "@/lib/supabase";
 import { GradientAvatar } from "./GradientAvatar";
 import { useGlobalReview } from "./GlobalReviewProvider";
 
@@ -27,24 +26,29 @@ export function Testimonials({ contextSlug }: { contextSlug?: string } = {}) {
 
   // Fetch approved testimonials
   const fetchTestimonials = async () => {
+    setLoading(true);
+    const controller = new AbortController();
+    const timeout = window.setTimeout(() => controller.abort(), 5000);
+
     try {
-      let query = supabase
-        .from("testimonials")
-        .select("*")
-        .eq("status", "approved")
-        .order("created_at", { ascending: false });
+      const params = new URLSearchParams();
+      if (contextSlug) params.set("context", contextSlug);
 
-      if (contextSlug) {
-        query = query.eq("context_slug", contextSlug);
-      }
+      const response = await fetch(`/api/reviews/public${params.toString() ? `?${params}` : ""}`, {
+        method: "GET",
+        cache: "no-store",
+        signal: controller.signal,
+      });
 
-      const { data, error } = await query;
+      if (!response.ok) throw new Error(`Testimonials request failed: ${response.status}`);
 
-      if (error) throw error;
-      setTestimonials(data || []);
+      const payload = await response.json();
+      setTestimonials(Array.isArray(payload.testimonials) ? payload.testimonials : []);
     } catch (err) {
       console.error("Error fetching testimonials:", err);
+      setTestimonials([]);
     } finally {
+      window.clearTimeout(timeout);
       setLoading(false);
     }
   };
@@ -52,23 +56,10 @@ export function Testimonials({ contextSlug }: { contextSlug?: string } = {}) {
   useEffect(() => {
     fetchTestimonials();
 
-    // Subscribe to Realtime testimonial updates silently
-    const channel = supabase
-      .channel("public:testimonials_realtime")
-      .on(
-        "postgres_changes",
-        { event: "*", schema: "public", table: "testimonials" },
-        (payload: any) => {
-          // Silent automatic refresh
-          fetchTestimonials();
-        },
-      )
-      .subscribe();
+    const refreshTimer = window.setInterval(fetchTestimonials, 30000);
 
     return () => {
-      if (channel && typeof channel.unsubscribe === "function") {
-        channel.unsubscribe();
-      }
+      window.clearInterval(refreshTimer);
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
