@@ -43,7 +43,15 @@ export default function PortfolioPage() {
   useEffect(() => {
     fetch("/api/public/portfolio")
       .then((response) => response.json())
-      .then((data) => setCmsWorks(Array.isArray(data.items) ? data.items : []))
+      .then((data) => {
+        const items = Array.isArray(data.items) ? data.items : [];
+        setCmsWorks(
+          items.map((item: PortfolioWork) => ({
+            ...item,
+            status: item.status ?? "Client work private",
+          }))
+        );
+      })
       .catch(() => undefined);
   }, []);
 
@@ -175,7 +183,7 @@ export default function PortfolioPage() {
             </span>
           </h1>
           <p className="text-zinc-500 dark:text-zinc-400 text-sm md:text-base leading-relaxed">
-            Witness how we build clean corporate aesthetics and high-performance business applications. Filter across our portfolio of videos, posters, brand books, websites, and custom automated tools.
+            Explore selected work with an explicit status label for every project. Client results and commissions are not implied unless documented.
           </p>
         </ScrollReveal>
       </section>
@@ -235,8 +243,13 @@ export default function PortfolioPage() {
                     fill
                     className="w-full h-full object-cover group-hover:scale-103 transition-transform duration-500"
                   />
-                  <div className="absolute top-4 left-4 bg-[#030303]/85 backdrop-blur-md border border-zinc-800 text-[10px] font-mono font-bold tracking-widest text-indigo-400 px-3 py-1.5 rounded-full uppercase z-10">
-                    {work.type}
+                  <div className="absolute top-4 left-4 right-4 flex flex-wrap gap-2 z-10">
+                    <div className="bg-[#030303]/85 backdrop-blur-md border border-zinc-800 text-[10px] font-mono font-bold tracking-widest text-indigo-400 px-3 py-1.5 rounded-full uppercase">
+                      {work.type}
+                    </div>
+                    <div className="bg-[#030303]/85 backdrop-blur-md border border-zinc-700 text-[10px] font-mono font-bold tracking-wide text-zinc-200 px-3 py-1.5 rounded-full">
+                      {work.status}
+                    </div>
                   </div>
                   {/* Watermark logo overlay on bottom right corner, smaller, 60% opacity */}
                   <div className="absolute bottom-3 right-3 z-10 pointer-events-none opacity-60 drop-shadow-md flex items-center justify-center">
@@ -274,15 +287,19 @@ export default function PortfolioPage() {
                     <span className="text-xs font-mono text-zinc-500 dark:text-zinc-400 font-bold">
                       {work.status}
                     </span>
-                    <Link
-                      href={work.link}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="inline-flex items-center text-xs font-bold text-zinc-800 hover:text-indigo-600 dark:text-zinc-200 dark:hover:text-indigo-400 transition-colors"
-                    >
-                      View Source Assets
-                      <ExternalLink className="w-3.5 h-3.5 ml-1" />
-                    </Link>
+                    {work.status === "Client work private" ? (
+                      <span className="text-xs font-semibold text-zinc-400">Private client work</span>
+                    ) : (
+                      <Link
+                        href={work.link}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="inline-flex items-center text-xs font-bold text-zinc-800 hover:text-indigo-600 dark:text-zinc-200 dark:hover:text-indigo-400 transition-colors"
+                      >
+                        View Project Assets
+                        <ExternalLink className="w-3.5 h-3.5 ml-1" />
+                      </Link>
+                    )}
                   </div>
                 </div>
                 </SpotlightCard>
