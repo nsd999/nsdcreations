@@ -506,10 +506,10 @@ export default function HomePage() {
           <ScrollReveal direction="up" className="flex flex-col md:flex-row items-start md:items-end justify-between gap-6">
             <div className="max-w-xl flex flex-col space-y-3">
               <span className="text-xs font-mono font-bold tracking-wider text-indigo-500 uppercase">
-                Featured Creative Work
+                Selected Work
               </span>
               <h2 className="font-display font-bold text-3xl md:text-4xl text-zinc-900 dark:text-zinc-50 tracking-tight">
-                Our Proven Record of Stunning Deliverables.
+                Selected Work & Projects.
               </h2>
             </div>
             <Link
@@ -601,15 +601,19 @@ export default function HomePage() {
                       <span className="text-xs font-mono text-zinc-500 dark:text-zinc-400 font-bold">
                         {work.status}
                       </span>
-                      <Link
-                        href={work.link}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="inline-flex items-center text-xs font-bold text-zinc-800 hover:text-indigo-600 dark:text-zinc-200 dark:hover:text-indigo-400 transition-colors"
-                      >
-                        Explore Project
-                        <ExternalLink className="w-3.5 h-3.5 ml-1" />
-                      </Link>
+                      {work.status === "Client work private" ? (
+                        <span className="text-xs font-semibold text-zinc-400">Private client work</span>
+                      ) : (
+                        <Link
+                          href={work.link}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="inline-flex items-center text-xs font-bold text-zinc-800 hover:text-indigo-600 dark:text-zinc-200 dark:hover:text-indigo-400 transition-colors"
+                        >
+                          View Project
+                          <ExternalLink className="w-3.5 h-3.5 ml-1" />
+                        </Link>
+                      )}
                     </div>
                   </div>
                 </motion.div>
