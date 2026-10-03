@@ -84,7 +84,7 @@ export default function PortfolioPage() {
       id: 4,
       title: "Interactive E-Commerce Interface",
       category: "websites",
-      client: "NSD Labs",
+      client: "NSD Creations Showcase",
       type: "Next.js Web App",
       image: "/portfolio/ecommerce-web.png",
       description: "Hand-coded, lightning-fast storefront styled with Tailwind and seamless page transitions.",
@@ -95,7 +95,7 @@ export default function PortfolioPage() {
       id: 5,
       title: "Corporate Identity Style Guide",
       category: "branding",
-      client: "Global Logistics Brand",
+      client: "NSD Creations Showcase",
       type: "Brand Guidelines",
       image: "/portfolio/branding-identity.png",
       description: "Premium vector graphics, core typography pairs, and standard color guidelines book.",
@@ -106,7 +106,7 @@ export default function PortfolioPage() {
       id: 6,
       title: "Educational Seminar Flyer",
       category: "posters",
-      client: "Telangana Institution",
+      client: "NSD Creations Showcase",
       type: "Poster Design",
       image: "/portfolio/poster-design.png",
       description: "Bold layout, structured visual grid hierarchy, and print-optimized graphic design.",
@@ -117,7 +117,7 @@ export default function PortfolioPage() {
       id: 7,
       title: "WhatsApp CRM Integration Flow",
       category: "apps",
-      client: "Local Retail Agency",
+      client: "NSD Creations Showcase",
       type: "AI & API Automation",
       image: "/portfolio/whatsapp-automation.png",
       description: "Automated direct customer query triggers linking WhatsApp Business API with digital data sheets.",
@@ -261,8 +261,8 @@ export default function PortfolioPage() {
                   </div>
 
                   <div className="mt-6 pt-4 border-t border-zinc-100 dark:border-zinc-900/80 flex items-center justify-between">
-                    <span className="text-xs font-mono text-indigo-600 dark:text-indigo-400 font-bold">
-                      Case Study Approved
+                    <span className="text-xs font-mono text-zinc-500 dark:text-zinc-400 font-bold">
+                      Showcase Project
                     </span>
                     <Link
                       href={work.link}
