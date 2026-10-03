@@ -16,7 +16,7 @@ export function Footer() {
     { name: "Graphic & Poster Design", href: "/services/graphic-designing" },
     { name: "Website Development", href: "/services/website-development" },
     { name: "AI & WhatsApp Automation", href: "/services/ai-automation" },
-    { name: "Branding & Social Media", href: "/services/branding" },
+    { name: "Branding & Social Media", href: "/services/branding-brand-identity" },
   ];
 
   const companyLinks = [
