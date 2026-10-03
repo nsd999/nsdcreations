@@ -33,6 +33,7 @@ type PortfolioWork = {
   link: string;
   tech: string[];
   featured?: boolean;
+  status: "Client work verified" | "Client work private" | "Concept/demo not commissioned" | "Internal project";
 };
 
 export default function PortfolioPage() {
@@ -52,6 +53,7 @@ export default function PortfolioPage() {
       title: "Keerthy's Daycare & Kindergarten Promotional Video",
       category: "video",
       client: "Keerthy's Daycare & Kindergarten",
+      status: "Client work private",
       type: "Promotional & Marketing Videos",
       image: "/portfolio/daycare-promo.png",
       description: "High-retention promotional and marketing commercial video produced for Keerthy's Daycare & Kindergarten to boost enrollment and community engagement.",
@@ -63,6 +65,7 @@ export default function PortfolioPage() {
       title: "Nutrition & Wellness Introduction Video",
       category: "video",
       client: "Shilpa Palli",
+      status: "Client work private",
       type: "Nutrition & Wellness Video",
       image: "/portfolio/nutrition-wellness.png",
       description: "Professional introduction video highlighting personalized nutrition and wellness advice, styled with clean layouts and visual guides.",
@@ -74,6 +77,7 @@ export default function PortfolioPage() {
       title: "AI Memorial Tribute Video",
       category: "video",
       client: "Santhosh Juluri",
+      status: "Client work private",
       type: "AI Memorial Tribute Video",
       image: "/portfolio/tribute-memorial.png",
       description: "Deeply emotional tribute and legacy video utilizing AI-enhanced restored photographs and historical family records synchronized to custom soundscapes.",
@@ -84,7 +88,8 @@ export default function PortfolioPage() {
       id: 4,
       title: "Interactive E-Commerce Interface",
       category: "websites",
-      client: "NSD Creations Showcase",
+      client: "NSD Creations",
+      status: "Internal project",
       type: "Next.js Web App",
       image: "/portfolio/ecommerce-web.png",
       description: "Hand-coded, lightning-fast storefront styled with Tailwind and seamless page transitions.",
@@ -95,7 +100,8 @@ export default function PortfolioPage() {
       id: 5,
       title: "Corporate Identity Style Guide",
       category: "branding",
-      client: "NSD Creations Showcase",
+      client: "NSD Creations",
+      status: "Concept/demo not commissioned",
       type: "Brand Guidelines",
       image: "/portfolio/branding-identity.png",
       description: "Premium vector graphics, core typography pairs, and standard color guidelines book.",
@@ -106,7 +112,8 @@ export default function PortfolioPage() {
       id: 6,
       title: "Educational Seminar Flyer",
       category: "posters",
-      client: "NSD Creations Showcase",
+      client: "NSD Creations",
+      status: "Concept/demo not commissioned",
       type: "Poster Design",
       image: "/portfolio/poster-design.png",
       description: "Bold layout, structured visual grid hierarchy, and print-optimized graphic design.",
@@ -117,7 +124,8 @@ export default function PortfolioPage() {
       id: 7,
       title: "WhatsApp CRM Integration Flow",
       category: "apps",
-      client: "NSD Creations Showcase",
+      client: "NSD Creations",
+      status: "Concept/demo not commissioned",
       type: "AI & API Automation",
       image: "/portfolio/whatsapp-automation.png",
       description: "Automated direct customer query triggers linking WhatsApp Business API with digital data sheets.",
@@ -242,9 +250,11 @@ export default function PortfolioPage() {
 
                 <div className="p-6 flex-1 flex flex-col justify-between">
                   <div>
-                    <span className="text-[10px] font-mono text-zinc-400 uppercase tracking-widest">
-                      Client: {work.client}
-                    </span>
+                    <div className="flex flex-wrap items-center gap-2 text-[10px] font-mono uppercase tracking-widest">
+                      <span className="text-zinc-500 dark:text-zinc-400">{work.status}</span>
+                      <span className="text-zinc-300 dark:text-zinc-700">•</span>
+                      <span className="text-zinc-400">{work.status.startsWith("Client work") ? "Client: " : "Project: "}{work.client}</span>
+                    </div>
                     <h3 className="font-display font-bold text-lg text-zinc-900 dark:text-zinc-100 mt-1 mb-2">
                       {work.title}
                     </h3>
@@ -262,7 +272,7 @@ export default function PortfolioPage() {
 
                   <div className="mt-6 pt-4 border-t border-zinc-100 dark:border-zinc-900/80 flex items-center justify-between">
                     <span className="text-xs font-mono text-zinc-500 dark:text-zinc-400 font-bold">
-                      Showcase Project
+                      {work.status}
                     </span>
                     <Link
                       href={work.link}
