@@ -9,7 +9,7 @@ interface CounterProps {
 }
 
 function AnimatedCounter({ value, suffix = "" }: CounterProps) {
-  const [display, setDisplay] = useState(0);
+  const [display, setDisplay] = useState(value);
   const ref = useRef<HTMLDivElement>(null);
   const isInView = useInView(ref, { once: true, amount: 0.1 });
   const count = useMotionValue(0);
