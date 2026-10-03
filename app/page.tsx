@@ -103,7 +103,7 @@ export default function HomePage() {
     {
       id: 5,
       title: "Corporate Identity Style Guide",
-      category: "branding",
+      category: "branding-brand-identity",
       client: "NSD Creations",
       status: "Concept/demo not commissioned",
       type: "Brand Guidelines",
@@ -193,7 +193,7 @@ export default function HomePage() {
       case "mobile-app-development": return <Smartphone className="w-5 h-5 text-indigo-500" />;
       case "ai-automation": return <Cpu className="w-5 h-5 text-indigo-500" />;
       case "whatsapp-automation": return <MessageSquare className="w-5 h-5 text-emerald-500" />;
-      case "branding": return <Award className="w-5 h-5 text-amber-500" />;
+      case "branding-brand-identity": return <Award className="w-5 h-5 text-amber-500" />;
       case "digital-marketing": return <TrendingUp className="w-5 h-5 text-indigo-500" />;
       case "social-media-management": return <Share2 className="w-5 h-5 text-indigo-500" />;
       case "business-automation": return <Workflow className="w-5 h-5 text-indigo-500" />;
@@ -410,8 +410,8 @@ export default function HomePage() {
                   const creativeSlugs = [
                     "ai-video-advertisements",
                     "ai-product-commercials",
-                    "ai-ugc-advertisements",
-                    "marketing-videos",
+                    "ai-ugc-advertisement-videos",
+                    "marketing-promotional-videos",
                     "tribute-videos",
                     "poster-designing",
                     "graphic-designing",
