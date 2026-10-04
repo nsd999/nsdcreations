@@ -235,8 +235,8 @@ export async function GET(
     }
 
     // Collection resources do not require an identifier. Keep these before the
-    // generic ID guard so /api/admin/services and /api/admin/pricing work.
-    if (!id) return NextResponse.json({ error: "Missing identifier." }, { status: 400 });
+    // generic ID guard so collection endpoints such as /services and /pricing work.
+    if (resource === "notification-subscribers") {
       let query = db.from("push_subscriptions").select("id,endpoint,created_at,last_seen_at,user_agent,status,last_notification_status,last_notification_at,failure_count", { count: "exact" });
       if (status) query = query.eq("status", status);
       const { data, error, count } = await query.order("created_at", { ascending: false }).range(fromIndex, toIndex);
@@ -249,6 +249,12 @@ export async function GET(
       if (error) return NextResponse.json({ error: "Unable to load notification history." }, { status: 500 });
       return NextResponse.json({ items: data || [], total: count || 0, page, limit });
     }
+
+    if (resource === "services" || resource === "pricing") {
+      return NextResponse.json({ items: await effectiveServices() });
+    }
+
+    if (!id) return NextResponse.json({ error: "Missing identifier." }, { status: 400 });
 
     if (resource === "tips") {
       let query = db.from("cms_tips").select("*", { count: "exact" });
