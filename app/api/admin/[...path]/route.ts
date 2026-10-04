@@ -234,9 +234,9 @@ export async function GET(
       return NextResponse.json({ items: data || [], total: count || 0, page, limit });
     }
 
+    // Collection resources do not require an identifier. Keep these before the
+    // generic ID guard so /api/admin/services and /api/admin/pricing work.
     if (!id) return NextResponse.json({ error: "Missing identifier." }, { status: 400 });
-
-    if (resource === "notification-subscribers") {
       let query = db.from("push_subscriptions").select("id,endpoint,created_at,last_seen_at,user_agent,status,last_notification_status,last_notification_at,failure_count", { count: "exact" });
       if (status) query = query.eq("status", status);
       const { data, error, count } = await query.order("created_at", { ascending: false }).range(fromIndex, toIndex);
