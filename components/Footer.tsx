@@ -5,10 +5,23 @@ import Link from "next/link";
 import { Mail, Phone, MessageSquare, Instagram, Youtube, ArrowRight, ShieldCheck, Heart, Star } from "lucide-react";
 import { NsdLogo } from "./NsdLogo";
 import { useGlobalReview } from "./GlobalReviewProvider";
+import { useSiteSettings } from "./SiteSettingsProvider";
+
+function safeHttpsUrl(value: string | undefined, fallback: string) {
+  return value && /^https?:\/\//i.test(value) ? value : fallback;
+}
+
+function safeEmail(value: string | undefined, fallback: string) {
+  return value && /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value) ? value : fallback;
+}
 
 export function Footer() {
   const currentYear = new Date().getFullYear();
   const { openReviewModal } = useGlobalReview();
+  const settings = useSiteSettings();
+  const instagramUrl = safeHttpsUrl(settings.instagram_url, "https://instagram.com/nsd.creations.official");
+  const youtubeUrl = safeHttpsUrl(settings.youtube_url, "https://youtube.com/@nsdkaraoke");
+  const email = safeEmail(settings.contact_email, "nsd.creations.official@gmail.com");
 
   const servicesLinks = [
     { name: "AI Video Advertisements", href: "/services/ai-video-advertisements" },
@@ -39,10 +52,10 @@ export function Footer() {
       {/* Upper Footer CTA Section */}
       <div className="max-w-7xl mx-auto px-6 py-16 md:py-20 border-b border-zinc-200/50 dark:border-zinc-900/50 text-center flex flex-col items-center">
         <h2 className="font-display font-bold text-3xl md:text-4xl text-zinc-900 dark:text-zinc-50 tracking-tight leading-tight max-w-2xl">
-          Let&apos;s craft something remarkable together.
+          {settings.footer_headline || "Let's craft something remarkable together."}
         </h2>
         <p className="text-zinc-500 dark:text-zinc-400 mt-4 max-w-xl text-sm md:text-base">
-          Have an idea, video commercial, website, or custom automation project? Get in touch today for a free personal consultation and tailored pricing quote.
+          {settings.footer_description || "Have an idea, video commercial, website, or custom automation project? Get in touch today for a free personal consultation and tailored pricing quote."}
         </p>
         <div className="mt-8">
           <Link
@@ -77,7 +90,7 @@ export function Footer() {
           </p>
           <div className="flex items-center space-x-3.5">
             <Link
-              href="https://instagram.com/nsd.creations.official"
+              href={instagramUrl}
               target="_blank"
               rel="noopener noreferrer"
               className="w-9 h-9 rounded-full bg-zinc-200/50 dark:bg-zinc-900 border border-zinc-300/30 dark:border-zinc-800 flex items-center justify-center text-zinc-600 dark:text-zinc-400 hover:bg-indigo-50 hover:text-indigo-600 dark:hover:bg-indigo-950/40 dark:hover:text-indigo-400 transition-colors"
@@ -86,7 +99,7 @@ export function Footer() {
               <Instagram className="w-4 h-4" />
             </Link>
             <Link
-              href="https://youtube.com/@nsdkaraoke"
+              href={youtubeUrl}
               target="_blank"
               rel="noopener noreferrer"
               className="w-9 h-9 rounded-full bg-zinc-200/50 dark:bg-zinc-900 border border-zinc-300/30 dark:border-zinc-800 flex items-center justify-center text-zinc-600 dark:text-zinc-400 hover:bg-indigo-50 hover:text-indigo-600 dark:hover:bg-indigo-950/40 dark:hover:text-indigo-400 transition-colors"
@@ -95,7 +108,7 @@ export function Footer() {
               <Youtube className="w-4 h-4" />
             </Link>
             <a
-              href="mailto:nsd.creations.official@gmail.com"
+              href={"mailto:" + email}
               className="w-9 h-9 rounded-full bg-zinc-200/50 dark:bg-zinc-900 border border-zinc-300/30 dark:border-zinc-800 flex items-center justify-center text-zinc-600 dark:text-zinc-400 hover:bg-indigo-50 hover:text-indigo-600 dark:hover:bg-indigo-950/40 dark:hover:text-indigo-400 transition-colors"
               aria-label="Email"
             >
@@ -182,7 +195,7 @@ export function Footer() {
             <span>&copy; {currentYear} NSD Creations. All rights reserved.</span>
             <span className="hidden md:inline text-zinc-300 dark:text-zinc-800">|</span>
             <Link href="/pricing" className="font-medium text-indigo-600 dark:text-indigo-400 hover:underline transition-all">
-              Pricing starting from ₹299*
+              {settings.pricing_footer_text || "Pricing starting from ₹299*"}
             </Link>
           </div>
           <div className="flex flex-wrap items-center gap-6 text-zinc-500 dark:text-zinc-400 font-mono text-[11px]">
