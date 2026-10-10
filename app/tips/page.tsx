@@ -19,16 +19,46 @@ export default function TipsPage() {
   const [allTips, setAllTips] = useState<Tip[]>(tipsData);
 
   useEffect(() => {
-    fetch("/api/public/tips")
-      .then((response) => response.json())
-      .then((data) => {
+    let cancelled = false;
+    let inFlight = false;
+
+    const refreshTips = async () => {
+      if (cancelled || inFlight) return;
+      inFlight = true;
+      try {
+        const response = await fetch("/api/public/tips", { cache: "no-store" });
+        if (!response.ok) return;
+        const data = await response.json();
         const cmsTips = Array.isArray(data.items) ? data.items : [];
-        setAllTips((current) => {
-          const cmsSlugs = new Set(cmsTips.map((tip: any) => tip.slug));
-          return ([...cmsTips, ...current.filter((tip) => !cmsSlugs.has(tip.slug))] as Tip[]);
-        });
-      })
-      .catch(() => undefined);
+        const cmsSlugs = new Set(cmsTips.map((tip: any) => tip.slug));
+        const merged = [
+          ...cmsTips,
+          ...tipsData.filter((tip) => !cmsSlugs.has(tip.slug)),
+        ] as Tip[];
+        if (!cancelled) setAllTips(merged);
+      } catch {
+        // Keep the last successful results during transient network errors.
+      } finally {
+        inFlight = false;
+      }
+    };
+
+    void refreshTips();
+    const interval = window.setInterval(() => {
+      if (document.visibilityState === "visible") void refreshTips();
+    }, 15000);
+    const onFocus = () => void refreshTips();
+    const onVisibility = () => {
+      if (document.visibilityState === "visible") void refreshTips();
+    };
+    window.addEventListener("focus", onFocus);
+    document.addEventListener("visibilitychange", onVisibility);
+    return () => {
+      cancelled = true;
+      window.clearInterval(interval);
+      window.removeEventListener("focus", onFocus);
+      document.removeEventListener("visibilitychange", onVisibility);
+    };
   }, []);
 
   useEffect(() => {
