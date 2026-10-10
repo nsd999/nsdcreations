@@ -975,13 +975,47 @@ function TestimonialsView() {
 }
 
 function PortfolioView() {
+  const blankForm = {title:"",category:"video",clientName:"",description:"",thumbnailUrl:"",projectUrl:"",status:"draft",featured:false};
   const [items,setItems]=useState<any[]>([]);
-  const [form,setForm]=useState({title:"",category:"video",clientName:"",description:"",thumbnailUrl:"",projectUrl:"",status:"draft",featured:false});
+  const [form,setForm]=useState(blankForm);
+  const [editingId,setEditingId]=useState("");
+  const [error,setError]=useState("");
+  const [success,setSuccess]=useState("");
+  const [saving,setSaving]=useState(false);
   async function load(){const d=await api("portfolio");setItems(d.items||[]);}
-  useEffect(()=>{load();},[]);
-  async function create(){await api("portfolio",{method:"POST",body:JSON.stringify(form)});setForm({title:"",category:"video",clientName:"",description:"",thumbnailUrl:"",projectUrl:"",status:"draft",featured:false});load();}
-  async function status(id:string,next:string){await api("portfolio/"+id,{method:"PATCH",body:JSON.stringify({status:next})});load();}
-  return <div className="grid xl:grid-cols-[420px_1fr] gap-4"><Panel title="Add portfolio project"><div className="space-y-2">{Object.entries(form).filter(([k])=>k!=="status"&&k!=="featured").map(([key,value])=><input key={key} value={String(value)} onChange={e=>setForm({...form,[key]:e.target.value})} placeholder={key} className="w-full rounded-xl border border-white/10 bg-white/[0.03] px-3 py-2.5 text-sm"/>)}<label className="flex gap-2 text-xs"><input type="checkbox" checked={form.featured} onChange={e=>setForm({...form,featured:e.target.checked})}/> Featured</label><button onClick={create} className="w-full rounded-xl bg-indigo-600 py-3 font-semibold">Create Project</button></div></Panel><div className="space-y-2">{items.length===0?<Empty text="No CMS portfolio items yet. Existing static work remains intact."/>:items.map(p=><div key={p.id} className="rounded-2xl border border-white/10 p-4"><div className="flex justify-between gap-3"><div><div className="font-medium">{p.title}</div><div className="text-xs text-zinc-600">{p.category} • {p.client_name||"—"}</div></div><Badge tone={getTone(p.status)}>{p.status}</Badge></div><p className="text-sm text-zinc-500 mt-2">{p.description}</p><div className="mt-3 flex gap-2">{p.status!=="published"&&<button onClick={()=>status(p.id,"published")} className="rounded-lg bg-emerald-600 px-3 py-2 text-xs">Publish</button>} {p.status!=="archived"&&<button onClick={()=>status(p.id,"archived")} className="rounded-lg border border-white/10 px-3 py-2 text-xs">Archive</button>}</div></div>)}</div></div>;
+  useEffect(()=>{load().catch((e:any)=>setError(e?.message||"Unable to load portfolio items."));},[]);
+  async function save(){
+    setSaving(true);setError("");setSuccess("");
+    try{
+      if(editingId) await api("portfolio/"+editingId,{method:"PATCH",body:JSON.stringify(form)});
+      else await api("portfolio",{method:"POST",body:JSON.stringify(form)});
+      const wasEditing=Boolean(editingId);
+      setForm(blankForm);setEditingId("");await load();
+      setSuccess(wasEditing?"Portfolio changes saved.":"Portfolio project created.");
+    }catch(e:any){setError(e?.message||"Unable to save portfolio project.");}
+    finally{setSaving(false);}
+  }
+  async function status(id:string,next:string){
+    setError("");setSuccess("");
+    try{await api("portfolio/"+id,{method:"PATCH",body:JSON.stringify({status:next})});await load();setSuccess("Portfolio status updated.");}
+    catch(e:any){setError(e?.message||"Unable to update portfolio status.");}
+  }
+  function editItem(p:any){
+    setEditingId(p.id);
+    setForm({
+      title:p.title||"",
+      category:p.category||"video",
+      clientName:p.client_name||"",
+      description:p.description||"",
+      thumbnailUrl:p.thumbnail_url||"",
+      projectUrl:p.project_url||"",
+      status:p.status||"draft",
+      featured:Boolean(p.featured),
+    });
+    setError("");setSuccess("");
+  }
+  function cancelEdit(){setEditingId("");setForm(blankForm);setError("");setSuccess("");}
+  return <div className="grid xl:grid-cols-[420px_1fr] gap-4"><Panel title={editingId?"Edit portfolio project":"Add portfolio project"}><div className="space-y-2">{Object.entries(form).filter(([k])=>k!=="status"&&k!=="featured").map(([key,value])=>key==="description"?<textarea key={key} value={String(value)} onChange={e=>setForm({...form,[key]:e.target.value})} placeholder={key} rows={4} className="w-full rounded-xl border border-white/10 bg-white/[0.03] px-3 py-2.5 text-sm"/>:<input key={key} value={String(value)} onChange={e=>setForm({...form,[key]:e.target.value})} placeholder={key} className="w-full rounded-xl border border-white/10 bg-white/[0.03] px-3 py-2.5 text-sm"/>)}<label className="flex gap-2 text-xs"><input type="checkbox" checked={form.featured} onChange={e=>setForm({...form,featured:e.target.checked})}/> Featured</label>{error&&<p role="alert" className="text-xs text-red-300">{error}</p>}{success&&<p role="status" className="text-xs text-emerald-300">{success}</p>}<button disabled={saving||!form.title.trim()} onClick={save} className="w-full rounded-xl bg-indigo-600 disabled:opacity-40 py-3 font-semibold">{saving?"Saving…":editingId?"Save Changes":"Create Project"}</button>{editingId&&<button onClick={cancelEdit} className="w-full rounded-xl border border-white/10 py-3 text-sm">Cancel Edit</button>}</div></Panel><div className="space-y-2">{items.length===0?<Empty text="No CMS portfolio items yet. Existing static work remains intact."/>:items.map(p=><div key={p.id} className="rounded-2xl border border-white/10 p-4"><div className="flex justify-between gap-3"><div><div className="font-medium">{p.title}</div><div className="text-xs text-zinc-600">{p.category} • {p.client_name||"—"}</div></div><Badge tone={getTone(p.status)}>{p.status}</Badge></div><p className="text-sm text-zinc-500 mt-2">{p.description}</p><div className="mt-3 flex flex-wrap gap-2"><button onClick={()=>editItem(p)} className="rounded-lg border border-indigo-500/30 px-3 py-2 text-xs text-indigo-300">Edit</button>{p.status!=="published"&&<button onClick={()=>status(p.id,"published")} className="rounded-lg bg-emerald-600 px-3 py-2 text-xs">Publish</button>} {p.status!=="archived"&&<button onClick={()=>status(p.id,"archived")} className="rounded-lg border border-white/10 px-3 py-2 text-xs">Archive</button>}</div></div>)}</div></div>;
 }
 
 function SettingsView({ mode }: { mode: string }) {
