@@ -24,11 +24,7 @@ interface Props {
   params: Promise<{ servicename: string }>;
 }
 
-export async function generateStaticParams() {
-  return servicesData.map((service) => ({
-    servicename: service.slug,
-  }));
-}
+export const dynamic = "force-dynamic";
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const resolvedParams = await params;
@@ -202,7 +198,7 @@ export default async function ServicePricingPage({ params }: Props) {
           <div className="flex flex-col sm:flex-row items-center gap-4">
             <div className="flex items-baseline gap-1.5 px-5 py-3 rounded-2xl bg-zinc-900 dark:bg-white text-white dark:text-zinc-900">
               <span className="text-xs font-medium opacity-70">
-                Starting from
+                {service.pricingPrefix || "Starting from"}
               </span>
               <span className="font-display font-bold text-xl text-indigo-400 dark:text-indigo-600">
                 {service.currency}
