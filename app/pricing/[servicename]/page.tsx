@@ -1,6 +1,5 @@
 import React from "react";
 import { notFound } from "next/navigation";
-import { servicesData } from "@/lib/services-data";
 import { getServiceBySlug } from "@/lib/service-catalog";
 import { Metadata } from "next";
 import { Navbar } from "@/components/Navbar";
