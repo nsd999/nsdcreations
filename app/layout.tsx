@@ -7,6 +7,7 @@ import { ServiceWorkerRegister } from "@/components/ServiceWorkerRegister";
 import { PushNotificationManager } from "@/components/PushNotificationManager";
 import { FilmGrain } from "@/components/FilmGrain";
 import { GlobalReviewProvider } from "@/components/GlobalReviewProvider";
+import { SiteSettingsProvider } from "@/components/SiteSettingsProvider";
 
 const inter = Inter({
   subsets: ["latin"],
@@ -142,12 +143,14 @@ export default function RootLayout({
       <body className="antialiased min-h-screen flex flex-col">
         <ThemeProvider>
           <GlobalReviewProvider>
+            <SiteSettingsProvider>
             <LoadingWrapper>
               <FilmGrain />
               {children}
               <PushNotificationManager />
               <ServiceWorkerRegister />
             </LoadingWrapper>
+            </SiteSettingsProvider>
           </GlobalReviewProvider>
         </ThemeProvider>
       </body>
