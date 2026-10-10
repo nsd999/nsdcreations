@@ -1,4 +1,6 @@
 import React from "react";
+import { LiveCatalogueRefresh } from "@/components/LiveCatalogueRefresh";
+
 import { notFound } from "next/navigation";
 import { getServiceBySlug } from "@/lib/service-catalog";
 import { Metadata } from "next";
@@ -141,6 +143,7 @@ export default async function ServicePricingPage({ params }: Props) {
 
   return (
     <div className="flex-1 flex flex-col relative bg-[#FAFAFA] dark:bg-[#09090b]">
+      <LiveCatalogueRefresh />
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(structuredData) }}
