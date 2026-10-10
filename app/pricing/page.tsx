@@ -29,6 +29,8 @@ import {
   Code2,
 } from "lucide-react";
 
+export const dynamic = "force-dynamic";
+
 export const metadata: Metadata = {
   title: "Pricing | NSD Creations — AI Creative Studio & Digital Agency",
   description:
