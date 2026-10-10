@@ -55,7 +55,7 @@ export default function PortfolioPage() {
       .catch(() => undefined);
   }, []);
 
-  const portfolioWorks = [
+  const portfolioWorks: PortfolioWork[] = [
     {
       id: 1,
       title: "Keerthy's Daycare & Kindergarten Promotional Video",
