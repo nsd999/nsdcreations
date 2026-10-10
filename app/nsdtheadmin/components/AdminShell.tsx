@@ -98,6 +98,7 @@ function getTone(value: string) {
 async function api(path: string, init?: RequestInit) {
   const response = await fetch("/api/admin/" + path, {
     credentials: "same-origin",
+    cache: "no-store",
     ...init,
     headers: {
       "Content-Type": "application/json",
@@ -735,6 +736,7 @@ function ServicesView() {
   const [loading, setLoading] = useState(true);
   const [loadError, setLoadError] = useState("");
   const [saveError, setSaveError] = useState("");
+  const [saveSuccess, setSaveSuccess] = useState("");
 
   async function load() {
     setLoading(true);
@@ -759,30 +761,64 @@ function ServicesView() {
   }, []);
 
   function updateService(serviceId: string, patch: Record<string, any>) {
+    setSaveSuccess("");
+    setSaveError("");
     setItems(current => current.map(s => s.id === serviceId ? { ...s, ...patch } : s));
   }
 
-  function updatePackage(serviceId: string, index: number, price: string) {
+  function updatePackage(serviceId: string, index: number, patch: Record<string, any>) {
+    setSaveSuccess("");
+    setSaveError("");
     setItems(current => current.map(s =>
       s.id !== serviceId ? s : {
         ...s,
         packages: (Array.isArray(s.packages) ? s.packages : []).map((p: any, i: number) =>
-          i === index ? { ...p, price } : p
+          i === index ? { ...p, ...patch } : p
         ),
       }
     ));
   }
 
+  function addPackage(serviceId: string) {
+    setItems(current => current.map(s => s.id !== serviceId ? s : {
+      ...s,
+      packages: [...(Array.isArray(s.packages) ? s.packages : []), {
+        name: "New package",
+        price: "₹0",
+        features: [],
+        idealFor: "",
+        isPopular: false,
+      }],
+    }));
+    setSaveSuccess("");
+    setSaveError("");
+  }
+
+  function removePackage(serviceId: string, index: number) {
+    setItems(current => current.map(s => s.id !== serviceId ? s : {
+      ...s,
+      packages: (Array.isArray(s.packages) ? s.packages : []).filter((_: any, i: number) => i !== index),
+    }));
+    setSaveSuccess("");
+    setSaveError("");
+  }
+
   async function save(s: any) {
     setSaving(s.id);
     setSaveError("");
+    setSaveSuccess("");
     try {
-      await api("services/" + s.id, {
+      const result = await api("services/" + s.id, {
         method: "PATCH",
         body: JSON.stringify({
           config: {
             name: s.name,
             shortDescription: s.shortDescription,
+            longDescription: s.longDescription,
+            category: s.category,
+            categoryGroup: s.categoryGroup,
+            currency: s.currency,
+            icon: s.icon,
             active: s.active !== false,
             featured: Boolean(s.featured),
             startingPrice: s.startingPrice,
@@ -792,9 +828,22 @@ function ServicesView() {
           },
         }),
       });
-      await load();
+
+      // Read the saved record back from the same API that populates the editor.
+      const catalogue = await api("services");
+      const saved = Array.isArray(catalogue?.items)
+        ? catalogue.items.find((item: any) => item.id === s.id)
+        : null;
+      if (!result?.item || !saved) {
+        throw new Error("The save request completed, but the saved service could not be verified. Retry before leaving this page.");
+      }
+      setItems(current => current.map(item => item.id === s.id ? {
+        ...saved,
+        packages: Array.isArray(saved.packages) ? saved.packages : [],
+      } : item));
+      setSaveSuccess(`${saved.name || s.id} saved and verified. The live catalogue is now updated.`);
     } catch (e: any) {
-      setSaveError(e?.message || "Unable to save service pricing.");
+      setSaveError(e?.message || "Unable to save service pricing. Please retry.");
     } finally {
       setSaving("");
     }
@@ -817,8 +866,14 @@ function ServicesView() {
   return (
     <div className="space-y-3">
       {saveError && (
-        <div className="rounded-xl border border-amber-500/20 bg-amber-500/10 px-4 py-3 text-xs text-amber-200">
+        <div role="alert" className="rounded-xl border border-red-500/20 bg-red-500/10 px-4 py-3 text-xs text-red-200">
+          <strong className="block mb-1">Save failed</strong>
           {saveError}
+        </div>
+      )}
+      {saveSuccess && (
+        <div role="status" className="rounded-xl border border-emerald-500/20 bg-emerald-500/10 px-4 py-3 text-xs text-emerald-200">
+          {saveSuccess}
         </div>
       )}
       {items.length === 0 ? (
@@ -847,7 +902,10 @@ function ServicesView() {
 
           <div className="grid md:grid-cols-2 gap-2 mt-4">
             <input value={s.name || ""} onChange={e => updateService(s.id, { name: e.target.value })} placeholder="Service name" className="rounded-xl border border-white/10 bg-black/20 px-3 py-2.5 text-sm" />
-            <input value={s.startingPrice || ""} onChange={e => updateService(s.id, { startingPrice: e.target.value })} placeholder="Starting price" className="rounded-xl border border-white/10 bg-black/20 px-3 py-2.5 text-sm" />
+            <input value={s.category || ""} onChange={e => updateService(s.id, { category: e.target.value })} placeholder="Service category" className="rounded-xl border border-white/10 bg-black/20 px-3 py-2.5 text-sm" />
+            <input value={s.categoryGroup || ""} onChange={e => updateService(s.id, { categoryGroup: e.target.value })} placeholder="Public category group" className="rounded-xl border border-white/10 bg-black/20 px-3 py-2.5 text-sm" />
+            <input value={s.currency || "₹"} onChange={e => updateService(s.id, { currency: e.target.value })} placeholder="Currency symbol" className="rounded-xl border border-white/10 bg-black/20 px-3 py-2.5 text-sm" />
+            <input value={s.startingPrice || ""} onChange={e => updateService(s.id, { startingPrice: e.target.value })} placeholder="Starting price (e.g. 4,999)" className="rounded-xl border border-white/10 bg-black/20 px-3 py-2.5 text-sm" />
             <select value={s.pricingPrefix || "Starting from"} onChange={e => updateService(s.id, { pricingPrefix: e.target.value })} className="rounded-xl border border-white/10 bg-[#0b0b10] px-3 py-2.5 text-sm">
               <option>Starting from</option><option>Fixed Price</option><option>Custom Quote</option>
             </select>
@@ -855,13 +913,27 @@ function ServicesView() {
               <option value="">One-time</option><option value="/month">Monthly</option>
             </select>
             <textarea value={s.shortDescription || ""} onChange={e => updateService(s.id, { shortDescription: e.target.value })} placeholder="Short description" rows={3} className="md:col-span-2 rounded-xl border border-white/10 bg-black/20 px-3 py-2.5 text-sm" />
+            <textarea value={s.longDescription || ""} onChange={e => updateService(s.id, { longDescription: e.target.value })} placeholder="Long description" rows={4} className="md:col-span-2 rounded-xl border border-white/10 bg-black/20 px-3 py-2.5 text-sm" />
           </div>
 
-          <div className="grid sm:grid-cols-3 gap-2 mt-4">
+          <div className="flex items-center justify-between gap-3 mt-5">
+            <h4 className="text-sm font-semibold">Packages</h4>
+            <button type="button" onClick={() => addPackage(s.id)} className="rounded-xl border border-indigo-500/30 px-3 py-2 text-xs text-indigo-300 hover:bg-indigo-500/10">+ Add package</button>
+          </div>
+          <div className="grid sm:grid-cols-2 xl:grid-cols-3 gap-2 mt-3">
             {(Array.isArray(s.packages) ? s.packages : []).map((p: any, i: number) => (
-              <div key={p?.name || i} className="rounded-xl border border-white/10 p-3">
-                <div className="text-xs font-medium">{p?.name || "Package"}</div>
-                <input value={p?.price || ""} onChange={e => updatePackage(s.id, i, e.target.value)} className="mt-2 w-full rounded-lg border border-white/10 bg-black/20 px-2 py-2 text-xs" />
+              <div key={p?.id || i} className="rounded-xl border border-white/10 p-3 space-y-2">
+                <input value={p?.name || ""} onChange={e => updatePackage(s.id, i, { name: e.target.value })} placeholder="Package name" className="w-full rounded-lg border border-white/10 bg-black/20 px-2 py-2 text-xs font-medium" />
+                <input value={p?.price || ""} onChange={e => updatePackage(s.id, i, { price: e.target.value })} placeholder="Package price" className="w-full rounded-lg border border-white/10 bg-black/20 px-2 py-2 text-xs" />
+                <input value={p?.idealFor || ""} onChange={e => updatePackage(s.id, i, { idealFor: e.target.value })} placeholder="Ideal for (optional)" className="w-full rounded-lg border border-white/10 bg-black/20 px-2 py-2 text-xs" />
+                <textarea value={Array.isArray(p?.features) ? p.features.join("\n") : ""} onChange={e => updatePackage(s.id, i, { features: e.target.value.split("\n").map((value: string) => value.trim()).filter(Boolean).slice(0, 50) })} placeholder="One feature per line" rows={4} className="w-full rounded-lg border border-white/10 bg-black/20 px-2 py-2 text-xs" />
+                <div className="flex items-center justify-between gap-2">
+                  <label className="flex items-center gap-2 text-xs text-zinc-400">
+                    <input type="checkbox" checked={Boolean(p?.isPopular)} onChange={e => updatePackage(s.id, i, { isPopular: e.target.checked })} />
+                    Popular package
+                  </label>
+                  <button type="button" onClick={() => removePackage(s.id, i)} className="text-xs text-red-300 hover:text-red-200">Remove</button>
+                </div>
               </div>
             ))}
           </div>
