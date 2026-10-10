@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import { getServicesWithOverrides } from "@/lib/service-catalog";
 
 export const dynamic = "force-dynamic";
+export const revalidate = 0;
 
 export async function GET() {
   const services = await getServicesWithOverrides();
@@ -9,7 +10,9 @@ export async function GET() {
     { services },
     {
       headers: {
-        "Cache-Control": "public, s-maxage=300, stale-while-revalidate=86400",
+        "Cache-Control": "no-store, max-age=0, must-revalidate",
+        "CDN-Cache-Control": "no-store",
+        "Vercel-CDN-Cache-Control": "no-store",
       },
     },
   );
