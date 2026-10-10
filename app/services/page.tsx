@@ -34,13 +34,40 @@ export default function ServicesPage() {
 
   useEffect(() => {
     let cancelled = false;
-    fetch("/api/public/services", { cache: "no-store" })
-      .then((response) => response.ok ? response.json() : null)
-      .then((payload) => {
+    let inFlight = false;
+
+    const refreshServices = async () => {
+      if (cancelled || inFlight) return;
+      inFlight = true;
+      try {
+        const response = await fetch("/api/public/services", { cache: "no-store" });
+        if (!response.ok) return;
+        const payload = await response.json();
         if (!cancelled && Array.isArray(payload?.services)) setServices(payload.services);
-      })
-      .catch(() => undefined);
-    return () => { cancelled = true; };
+      } catch {
+        // Keep the last successful catalogue visible during transient network errors.
+      } finally {
+        inFlight = false;
+      }
+    };
+
+    void refreshServices();
+    const interval = window.setInterval(() => {
+      if (document.visibilityState === "visible") void refreshServices();
+    }, 15000);
+    const onFocus = () => void refreshServices();
+    const onVisibility = () => {
+      if (document.visibilityState === "visible") void refreshServices();
+    };
+    window.addEventListener("focus", onFocus);
+    document.addEventListener("visibilitychange", onVisibility);
+
+    return () => {
+      cancelled = true;
+      window.clearInterval(interval);
+      window.removeEventListener("focus", onFocus);
+      document.removeEventListener("visibilitychange", onVisibility);
+    };
   }, []);
 
   const getServiceIcon = (iconName: string) => {
