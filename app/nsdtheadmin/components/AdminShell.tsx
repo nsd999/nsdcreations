@@ -1022,10 +1022,59 @@ function SettingsView({ mode }: { mode: string }) {
   const [items,setItems]=useState<any[]>([]);
   const [key,setKey]=useState("");
   const [value,setValue]=useState("{}");
-  async function load(){const d=await api(mode);setItems(d.items||[]);}
+  const [saving,setSaving]=useState(false);
+  const [error,setError]=useState("");
+  const [success,setSuccess]=useState("");
+  const publicKeys = [
+    "whatsapp_url", "contact_email", "contact_phone",
+    "instagram_url", "youtube_url", "linkedin_url", "facebook_url",
+    "footer_headline", "footer_description",
+    "home_badge", "home_title_line1", "home_title_highlight", "home_subtitle",
+    "pricing_footer_text",
+  ];
+  async function load(){
+    try{const d=await api(mode);setItems(d.items||[]);}
+    catch(e:any){setError(e?.message||"Unable to load settings.");}
+  }
   useEffect(()=>{load();},[mode]);
-  async function save(){let parsed:any;try{parsed=JSON.parse(value)}catch{alert("Value must be valid JSON.");return;}await api(mode+"/"+key,{method:"PATCH",body:JSON.stringify({value:parsed})});setKey("");setValue("{}");load();}
-  return <div className="grid xl:grid-cols-[360px_1fr] gap-4"><Panel title="Add / update setting"><input value={key} onChange={e=>setKey(e.target.value)} placeholder="Key, e.g. whatsapp_url" className="w-full rounded-xl border border-white/10 bg-white/[0.03] px-3 py-2.5 text-sm"/><textarea value={value} onChange={e=>setValue(e.target.value)} rows={8} className="mt-2 w-full rounded-xl border border-white/10 bg-white/[0.03] px-3 py-2.5 text-sm font-mono" /><button disabled={!key} onClick={save} className="mt-2 w-full rounded-xl bg-indigo-600 disabled:opacity-40 py-3 font-semibold">Save Setting</button></Panel><Panel title={mode === "seo" ? "SEO configuration" : "Runtime site content"}>{items.length===0?<Empty text="No runtime settings configured yet."/>:<div className="space-y-2">{items.map(item=><button key={item.key} onClick={()=>{setKey(item.key);setValue(JSON.stringify(item.value,null,2))}} className="w-full text-left rounded-xl border border-white/10 p-3 hover:bg-white/[0.03]"><div className="font-mono text-xs text-indigo-300">{item.key}</div><pre className="text-[11px] text-zinc-500 mt-1 whitespace-pre-wrap">{JSON.stringify(item.value)}</pre></button>)}</div>}</Panel></div>;
+  async function save(){
+    setError("");setSuccess("");
+    if(!/^[a-zA-Z0-9_-]{1,100}$/.test(key.trim())){
+      setError("Use a key containing only letters, numbers, underscores or hyphens.");
+      return;
+    }
+    let parsed:any;
+    try{parsed=JSON.parse(value)}catch{setError("Value must be valid JSON. Public text and URL settings must be JSON strings, for example: \"https://example.com\".");return;}
+    setSaving(true);
+    try{
+      await api(mode+"/"+key.trim(),{method:"PATCH",body:JSON.stringify({value:parsed})});
+      const isPublic=publicKeys.includes(key.trim())&&typeof parsed==="string";
+      setSuccess(isPublic
+        ? "Saved. This setting is published to the live website and refreshes on open pages within about 15 seconds."
+        : "Setting saved. To affect the live site immediately, use one of the supported public keys shown below.");
+      setKey("");setValue("{}");await load();
+    }catch(e:any){setError(e?.message||"Unable to save setting.");}
+    finally{setSaving(false);}
+  }
+  return <div className="grid xl:grid-cols-[360px_1fr] gap-4">
+    <Panel title="Add / update setting">
+      <input value={key} onChange={e=>{setKey(e.target.value);setError("");setSuccess("");}} placeholder="Key, e.g. home_subtitle" className="w-full rounded-xl border border-white/10 bg-white/[0.03] px-3 py-2.5 text-sm"/>
+      <textarea value={value} onChange={e=>{setValue(e.target.value);setError("");setSuccess("");}} rows={8} className="mt-2 w-full rounded-xl border border-white/10 bg-white/[0.03] px-3 py-2.5 text-sm font-mono" />
+      <div className="mt-3 rounded-xl border border-white/10 bg-white/[0.02] p-3 text-[11px] leading-relaxed text-zinc-500">
+        <div className="font-semibold text-zinc-300 mb-1">Live public keys</div>
+        <p>Home hero: <code>home_badge</code>, <code>home_title_line1</code>, <code>home_title_highlight</code>, <code>home_subtitle</code>.</p>
+        <p className="mt-1">Footer: <code>footer_headline</code>, <code>footer_description</code>, <code>pricing_footer_text</code>.</p>
+        <p className="mt-1">Contact/social URLs: <code>whatsapp_url</code>, <code>contact_email</code>, <code>contact_phone</code>, <code>instagram_url</code>, <code>youtube_url</code>, <code>linkedin_url</code>, <code>facebook_url</code>.</p>
+        <p className="mt-2">Enter text and URLs as JSON strings (include quotation marks). Only the allowlisted keys are public; other settings remain server-side.</p>
+      </div>
+      {error&&<p role="alert" className="mt-3 text-xs text-red-300">{error}</p>}
+      {success&&<p role="status" className="mt-3 text-xs text-emerald-300">{success}</p>}
+      <button disabled={saving||!key.trim()} onClick={save} className="mt-3 w-full rounded-xl bg-indigo-600 disabled:opacity-40 py-3 font-semibold">{saving?"Saving…":"Save Setting"}</button>
+    </Panel>
+    <Panel title={mode === "seo" ? "SEO configuration" : "Runtime site content"}>
+      {items.length===0?<Empty text="No runtime settings configured yet."/>:<div className="space-y-2">{items.map(item=><button key={item.key} onClick={()=>{setKey(item.key);setValue(JSON.stringify(item.value,null,2));setError("");setSuccess("");}} className="w-full text-left rounded-xl border border-white/10 p-3 hover:bg-white/[0.03]"><div className="font-mono text-xs text-indigo-300">{item.key}</div><pre className="text-[11px] text-zinc-500 mt-1 whitespace-pre-wrap">{JSON.stringify(item.value)}</pre></button>)}</div>}
+    </Panel>
+  </div>;
 }
 
 function SecurityView() {
