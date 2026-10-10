@@ -1,4 +1,5 @@
 import { NextResponse } from "next/server";
+import { revalidatePath } from "next/cache";
 import { createHash, randomBytes } from "node:crypto";
 import webpush from "web-push";
 import { servicesData } from "@/lib/services-data";
@@ -22,7 +23,17 @@ function adminError(error: any) {
   if (error?.message === "UNAUTHORIZED") return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   if (error?.message === "FORBIDDEN") return NextResponse.json({ error: "Forbidden" }, { status: 403 });
   if (error?.message === "REAUTH_REQUIRED") return NextResponse.json({ error: "Re-authentication required." }, { status: 428 });
-  return NextResponse.json({ error: "Admin operation failed." }, { status: 500 });
+  if (error?.message === "SERVICE_OVERRIDES_READ_FAILED") {
+    return NextResponse.json({
+      error: "Could not load saved service settings. Check the Supabase service-override table and server configuration.",
+      code: "SERVICE_OVERRIDES_READ_FAILED",
+    }, { status: 500 });
+  }
+  console.error("[admin API] request failed", {
+    name: error instanceof Error ? error.name : "UnknownError",
+    message: error instanceof Error ? error.message : String(error),
+  });
+  return NextResponse.json({ error: "Admin operation failed. Please retry; if it continues, check the server logs." }, { status: 500 });
 }
 
 function mergeService(service: any, override: any) {
@@ -65,14 +76,17 @@ async function effectiveServices() {
     const db = getSupabaseAdmin();
     const { data: overrides, error } = await db.from("admin_service_overrides").select("service_id,config");
     if (error) {
-      console.error("[admin/services] override lookup failed:", error.message);
-      return servicesData.map((service) => mergeService(service, null));
+      console.error("[admin/services] override lookup failed:", { message: error.message, code: error.code });
+      throw new Error("SERVICE_OVERRIDES_READ_FAILED");
     }
     const map = new Map((overrides || []).map((row: any) => [row.service_id, row]));
     return servicesData.map((service) => mergeService(service, map.get(service.id)));
   } catch (error: any) {
-    console.error("[admin/services] Supabase unavailable:", error?.message || error);
-    return servicesData.map((service) => mergeService(service, null));
+    console.error("[admin/services] unable to load catalogue overrides:", {
+      message: error?.message || String(error),
+      code: error?.code,
+    });
+    throw new Error("SERVICE_OVERRIDES_READ_FAILED");
   }
 }
 
@@ -814,20 +828,75 @@ export async function PATCH(
       const current = servicesData.find((item) => item.id === id);
       if (!current) return NextResponse.json({ error: "Service not found." }, { status: 404 });
 
-      const existing = await db.from("admin_service_overrides").select("config").eq("service_id", id).maybeSingle();
-      const nextConfig = {
+      if (!body.config || typeof body.config !== "object" || Array.isArray(body.config)) {
+        return NextResponse.json({ error: "A valid service configuration is required.", code: "INVALID_SERVICE_CONFIG" }, { status: 400 });
+      }
+
+      const allowedKeys = [
+        "name", "shortDescription", "longDescription", "category", "categoryGroup",
+        "active", "featured", "startingPrice", "pricingPrefix", "pricingPeriod",
+        "currency", "icon", "packages", "addOns", "process", "faqs", "seo",
+      ];
+      const submitted = Object.fromEntries(
+        Object.entries(body.config).filter(([key]) => allowedKeys.includes(key)),
+      );
+      if (!Object.keys(submitted).length) {
+        return NextResponse.json({ error: "No supported service fields were supplied.", code: "EMPTY_SERVICE_CONFIG" }, { status: 400 });
+      }
+
+      const existing = await db
+        .from("admin_service_overrides")
+        .select("config")
+        .eq("service_id", id)
+        .maybeSingle();
+      if (existing.error) {
+        console.error("[admin/services] current override lookup failed:", { message: existing.error.message, code: existing.error.code });
+        return NextResponse.json({
+          error: "Unable to read the current saved service settings. Please retry.",
+          code: "SERVICE_OVERRIDE_READ_FAILED",
+        }, { status: 500 });
+      }
+
+      const nextConfig: Record<string, any> = {
         ...(existing.data?.config || {}),
-        ...(typeof body.config === "object" && body.config ? body.config : {}),
+        ...submitted,
       };
 
+      for (const key of ["name", "shortDescription", "longDescription", "category", "categoryGroup", "startingPrice", "currency", "icon"]) {
+        if (nextConfig[key] !== undefined) {
+          if (typeof nextConfig[key] !== "string") {
+            return NextResponse.json({ error: `The ${key} field must be text.`, code: "INVALID_SERVICE_FIELD" }, { status: 400 });
+          }
+          nextConfig[key] = nextConfig[key].trim().slice(0, key === "longDescription" ? 12000 : key === "shortDescription" ? 600 : 180);
+        }
+      }
+
+      if (nextConfig.pricingPrefix !== undefined &&
+          !["Starting from", "Fixed Price", "Custom Quote"].includes(nextConfig.pricingPrefix)) {
+        return NextResponse.json({ error: "Choose a valid pricing label.", code: "INVALID_PRICING_PREFIX" }, { status: 400 });
+      }
+      if (nextConfig.pricingPeriod !== undefined && !["", "/month"].includes(nextConfig.pricingPeriod)) {
+        return NextResponse.json({ error: "Choose a valid billing period.", code: "INVALID_PRICING_PERIOD" }, { status: 400 });
+      }
+      if (nextConfig.active !== undefined) nextConfig.active = Boolean(nextConfig.active);
+      if (nextConfig.featured !== undefined) nextConfig.featured = Boolean(nextConfig.featured);
+
       if (Array.isArray(nextConfig.packages)) {
+        if (nextConfig.packages.length > 30) {
+          return NextResponse.json({ error: "A service can contain at most 30 packages.", code: "TOO_MANY_PACKAGES" }, { status: 400 });
+        }
         nextConfig.packages = nextConfig.packages.map((pkg: any) => ({
-          name: String(pkg.name || "").slice(0, 120),
-          price: String(pkg.price || "").slice(0, 80),
-          features: Array.isArray(pkg.features) ? pkg.features.slice(0, 50) : [],
-          idealFor: pkg.idealFor ? String(pkg.idealFor).slice(0, 180) : undefined,
-          isPopular: Boolean(pkg.isPopular),
+          name: String(pkg?.name || "").trim().slice(0, 120),
+          price: String(pkg?.price || "").trim().slice(0, 80),
+          features: Array.isArray(pkg?.features)
+            ? pkg.features.filter((feature: any) => typeof feature === "string").slice(0, 50).map((feature: string) => feature.slice(0, 400))
+            : [],
+          idealFor: typeof pkg?.idealFor === "string" ? pkg.idealFor.slice(0, 180) : undefined,
+          isPopular: Boolean(pkg?.isPopular),
         }));
+        if (nextConfig.packages.some((pkg: any) => !pkg.name || !pkg.price)) {
+          return NextResponse.json({ error: "Every package needs a name and a price.", code: "INVALID_PACKAGE" }, { status: 400 });
+        }
       }
 
       const { data, error } = await db.from("admin_service_overrides").upsert({
@@ -837,9 +906,24 @@ export async function PATCH(
         updated_at: new Date().toISOString(),
       }, { onConflict: "service_id" }).select("*").single();
 
-      if (error) return NextResponse.json({ error: "Unable to save service configuration." }, { status: 500 });
+      if (error || !data) {
+        console.error("[admin/services] override upsert failed:", { message: error?.message, code: error?.code, details: error?.details });
+        return NextResponse.json({
+          error: "The service changes could not be saved to Supabase. No changes were published; check the server logs and try again.",
+          code: "SERVICE_OVERRIDE_WRITE_FAILED",
+        }, { status: 500 });
+      }
+
       await writeAuditLog(admin, "PRICE_CHANGED", "Service/pricing configuration changed.", request, id);
-      return NextResponse.json({ item: mergeService(current, data) });
+      revalidatePath("/services");
+      revalidatePath("/pricing");
+      revalidatePath("/pricing/[servicename]", "page");
+
+      return NextResponse.json({
+        item: mergeService(current, data),
+        published: true,
+        publishedAt: data.updated_at || new Date().toISOString(),
+      }, { headers: { "Cache-Control": "no-store" } });
     }
 
     if (resource === "testimonials" && id) {
