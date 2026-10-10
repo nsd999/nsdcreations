@@ -41,18 +41,46 @@ export default function PortfolioPage() {
   const [cmsWorks, setCmsWorks] = useState<PortfolioWork[]>([]);
 
   useEffect(() => {
-    fetch("/api/public/portfolio")
-      .then((response) => response.json())
-      .then((data) => {
+    let cancelled = false;
+    let inFlight = false;
+
+    const refreshPortfolio = async () => {
+      if (cancelled || inFlight) return;
+      inFlight = true;
+      try {
+        const response = await fetch("/api/public/portfolio", { cache: "no-store" });
+        if (!response.ok) return;
+        const data = await response.json();
         const items = Array.isArray(data.items) ? data.items : [];
-        setCmsWorks(
-          items.map((item: PortfolioWork) => ({
+        if (!cancelled) {
+          setCmsWorks(items.map((item: PortfolioWork) => ({
             ...item,
             status: item.status ?? "Client work private",
-          }))
-        );
-      })
-      .catch(() => undefined);
+          })));
+        }
+      } catch {
+        // Keep the last successful results during transient network errors.
+      } finally {
+        inFlight = false;
+      }
+    };
+
+    void refreshPortfolio();
+    const interval = window.setInterval(() => {
+      if (document.visibilityState === "visible") void refreshPortfolio();
+    }, 15000);
+    const onFocus = () => void refreshPortfolio();
+    const onVisibility = () => {
+      if (document.visibilityState === "visible") void refreshPortfolio();
+    };
+    window.addEventListener("focus", onFocus);
+    document.addEventListener("visibilitychange", onVisibility);
+    return () => {
+      cancelled = true;
+      window.clearInterval(interval);
+      window.removeEventListener("focus", onFocus);
+      document.removeEventListener("visibilitychange", onVisibility);
+    };
   }, []);
 
   const portfolioWorks: PortfolioWork[] = [
