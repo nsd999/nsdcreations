@@ -2,7 +2,7 @@
 
 import React from "react";
 import Link from "next/link";
-import { Mail, Phone, MessageSquare, Instagram, Youtube, ArrowRight, ShieldCheck, Heart, Star } from "lucide-react";
+import { Mail, Phone, MessageSquare, Instagram, Youtube, Facebook, Linkedin, ArrowRight, ShieldCheck, Heart, Star } from "lucide-react";
 import { NsdLogo } from "./NsdLogo";
 import { useGlobalReview } from "./GlobalReviewProvider";
 import { useSiteSettings } from "./SiteSettingsProvider";
@@ -22,6 +22,10 @@ export function Footer() {
   const instagramUrl = safeHttpsUrl(settings.instagram_url, "https://instagram.com/nsd.creations.official");
   const youtubeUrl = safeHttpsUrl(settings.youtube_url, "https://youtube.com/@nsdkaraoke");
   const email = safeEmail(settings.contact_email, "nsd.creations.official@gmail.com");
+  const whatsappUrl = safeHttpsUrl(settings.whatsapp_url, "https://wa.me/916303849852");
+  const phone = (settings.contact_phone || "").replace(/[^0-9+]/g, "").slice(0, 20);
+  const linkedinUrl = settings.linkedin_url ? safeHttpsUrl(settings.linkedin_url, "") : "";
+  const facebookUrl = settings.facebook_url ? safeHttpsUrl(settings.facebook_url, "") : "";
 
   const servicesLinks = [
     { name: "AI Video Advertisements", href: "/services/ai-video-advertisements" },
@@ -57,7 +61,7 @@ export function Footer() {
         <p className="text-zinc-500 dark:text-zinc-400 mt-4 max-w-xl text-sm md:text-base">
           {settings.footer_description || "Have an idea, video commercial, website, or custom automation project? Get in touch today for a free personal consultation and tailored pricing quote."}
         </p>
-        <div className="mt-8">
+        <div className="mt-8 flex flex-col sm:flex-row items-center justify-center gap-3">
           <Link
             href="/#contact"
             className="inline-flex items-center justify-center px-8 py-4 rounded-full text-sm font-bold tracking-widest uppercase bg-indigo-600 hover:bg-indigo-700 text-white shadow-lg shadow-indigo-600/20 hover:shadow-indigo-600/30 active:scale-95 transition-all text-center"
@@ -65,6 +69,15 @@ export function Footer() {
             Start Your Project
             <ArrowRight className="w-4 h-4 ml-2" />
           </Link>
+          <a
+            href={whatsappUrl}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="inline-flex items-center justify-center px-8 py-4 rounded-full text-sm font-bold tracking-widest uppercase border border-zinc-300 dark:border-zinc-700 text-zinc-700 dark:text-zinc-200 hover:border-emerald-500 hover:text-emerald-600 dark:hover:text-emerald-400 transition-all text-center"
+          >
+            <MessageSquare className="w-4 h-4 mr-2" />
+            WhatsApp Us
+          </a>
         </div>
       </div>
 
@@ -114,6 +127,15 @@ export function Footer() {
             >
               <Mail className="w-4 h-4" />
             </a>
+            {phone && <a href={"tel:" + phone} className="w-9 h-9 rounded-full bg-zinc-200/50 dark:bg-zinc-900 border border-zinc-300/30 dark:border-zinc-800 flex items-center justify-center text-zinc-600 dark:text-zinc-400 hover:bg-indigo-50 hover:text-indigo-600 dark:hover:bg-indigo-950/40 dark:hover:text-indigo-400 transition-colors" aria-label="Phone">
+              <Phone className="w-4 h-4" />
+            </a>}
+            {linkedinUrl && <a href={linkedinUrl} target="_blank" rel="noopener noreferrer" className="w-9 h-9 rounded-full bg-zinc-200/50 dark:bg-zinc-900 border border-zinc-300/30 dark:border-zinc-800 flex items-center justify-center text-zinc-600 dark:text-zinc-400 hover:bg-indigo-50 hover:text-indigo-600 dark:hover:bg-indigo-950/40 dark:hover:text-indigo-400 transition-colors" aria-label="LinkedIn">
+              <Linkedin className="w-4 h-4" />
+            </a>}
+            {facebookUrl && <a href={facebookUrl} target="_blank" rel="noopener noreferrer" className="w-9 h-9 rounded-full bg-zinc-200/50 dark:bg-zinc-900 border border-zinc-300/30 dark:border-zinc-800 flex items-center justify-center text-zinc-600 dark:text-zinc-400 hover:bg-indigo-50 hover:text-indigo-600 dark:hover:bg-indigo-950/40 dark:hover:text-indigo-400 transition-colors" aria-label="Facebook">
+              <Facebook className="w-4 h-4" />
+            </a>}
           </div>
           <div className="text-xs text-zinc-400 dark:text-zinc-500 font-mono">
             <p>Founder: Sai Dheeraj Nalkari</p>
