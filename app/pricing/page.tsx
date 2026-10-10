@@ -1,4 +1,6 @@
 import React from "react";
+import { LiveCatalogueRefresh } from "@/components/LiveCatalogueRefresh";
+
 import Link from "next/link";
 import { Navbar } from "@/components/Navbar";
 import { Footer } from "@/components/Footer";
@@ -199,6 +201,7 @@ export default async function PricingPage() {
 
   return (
     <div className="flex-1 flex flex-col relative overflow-x-hidden bg-[#FAFAFA] dark:bg-[#09090b]">
+      <LiveCatalogueRefresh />
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(structuredData) }}
