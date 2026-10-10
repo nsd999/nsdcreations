@@ -6,6 +6,7 @@ import { Navbar } from "@/components/Navbar";
 import { Footer } from "@/components/Footer";
 import { PhoneInput } from "@/components/PhoneInput";
 import { servicesData } from "@/lib/services-data";
+import { useSiteSettings } from "@/components/SiteSettingsProvider";
 import { ImageWithNSDFallback } from "@/components/ImageWithNSDFallback";
 import { Testimonials } from "@/components/Testimonials";
 import { AnimatedStats } from "@/components/AnimatedStats";
@@ -40,6 +41,7 @@ import {
 import { motion, AnimatePresence } from "motion/react";
 
 export default function HomePage() {
+  const siteSettings = useSiteSettings();
   const [activeCategory, setActiveCategory] = useState<string>("all");
   const [faqOpen, setFaqOpen] = useState<number | null>(null);
   const [servicesTab, setServicesTab] = useState<"creative" | "technical">("creative");
@@ -217,19 +219,19 @@ export default function HomePage() {
             <div className="inline-flex items-center space-x-2 px-3 py-1.5 rounded-full bg-indigo-500/5 dark:bg-indigo-400/5 border border-indigo-500/10 dark:border-indigo-400/10 self-start">
               <Award className="w-3.5 h-3.5 text-indigo-500 dark:text-indigo-400" />
               <span className="text-[11px] font-mono font-bold tracking-wider text-indigo-600 dark:text-indigo-400 uppercase">
-                Premium AI Creative Studio
+                {siteSettings.home_badge || "Premium AI Creative Studio"}
               </span>
             </div>
 
             <h1 className="font-display font-bold text-4xl sm:text-5xl lg:text-6xl text-zinc-900 dark:text-zinc-50 tracking-tight leading-[1.1]">
-              Your Creative <br />
+              {siteSettings.home_title_line1 || "Your Creative"} <br />
               <span className="text-indigo-600 dark:text-indigo-400">
-                Technology Partner.
+                {siteSettings.home_title_highlight || "Technology Partner."}
               </span>
             </h1>
 
             <p className="text-zinc-600 dark:text-zinc-400 text-sm md:text-base leading-relaxed max-w-xl">
-              Helping businesses transform ideas into powerful digital experiences through AI-powered creativity, modern websites, branding, automations, and compelling cinematic visual storytelling.
+              {siteSettings.home_subtitle || "Helping businesses transform ideas into powerful digital experiences through AI-powered creativity, modern websites, branding, automations, and compelling cinematic visual storytelling."}
             </p>
 
             <div className="flex flex-col sm:flex-row items-center gap-6 pt-4">
