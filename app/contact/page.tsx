@@ -89,7 +89,7 @@ export default function ContactPage() {
     }
   };
 
-  const whatsappUrl = `https://wa.me/916303849852?text=${encodeURIComponent(
+  const whatsappUrl = `https://wa.me/919492651908?text=${encodeURIComponent(
     `Hello Sai Dheeraj! I am submitting an inquiry. Name: ${formData.name || "Client"}, Service: ${formData.service}, Message: ${formData.message || "I'd like to discuss a project."}`
   )}`;
 
@@ -318,7 +318,7 @@ export default function ContactPage() {
               <div>
                 <p className="text-[10px] font-mono text-zinc-400 uppercase">Call / WhatsApp</p>
                 <p className="text-xs md:text-sm font-semibold text-zinc-800 dark:text-zinc-200 mt-0.5">
-                  +91 63038 49852
+                  +91 94926 51908
                 </p>
               </div>
             </div>
