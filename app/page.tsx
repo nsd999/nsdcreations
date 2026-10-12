@@ -947,13 +947,13 @@ export default function HomePage() {
             </div>
 
             <div className="space-y-4">
-              <a href="tel:+916303849852" className="flex items-start space-x-4 group cursor-pointer">
+              <a href="tel:+919492651908" className="flex items-start space-x-4 group cursor-pointer">
                 <div className="w-10 h-10 rounded-xl bg-indigo-500/5 dark:bg-indigo-400/5 border border-indigo-500/10 dark:border-indigo-400/10 flex items-center justify-center text-indigo-500 shrink-0 group-hover:bg-indigo-500/10 transition-colors">
                   <Phone className="w-4 h-4" />
                 </div>
                 <div>
                   <p className="text-[10px] font-mono text-zinc-400 uppercase tracking-widest">Call / WhatsApp</p>
-                  <p className="text-sm font-semibold text-zinc-950 dark:text-zinc-50 mt-0.5 group-hover:text-indigo-500 transition-colors">+91 63038 49852</p>
+                  <p className="text-sm font-semibold text-zinc-950 dark:text-zinc-50 mt-0.5 group-hover:text-indigo-500 transition-colors">+91 94926 51908</p>
                 </div>
               </a>
 
