@@ -23,13 +23,8 @@ export function Footer() {
   const youtubeUrl = safeHttpsUrl(settings.youtube_url, "https://youtube.com/@nsdkaraoke");
   const email = safeEmail(settings.contact_email, "nsd.creations.official@gmail.com");
   const configuredWhatsappUrl = safeHttpsUrl(settings.whatsapp_url, "https://wa.me/919492651908");
-  const whatsappUrl = configuredWhatsappUrl.includes("6303849852") || configuredWhatsappUrl.includes("916303849852")
-    ? "https://wa.me/919492651908"
-    : configuredWhatsappUrl;
-  const configuredPhone = (settings.contact_phone || "").replace(/[^0-9+]/g, "").slice(0, 20);
-  const phone = configuredPhone.includes("6303849852") || configuredPhone.includes("916303849852")
-    ? "+919492651908"
-    : configuredPhone || "+919492651908";
+  const whatsappUrl = "https://wa.me/919492651908";
+  const phone = "+919492651908";
   const linkedinUrl = settings.linkedin_url ? safeHttpsUrl(settings.linkedin_url, "") : "";
   const facebookUrl = settings.facebook_url ? safeHttpsUrl(settings.facebook_url, "") : "";
 
