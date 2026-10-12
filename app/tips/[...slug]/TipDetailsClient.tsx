@@ -148,7 +148,7 @@ export default function TipDetailsClient({ slug, tipOverride }: { slug: string; 
                   <div className="flex items-center space-x-6 shrink-0">
                     <a href="tel:+919492651908" className="flex items-center text-sm font-semibold text-zinc-700 dark:text-gray-300 hover:text-indigo-600 dark:hover:text-indigo-400 transition-colors">
                       <Phone className="w-4 h-4 mr-2.5 text-indigo-600 dark:text-indigo-400" />
-                      +91 94926 51908
+                      +91 949 265 1908
                     </a>
                     
                     <a href="mailto:nsd.creations.official@gmail.com" className="hidden sm:flex items-center text-sm font-semibold text-zinc-700 dark:text-gray-300 hover:text-indigo-600 dark:hover:text-indigo-400 transition-colors">
