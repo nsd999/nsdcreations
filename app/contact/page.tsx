@@ -318,7 +318,7 @@ export default function ContactPage() {
               <div>
                 <p className="text-[10px] font-mono text-zinc-400 uppercase">Call / WhatsApp</p>
                 <p className="text-xs md:text-sm font-semibold text-zinc-800 dark:text-zinc-200 mt-0.5">
-                  +91 94926 51908
+                  +91 949 265 1908
                 </p>
               </div>
             </div>
