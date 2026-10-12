@@ -166,7 +166,7 @@ export default function TipsPage() {
           <Link href="/contact" className="px-8 py-4 bg-indigo-600 hover:bg-indigo-700 text-white rounded-full font-semibold transition-all w-full sm:w-auto text-center shadow-lg shadow-indigo-500/25">
             Book a Free Consultation
           </Link>
-          <a href="https://wa.me/916303849852" target="_blank" rel="noopener noreferrer" className="px-8 py-4 bg-[#25D366] hover:bg-[#20bd5a] text-white rounded-full font-semibold transition-all w-full sm:w-auto text-center flex items-center justify-center shadow-lg shadow-emerald-500/20">
+          <a href="https://wa.me/919492651908" target="_blank" rel="noopener noreferrer" className="px-8 py-4 bg-[#25D366] hover:bg-[#20bd5a] text-white rounded-full font-semibold transition-all w-full sm:w-auto text-center flex items-center justify-center shadow-lg shadow-emerald-500/20">
             Chat on WhatsApp
           </a>
         </div>
