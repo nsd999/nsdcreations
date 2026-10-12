@@ -37,7 +37,7 @@ export default function TipDetailsClient({ slug, tipOverride }: { slug: string; 
   const whatsappMessage = encodeURIComponent(
     `Hi, I have seen this tip "${tip.title}" and I have found it useful. Thank you NSD Creations.`
   );
-  const whatsappLink = `https://wa.me/916303849852?text=${whatsappMessage}`;
+  const whatsappLink = `https://wa.me/919492651908?text=${whatsappMessage}`;
 
   const handleShare = async () => {
     if (typeof window !== "undefined") {
@@ -146,9 +146,9 @@ export default function TipDetailsClient({ slug, tipOverride }: { slug: string; 
                   </div>
 
                   <div className="flex items-center space-x-6 shrink-0">
-                    <a href="tel:+916303849852" className="flex items-center text-sm font-semibold text-zinc-700 dark:text-gray-300 hover:text-indigo-600 dark:hover:text-indigo-400 transition-colors">
+                    <a href="tel:+919492651908" className="flex items-center text-sm font-semibold text-zinc-700 dark:text-gray-300 hover:text-indigo-600 dark:hover:text-indigo-400 transition-colors">
                       <Phone className="w-4 h-4 mr-2.5 text-indigo-600 dark:text-indigo-400" />
-                      +91 63038 49852
+                      +91 94926 51908
                     </a>
                     
                     <a href="mailto:nsd.creations.official@gmail.com" className="hidden sm:flex items-center text-sm font-semibold text-zinc-700 dark:text-gray-300 hover:text-indigo-600 dark:hover:text-indigo-400 transition-colors">
