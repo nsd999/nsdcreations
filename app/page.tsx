@@ -953,7 +953,7 @@ export default function HomePage() {
                 </div>
                 <div>
                   <p className="text-[10px] font-mono text-zinc-400 uppercase tracking-widest">Call / WhatsApp</p>
-                  <p className="text-sm font-semibold text-zinc-950 dark:text-zinc-50 mt-0.5 group-hover:text-indigo-500 transition-colors">+91 94926 51908</p>
+                  <p className="text-sm font-semibold text-zinc-950 dark:text-zinc-50 mt-0.5 group-hover:text-indigo-500 transition-colors">+91 949 265 1908</p>
                 </div>
               </a>
 
