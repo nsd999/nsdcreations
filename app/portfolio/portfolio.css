@@ -1,0 +1,156 @@
+/* Scoped copy of Evolution Lab's cinematic design system.
+   Every token is local to this route so the main NSD Creations site keeps its own theme. */
+.evolution-lab-portfolio {
+  --radius: 0.875rem;
+  --background: oklch(0.09 0.03 260);
+  --foreground: oklch(0.98 0.01 240);
+  --card: oklch(0.13 0.04 260);
+  --card-foreground: oklch(0.98 0.01 240);
+  --popover: oklch(0.11 0.04 260);
+  --popover-foreground: oklch(0.98 0.01 240);
+  --primary: oklch(0.78 0.18 220);
+  --primary-foreground: oklch(0.10 0.03 260);
+  --secondary: oklch(0.20 0.05 265);
+  --secondary-foreground: oklch(0.98 0.01 240);
+  --muted: oklch(0.18 0.04 260);
+  --muted-foreground: oklch(0.70 0.03 250);
+  --accent: oklch(0.72 0.20 195);
+  --accent-foreground: oklch(0.10 0.03 260);
+  --destructive: oklch(0.65 0.24 25);
+  --destructive-foreground: oklch(0.98 0.01 240);
+  --border: oklch(0.28 0.05 260 / 0.5);
+  --input: oklch(0.22 0.05 260);
+  --ring: oklch(0.78 0.18 220);
+  --cyber: oklch(0.78 0.18 220);
+  --neon: oklch(0.85 0.20 195);
+  --violet: oklch(0.65 0.25 295);
+  --cinema: oklch(0.55 0.24 25);
+  --ember: oklch(0.72 0.20 50);
+  --gold: oklch(0.82 0.16 85);
+  --magenta: oklch(0.62 0.25 350);
+  --font-display: "Space Grotesk", Inter, system-ui, sans-serif;
+  --font-mono: "JetBrains Mono", ui-monospace, monospace;
+  --gradient-cinema: linear-gradient(135deg, oklch(0.45 0.22 25), oklch(0.72 0.20 50), oklch(0.82 0.16 85));
+  --gradient-cyber: linear-gradient(135deg, oklch(0.78 0.18 220), oklch(0.85 0.20 195), oklch(0.65 0.25 295));
+  --gradient-evolve: linear-gradient(180deg, oklch(0.45 0.22 25), oklch(0.65 0.25 295), oklch(0.09 0.03 260));
+  --shadow-glow-cyber: 0 0 60px -10px oklch(0.78 0.18 220 / 0.6), 0 0 120px -30px oklch(0.85 0.20 195 / 0.4);
+  --shadow-glow-cinema: 0 0 60px -10px oklch(0.72 0.20 50 / 0.6), 0 0 120px -30px oklch(0.55 0.24 25 / 0.4);
+  --shadow-card: 0 30px 60px -20px oklch(0 0 0 / 0.6), 0 0 0 1px oklch(1 0 0 / 0.05);
+  min-height: 100vh;
+  overflow-x: clip;
+  background: var(--background);
+  color: var(--foreground);
+  font-family: var(--font-display);
+  -webkit-font-smoothing: antialiased;
+}
+.evolution-lab-portfolio * { border-color: var(--color-border, var(--border)); }
+.evolution-lab-portfolio .bg-background { background-color: var(--background); }
+.evolution-lab-portfolio .text-foreground { color: var(--foreground); }
+.evolution-lab-portfolio .text-background { color: var(--background); }
+.evolution-lab-portfolio .bg-foreground { background-color: var(--foreground); }
+.evolution-lab-portfolio .bg-card { background-color: var(--card); }
+.evolution-lab-portfolio .text-card-foreground { color: var(--card-foreground); }
+.evolution-lab-portfolio .bg-popover { background-color: var(--popover); }
+.evolution-lab-portfolio .text-popover-foreground { color: var(--popover-foreground); }
+.evolution-lab-portfolio .bg-primary { background-color: var(--primary); }
+.evolution-lab-portfolio .text-primary { color: var(--primary); }
+.evolution-lab-portfolio .text-primary-foreground { color: var(--primary-foreground); }
+.evolution-lab-portfolio .bg-primary-foreground { background-color: var(--primary-foreground); }
+.evolution-lab-portfolio .bg-secondary { background-color: var(--secondary); }
+.evolution-lab-portfolio .text-secondary-foreground { color: var(--secondary-foreground); }
+.evolution-lab-portfolio .bg-muted { background-color: var(--muted); }
+.evolution-lab-portfolio .text-muted-foreground { color: var(--muted-foreground); }
+.evolution-lab-portfolio .bg-accent { background-color: var(--accent); }
+.evolution-lab-portfolio .text-accent-foreground { color: var(--accent-foreground); }
+.evolution-lab-portfolio .bg-destructive { background-color: var(--destructive); }
+.evolution-lab-portfolio .text-destructive-foreground { color: var(--destructive-foreground); }
+.evolution-lab-portfolio .border-border { border-color: var(--border); }
+.evolution-lab-portfolio .border-input { border-color: var(--input); }
+.evolution-lab-portfolio .ring-ring { --tw-ring-color: var(--ring); }
+.evolution-lab-portfolio .world-creative {
+  --background: oklch(0.12 0.06 30);
+  --foreground: oklch(0.98 0.02 80);
+  --card: oklch(0.18 0.08 35);
+  --card-foreground: oklch(0.98 0.02 80);
+  --primary: oklch(0.72 0.20 50);
+  --primary-foreground: oklch(0.12 0.06 30);
+  --accent: oklch(0.82 0.16 85);
+  --accent-foreground: oklch(0.12 0.06 30);
+  --muted: oklch(0.20 0.07 30);
+  --muted-foreground: oklch(0.80 0.06 60);
+  --border: oklch(0.72 0.20 50 / 0.25);
+  --ring: oklch(0.72 0.20 50);
+}
+.evolution-lab-portfolio .text-gradient-cyber {
+  background: var(--gradient-cyber);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+.evolution-lab-portfolio .text-gradient-cinema {
+  background: var(--gradient-cinema);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+.evolution-lab-portfolio .bg-grid {
+  background-image: linear-gradient(oklch(0.78 0.18 220 / 0.08) 1px, transparent 1px), linear-gradient(90deg, oklch(0.78 0.18 220 / 0.08) 1px, transparent 1px);
+  background-size: 60px 60px;
+}
+.evolution-lab-portfolio .bg-grid-fine {
+  background-image: linear-gradient(oklch(0.78 0.18 220 / 0.06) 1px, transparent 1px), linear-gradient(90deg, oklch(0.78 0.18 220 / 0.06) 1px, transparent 1px);
+  background-size: 24px 24px;
+}
+.evolution-lab-portfolio .glass {
+  background: oklch(1 0 0 / 0.04);
+  backdrop-filter: blur(20px) saturate(160%);
+  -webkit-backdrop-filter: blur(20px) saturate(160%);
+  border: 1px solid oklch(1 0 0 / 0.08);
+}
+.evolution-lab-portfolio .glass-cinema {
+  background: oklch(0.20 0.08 35 / 0.5);
+  backdrop-filter: blur(24px) saturate(160%);
+  -webkit-backdrop-filter: blur(24px) saturate(160%);
+  border: 1px solid oklch(0.82 0.16 85 / 0.2);
+}
+.evolution-lab-portfolio .glow-cyber { box-shadow: var(--shadow-glow-cyber); }
+.evolution-lab-portfolio .glow-cinema { box-shadow: var(--shadow-glow-cinema); }
+.evolution-lab-portfolio .noise { position: relative; }
+.evolution-lab-portfolio .noise::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  opacity: 0.06;
+  mix-blend-mode: overlay;
+  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='200' height='200'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2'/></filter><rect width='100%' height='100%' filter='url(%23n)'/></svg>");
+}
+@keyframes evolution-float-slow {
+  0%, 100% { transform: translateY(0) translateX(0); }
+  50% { transform: translateY(-30px) translateX(10px); }
+}
+@keyframes evolution-pulse-glow {
+  0%, 100% { opacity: 0.4; }
+  50% { opacity: 0.9; }
+}
+@keyframes evolution-scan {
+  0% { transform: translateY(-100%); }
+  100% { transform: translateY(100vh); }
+}
+@keyframes evolution-shimmer {
+  0% { background-position: -200% 0; }
+  100% { background-position: 200% 0; }
+}
+.evolution-lab-portfolio .animate-float-slow { animation: evolution-float-slow 8s ease-in-out infinite; }
+.evolution-lab-portfolio .animate-pulse-glow { animation: evolution-pulse-glow 3s ease-in-out infinite; }
+.evolution-lab-portfolio .animate-shimmer {
+  background: linear-gradient(90deg, transparent, oklch(1 0 0 / 0.1), transparent);
+  background-size: 200% 100%;
+  animation: evolution-shimmer 2s linear infinite;
+}
+.evolution-lab-portfolio .hide-scrollbar::-webkit-scrollbar { display: none; }
+.evolution-lab-portfolio .hide-scrollbar { scrollbar-width: none; }
+.evolution-lab-portfolio ::selection { background: var(--cyber); color: var(--background); }
+.evolution-lab-portfolio img { max-width: 100%; }
+.evolution-lab-portfolio a { color: inherit; text-decoration: none; }
+.evolution-lab-portfolio button { color: inherit; font: inherit; }
