@@ -2,28 +2,28 @@
    Every token is local to this route so the main NSD Creations site keeps its own theme. */
 .evolution-lab-portfolio {
   --radius: 0.875rem;
-  --background: oklch(0.09 0.03 260);
-  --foreground: oklch(0.98 0.01 240);
-  --card: oklch(0.13 0.04 260);
-  --card-foreground: oklch(0.98 0.01 240);
-  --popover: oklch(0.11 0.04 260);
-  --popover-foreground: oklch(0.98 0.01 240);
-  --primary: oklch(0.78 0.18 220);
-  --primary-foreground: oklch(0.10 0.03 260);
-  --secondary: oklch(0.20 0.05 265);
-  --secondary-foreground: oklch(0.98 0.01 240);
-  --muted: oklch(0.18 0.04 260);
-  --muted-foreground: oklch(0.70 0.03 250);
-  --accent: oklch(0.72 0.20 195);
-  --accent-foreground: oklch(0.10 0.03 260);
+  --background: #edd8b9;
+  --foreground: #111827;
+  --card: #f8ead4;
+  --card-foreground: #111827;
+  --popover: #f8ead4;
+  --popover-foreground: #111827;
+  --primary: #7C6BFF;
+  --primary-foreground: #ffffff;
+  --secondary: #e4ceb0;
+  --secondary-foreground: #111827;
+  --muted: #e6d0b0;
+  --muted-foreground: #4B5563;
+  --accent: #FF8A00;
+  --accent-foreground: #111827;
   --destructive: oklch(0.65 0.24 25);
   --destructive-foreground: oklch(0.98 0.01 240);
-  --border: oklch(0.28 0.05 260 / 0.5);
-  --input: oklch(0.22 0.05 260);
-  --ring: oklch(0.78 0.18 220);
-  --cyber: oklch(0.78 0.18 220);
-  --neon: oklch(0.85 0.20 195);
-  --violet: oklch(0.65 0.25 295);
+  --border: rgba(124, 107, 255, 0.20);
+  --input: #dec39b;
+  --ring: #7C6BFF;
+  --cyber: #7C6BFF;
+  --neon: #FF8A00;
+  --violet: #7C6BFF;
   --cinema: oklch(0.55 0.24 25);
   --ember: oklch(0.72 0.20 50);
   --gold: oklch(0.82 0.16 85);
@@ -152,3 +152,106 @@
 .evolution-lab-portfolio ::selection { background: var(--cyber); color: var(--background); }
 .evolution-lab-portfolio img { max-width: 100%; }
 .evolution-lab-portfolio a { text-decoration: none; }
+
+
+/* NSD Creations theme integration: warm canvas + violet/orange accents.
+   The original cinematic/cyber gradients above remain intentionally unchanged. */
+.dark .evolution-lab-portfolio {
+  --background: #030303;
+  --foreground: #f4f4f5;
+  --card: #09090b;
+  --card-foreground: #f4f4f5;
+  --popover: #09090b;
+  --popover-foreground: #f4f4f5;
+  --primary: #a78bfa;
+  --primary-foreground: #030303;
+  --secondary: #18181b;
+  --secondary-foreground: #f4f4f5;
+  --muted: #18181b;
+  --muted-foreground: #a1a1aa;
+  --accent: #FF8A00;
+  --accent-foreground: #030303;
+  --destructive: #ef4444;
+  --destructive-foreground: #fafafa;
+  --border: rgba(255, 255, 255, 0.10);
+  --input: #18181b;
+  --ring: #a78bfa;
+  --cyber: #a78bfa;
+  --neon: #FF9F1C;
+  --violet: #a78bfa;
+}
+
+/* Match the parent site's light canvas without touching embedded gradient artwork. */
+html:not(.dark) .evolution-lab-portfolio .world-creative {
+  --background: #edd8b9;
+  --foreground: #111827;
+  --card: #f7e6cd;
+  --card-foreground: #111827;
+  --primary: #7C6BFF;
+  --primary-foreground: #ffffff;
+  --accent: #FF8A00;
+  --accent-foreground: #111827;
+  --muted: #e4ceb0;
+  --muted-foreground: #4B5563;
+  --border: rgba(124, 107, 255, 0.20);
+  --ring: #7C6BFF;
+}
+
+.dark .evolution-lab-portfolio .world-creative {
+  --background: oklch(0.12 0.06 30);
+  --foreground: oklch(0.98 0.02 80);
+  --card: oklch(0.18 0.08 35);
+  --card-foreground: oklch(0.98 0.02 80);
+  --primary: oklch(0.72 0.20 50);
+  --primary-foreground: oklch(0.12 0.06 30);
+  --accent: oklch(0.82 0.16 85);
+  --accent-foreground: oklch(0.12 0.06 30);
+  --muted: oklch(0.20 0.07 30);
+  --muted-foreground: oklch(0.80 0.06 60);
+  --border: oklch(0.72 0.20 50 / 0.25);
+  --ring: oklch(0.72 0.20 50);
+}
+
+html:not(.dark) .evolution-lab-portfolio .glass {
+  background: rgba(255, 255, 255, 0.56);
+  border-color: rgba(124, 107, 255, 0.18);
+  box-shadow: 0 10px 28px rgba(61, 41, 13, 0.06);
+}
+
+html:not(.dark) .evolution-lab-portfolio .glass-cinema {
+  background: rgba(255, 248, 237, 0.76);
+  border-color: rgba(255, 138, 0, 0.24);
+  box-shadow: 0 10px 28px rgba(61, 41, 13, 0.08);
+}
+
+.evolution-lab-portfolio :is(a, button, [tabindex="0"]):focus-visible {
+  outline: 2px solid var(--primary);
+  outline-offset: 3px;
+}
+
+.evolution-lab-portfolio :is(#top, #creative, #evolution, #tech, #projects, #contact) {
+  scroll-margin-top: 6rem;
+}
+
+@media (max-width: 420px) {
+  .evolution-lab-portfolio .font-mono.tracking-widest {
+    letter-spacing: 0.12em;
+  }
+  .evolution-lab-portfolio .min-h-\[100svh\] {
+    min-height: 100svh;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .evolution-lab-portfolio {
+    scroll-behavior: auto !important;
+  }
+  .evolution-lab-portfolio *,
+  .evolution-lab-portfolio *::before,
+  .evolution-lab-portfolio *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
