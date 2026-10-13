@@ -39,7 +39,7 @@ export function Hero() {
         style={{
           background:
             "linear-gradient(90deg, transparent, oklch(0.85 0.20 195), transparent),
-          animation: "scan 8s linear infinite",
+          animation: "evolution-scan 8s linear infinite",
         }}
       />
 
