@@ -1,5 +1,5 @@
 import { motion } from "motion/react";
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 
 const CATEGORIES: { tag: string; title: string; desc: string; ids: string[] }[] = [
   {
@@ -139,7 +139,10 @@ function CategoryRow({
 
       <div
         ref={scrollerRef}
-        className="hide-scrollbar flex snap-x snap-mandatory gap-5 overflow-x-auto scroll-smooth px-6 pb-6 sm:px-12"
+        role="region"
+        aria-label={title + " video carousel"}
+        tabIndex={0}
+        className="hide-scrollbar flex snap-x snap-mandatory gap-5 overflow-x-auto scroll-smooth px-6 pb-6 sm:px-12 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--primary)]"
         style={{ cursor: "grab" }}
         onMouseDown={(e) => {
           const el = scrollerRef.current;
@@ -220,6 +223,7 @@ function VideoCard({ v, i, onOpen }: { v: YTVideo; i: number; onOpen: () => void
       onMouseLeave={() => setHover(false)}
       onClick={onOpen}
       data-cursor="hover"
+      aria-label={"Play " + v.title}
       className={`group relative flex-shrink-0 snap-start overflow-hidden rounded-2xl text-left glass-cinema transition-all hover:-translate-y-1 ${
         isShort ? "w-[60vw] sm:w-[320px]" : "w-[82vw] sm:w-[560px]"
       }`}
@@ -229,8 +233,10 @@ function VideoCard({ v, i, onOpen }: { v: YTVideo; i: number; onOpen: () => void
         {hover ? (
           <iframe
             className="pointer-events-none absolute inset-0 h-full w-full"
+            title={v.title}
+            loading="lazy"
             src={`https://www.youtube.com/embed/${v.id}?autoplay=1&mute=1&controls=0&loop=1&playlist=${v.id}&modestbranding=1&playsinline=1`}
-            allow="autoplay; encrypted-media"
+            allow="autoplay; encrypted-media; picture-in-picture"
           />
         ) : (
           <img
@@ -277,32 +283,80 @@ function VideoCard({ v, i, onOpen }: { v: YTVideo; i: number; onOpen: () => void
 }
 
 function VideoModal({ v, onClose }: { v: YTVideo; onClose: () => void }) {
+  const dialogRef = useRef<HTMLDivElement>(null);
+  const closeButtonRef = useRef<HTMLButtonElement>(null);
+
+  useEffect(() => {
+    const previousOverflow = document.body.style.overflow;
+    const previousFocus = document.activeElement instanceof HTMLElement ? document.activeElement : null;
+    document.body.style.overflow = "hidden";
+    closeButtonRef.current?.focus();
+
+    const onKeyDown = (event: KeyboardEvent) => {
+      if (event.key === "Escape") {
+        event.preventDefault();
+        onClose();
+        return;
+      }
+
+      if (event.key !== "Tab" || !dialogRef.current) return;
+      const focusable = Array.from(
+        dialogRef.current.querySelectorAll<HTMLElement>(
+          'button, iframe, a[href], [tabindex]:not([tabindex="-1"])'
+        )
+      ).filter((element) => !element.hasAttribute("disabled"));
+      if (!focusable.length) return;
+
+      const first = focusable[0];
+      const last = focusable[focusable.length - 1];
+      if (event.shiftKey && document.activeElement === first) {
+        event.preventDefault();
+        last.focus();
+      } else if (!event.shiftKey && document.activeElement === last) {
+        event.preventDefault();
+        first.focus();
+      }
+    };
+
+    window.addEventListener("keydown", onKeyDown);
+    return () => {
+      window.removeEventListener("keydown", onKeyDown);
+      document.body.style.overflow = previousOverflow;
+      previousFocus?.focus();
+    };
+  }, [onClose]);
+
   return (
     <div
       onClick={onClose}
-      className="fixed inset-0 z-[100] flex items-center justify-center bg-black/90 p-4 backdrop-blur-xl animate-in fade-in"
+      className="fixed inset-0 z-[100] flex items-center justify-center bg-black/90 p-4 backdrop-blur-xl animate-in fade-in sm:p-6"
     >
       <div
+        ref={dialogRef}
+        role="dialog"
+        aria-modal="true"
+        aria-label={v.title + " video player"}
         onClick={(e) => e.stopPropagation()}
-        className={`relative w-full overflow-hidden rounded-2xl glass-cinema ${
-          v.isShort ? "max-w-md" : "max-w-5xl"
-        }`}
+        className={"relative w-full overflow-hidden rounded-2xl glass-cinema " + (v.isShort ? "max-w-md" : "max-w-5xl")}
       >
         <button
+          ref={closeButtonRef}
           onClick={onClose}
-          className="absolute right-4 top-4 z-10 rounded-full bg-black/60 px-3 py-1.5 text-xs text-white backdrop-blur hover:bg-black"
+          aria-label="Close video player"
+          className="absolute right-3 top-3 z-10 inline-flex h-11 min-w-11 items-center justify-center rounded-full bg-black/70 px-3 text-xs text-white backdrop-blur hover:bg-black focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white sm:right-4 sm:top-4"
         >
           ✕ Close
         </button>
         <div className={v.isShort ? "aspect-[9/16]" : "aspect-video"}>
           <iframe
             className="h-full w-full"
-            src={`https://www.youtube.com/embed/${v.id}?autoplay=1`}
-            allow="autoplay; encrypted-media; fullscreen"
+            title={v.title}
+            src={"https://www.youtube.com/embed/" + v.id + "?autoplay=1"}
+            allow="autoplay; encrypted-media; fullscreen; picture-in-picture"
             allowFullScreen
           />
         </div>
-        <div className="p-6">
+        <div className="p-4 sm:p-6">
           <h3 className="text-lg font-bold">{v.title}</h3>
           <p className="mt-2 line-clamp-3 text-sm text-muted-foreground">{v.description}</p>
         </div>
