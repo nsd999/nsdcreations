@@ -1,5 +1,5 @@
 import { motion } from "motion/react";
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { SectionHeader } from "./YouTubeSection";
 
 
@@ -30,7 +30,31 @@ const posters = [
 export function Posters() {
   const [open, setOpen] = useState<string | null>(null);
   const scrollerRef = useRef<HTMLDivElement>(null);
+  const closeButtonRef = useRef<HTMLButtonElement>(null);
   const dragState = useRef({ isDown: false, startX: 0, scrollLeft: 0, moved: false });
+
+  useEffect(() => {
+    if (!open) return;
+
+    const previousOverflow = document.body.style.overflow;
+    const previousFocus = document.activeElement instanceof HTMLElement ? document.activeElement : null;
+    document.body.style.overflow = "hidden";
+    closeButtonRef.current?.focus();
+
+    const onKeyDown = (event: KeyboardEvent) => {
+      if (event.key === "Escape") {
+        event.preventDefault();
+        setOpen(null);
+      }
+    };
+    window.addEventListener("keydown", onKeyDown);
+
+    return () => {
+      window.removeEventListener("keydown", onKeyDown);
+      document.body.style.overflow = previousOverflow;
+      previousFocus?.focus();
+    };
+  }, [open]);
 
   const scrollBy = (dir: 1 | -1) => {
     const el = scrollerRef.current;
@@ -69,7 +93,10 @@ export function Posters() {
 
       <div
         ref={scrollerRef}
-        className="hide-scrollbar mt-6 flex snap-x snap-mandatory gap-5 overflow-x-auto scroll-smooth px-6 pb-8 sm:px-12"
+        role="region"
+        aria-label="Poster design archive carousel"
+        tabIndex={0}
+        className="hide-scrollbar mt-6 flex snap-x snap-mandatory gap-5 overflow-x-auto scroll-smooth px-6 pb-8 sm:px-12 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--primary)]"
         style={{ cursor: "grab" }}
         onMouseDown={(e) => {
           const el = scrollerRef.current;
@@ -112,6 +139,7 @@ export function Posters() {
               if (!dragState.current.moved) setOpen(p.src);
             }}
             data-cursor="hover"
+            aria-label={"Open poster preview: " + p.title}
             className="group relative flex h-[68vh] max-h-[640px] w-[78vw] flex-shrink-0 snap-center overflow-hidden rounded-2xl glass-cinema sm:h-[600px] sm:w-[440px]"
             style={{ boxShadow: "var(--shadow-card)" }}
           >
@@ -142,19 +170,24 @@ export function Posters() {
 
       {open && (
         <div
+          role="dialog"
+          aria-modal="true"
+          aria-label={(posters.find((poster) => poster.src === open)?.title ?? "Poster") + " preview"}
           onClick={() => setOpen(null)}
-          className="fixed inset-0 z-[100] flex items-center justify-center bg-black/95 p-6 backdrop-blur-xl animate-in fade-in"
+          className="fixed inset-0 z-[100] flex items-center justify-center bg-black/95 p-4 backdrop-blur-xl animate-in fade-in sm:p-6"
         >
           <img
             src={open}
-            alt=""
+            alt={posters.find((poster) => poster.src === open)?.title ?? "Selected poster"}
             onClick={(e) => e.stopPropagation()}
-            className="max-h-[92vh] max-w-full rounded-xl"
+            className="max-h-[92vh] max-w-full rounded-xl object-contain"
             style={{ boxShadow: "var(--shadow-glow-cinema)" }}
           />
           <button
+            ref={closeButtonRef}
             onClick={() => setOpen(null)}
-            className="absolute right-6 top-6 rounded-full bg-white/10 px-4 py-2 text-xs text-white backdrop-blur hover:bg-white/20"
+            aria-label="Close poster preview"
+            className="absolute right-3 top-3 inline-flex h-11 min-w-11 items-center justify-center rounded-full bg-white/10 px-4 py-2 text-xs text-white backdrop-blur hover:bg-white/20 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white sm:right-6 sm:top-6"
           >
             ✕ Close
           </button>
