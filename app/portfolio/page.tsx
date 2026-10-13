@@ -26,7 +26,7 @@ export default function PortfolioPage() {
         <Hero />
 
         {/* Creative world */}
-        <div className="world-creative relative bg-background">
+        <div id="creative" className="world-creative relative scroll-mt-24 bg-background">
           <YouTubeSection />
           <Posters />
           <BehindTheEdit />
@@ -36,7 +36,7 @@ export default function PortfolioPage() {
         <Evolution />
 
         {/* Technology and builder world */}
-        <div className="relative bg-background">
+        <div id="tech" className="relative scroll-mt-24 bg-background">
           <Skills />
           <FeaturedProjects />
           <Projects />
