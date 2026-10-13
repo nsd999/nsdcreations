@@ -43,7 +43,6 @@
   font-family: var(--font-display);
   -webkit-font-smoothing: antialiased;
 }
-.evolution-lab-portfolio * { border-color: var(--color-border, var(--border)); }
 .evolution-lab-portfolio .bg-background { background-color: var(--background); }
 .evolution-lab-portfolio .text-foreground { color: var(--foreground); }
 .evolution-lab-portfolio .text-background { color: var(--background); }
@@ -152,5 +151,4 @@
 .evolution-lab-portfolio .hide-scrollbar { scrollbar-width: none; }
 .evolution-lab-portfolio ::selection { background: var(--cyber); color: var(--background); }
 .evolution-lab-portfolio img { max-width: 100%; }
-.evolution-lab-portfolio a { color: inherit; text-decoration: none; }
-.evolution-lab-portfolio button { color: inherit; font: inherit; }
+.evolution-lab-portfolio a { text-decoration: none; }
