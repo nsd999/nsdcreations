@@ -3,16 +3,16 @@ import { useRef, useState } from "react";
 import { SectionHeader } from "./YouTubeSection";
 
 
-const p1 = "https://nsdportfolio.lovable.app/assets/poster-summer-camp-W7EXsf_w.jpg";
-const p2 = "https://nsdportfolio.lovable.app/assets/poster-morning-rituals-DFT_e2T0.png";
-const p3 = "https://nsdportfolio.lovable.app/assets/poster-handwriting-mastery-krse_OyI.png";
-const p4 = "https://nsdportfolio.lovable.app/assets/poster-360-wellness-BusWpKKP.png";
-const p5 = "https://nsdportfolio.lovable.app/assets/poster-keerthys-daycare-9fDDUZ1T.png";
-const p6 = "https://nsdportfolio.lovable.app/assets/poster-phonics-jACPHxD3.png";
-const p7 = "https://nsdportfolio.lovable.app/assets/poster-painting-course-os2sPpi4.png";
-const p8 = "https://nsdportfolio.lovable.app/assets/poster-nsd-creations-CfopbehW.png";
-const p9 = "https://nsdportfolio.lovable.app/assets/poster-summer-camp-fun-Bb0fZjCy.png";
-const p10 = "https://nsdportfolio.lovable.app/assets/poster-learning-creativity-N9WyGCAY.png";
+const p1 = "/evolution-lab/posters/summer-camp.webp";
+const p2 = "/evolution-lab/posters/morning-rituals.webp";
+const p3 = "/evolution-lab/posters/handwriting-mastery.webp";
+const p4 = "/evolution-lab/posters/360-wellness.webp";
+const p5 = "/evolution-lab/posters/keerthys-daycare.webp";
+const p6 = "/evolution-lab/posters/phonics.webp";
+const p7 = "/evolution-lab/posters/painting-course.webp";
+const p8 = "/evolution-lab/posters/nsd-creations.webp";
+const p9 = "/evolution-lab/posters/summer-camp-fun.webp";
+const p10 = "/evolution-lab/posters/learning-creativity.webp";
 
 const posters = [
   { src: p8, title: "NSD Creations — Services & Pricing", category: "BRAND IDENTITY", year: "2026" },
