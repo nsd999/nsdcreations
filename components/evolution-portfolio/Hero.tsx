@@ -11,6 +11,7 @@ const taglines = [
 export function Hero() {
   const [tagIdx, setTagIdx] = useState(0);
   useEffect(() => {
+    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
     const id = setInterval(() => setTagIdx((i) => (i + 1) % taglines.length), 3800);
     return () => clearInterval(id);
   }, []);
@@ -37,7 +38,7 @@ export function Hero() {
         className="pointer-events-none absolute left-0 right-0 h-px"
         style={{
           background:
-            "linear-gradient(90deg, transparent, var(--neon), transparent)",
+            "linear-gradient(90deg, transparent, oklch(0.85 0.20 195), transparent),
           animation: "scan 8s linear infinite",
         }}
       />
