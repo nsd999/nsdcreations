@@ -38,7 +38,7 @@ export function Hero() {
         className="pointer-events-none absolute left-0 right-0 h-px"
         style={{
           background:
-            "linear-gradient(90deg, transparent, oklch(0.85 0.20 195), transparent),
+            "linear-gradient(90deg, transparent, oklch(0.85 0.20 195), transparent)",
           animation: "evolution-scan 8s linear infinite",
         }}
       />
