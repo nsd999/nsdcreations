@@ -33,8 +33,8 @@ export function CustomCursor() {
             marginLeft: hover ? -22 : -6,
             marginTop: hover ? -22 : -6,
             border: "1.5px solid var(--cyber)",
-            background: hover ? "oklch(0.78 0.18 220 / 0.1)" : "transparent",
-            boxShadow: "0 0 20px oklch(0.78 0.18 220 / 0.6)",
+            background: hover ? "rgba(124, 107, 255, 0.1)" : "transparent",
+            boxShadow: "0 0 20px rgba(124, 107, 255, 0.6)",
           }}
         />
       </motion.div>
