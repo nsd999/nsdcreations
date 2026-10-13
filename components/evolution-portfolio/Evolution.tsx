@@ -55,12 +55,12 @@ export function Evolution() {
               key={i}
               className="absolute h-1 w-1 rounded-full animate-float-slow"
               style={{
-                left: `${Math.random() * 100}%`,
-                top: `${Math.random() * 100}%`,
+                left: `${(i * 37) % 100}%`,
+                top: `${(i * 53 + 17) % 100}%`,
                 background: i % 2 ? "var(--gold)" : "var(--neon)",
                 boxShadow: `0 0 8px ${i % 2 ? "var(--gold)" : "var(--neon)"}`,
-                animationDelay: `${Math.random() * 6}s`,
-                animationDuration: `${6 + Math.random() * 6}s`,
+                animationDelay: `${((i * 29) % 60) / 10}s`,
+                animationDuration: `${6 + (i % 7)}s`,
                 opacity: 0.7,
               }}
             />
