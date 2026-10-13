@@ -6,17 +6,28 @@ export function Loader() {
   const [pct, setPct] = useState(0);
 
   useEffect(() => {
+    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
+      setPct(100);
+      setDone(true);
+      return;
+    }
+
     let v = 0;
+    let finishTimeout: ReturnType<typeof setTimeout> | undefined;
     const id = setInterval(() => {
       v += 4 + Math.random() * 8;
       if (v >= 100) {
         v = 100;
         clearInterval(id);
-        setTimeout(() => setDone(true), 350);
+        finishTimeout = setTimeout(() => setDone(true), 350);
       }
       setPct(Math.min(100, Math.round(v)));
     }, 60);
-    return () => clearInterval(id);
+
+    return () => {
+      clearInterval(id);
+      if (finishTimeout) clearTimeout(finishTimeout);
+    };
   }, []);
 
   return (
@@ -39,7 +50,7 @@ export function Loader() {
             >
               SAI DHEERAJ NALKARI
             </div>
-            <div className="mx-auto mt-10 h-px w-full max-w-sm overflow-hidden bg-white/10">
+            <div className="mx-auto mt-10 h-px w-full max-w-sm overflow-hidden bg-white/10" role="progressbar" aria-label="Portfolio loading progress" aria-valuemin={0} aria-valuemax={100} aria-valuenow={pct}>
               <div
                 className="h-full transition-all duration-150"
                 style={{
