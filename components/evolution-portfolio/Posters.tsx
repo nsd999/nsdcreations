@@ -45,6 +45,10 @@ export function Posters() {
       if (event.key === "Escape") {
         event.preventDefault();
         setOpen(null);
+      } else if (event.key === "Tab") {
+        // The close control is the only focusable control in this preview.
+        event.preventDefault();
+        closeButtonRef.current?.focus();
       }
     };
     window.addEventListener("keydown", onKeyDown);
