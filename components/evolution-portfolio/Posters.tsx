@@ -3,16 +3,16 @@ import { useRef, useState } from "react";
 import { SectionHeader } from "./YouTubeSection";
 
 
-const p1 = "/portfolio/daycare-promo.png";
-const p2 = "/portfolio/poster-design.png";
-const p3 = "/portfolio/poster-design.png";
-const p4 = "/portfolio/poster-design.png";
-const p5 = "/portfolio/daycare-promo.png";
-const p6 = "/portfolio/poster-design.png";
-const p7 = "/portfolio/poster-design.png";
-const p8 = "/portfolio/branding-identity.png";
-const p9 = "/portfolio/daycare-promo.png";
-const p10 = "/portfolio/poster-design.png";
+const p1 = "https://nsdportfolio.lovable.app/assets/poster-summer-camp-W7EXsf_w.jpg";
+const p2 = "https://nsdportfolio.lovable.app/assets/poster-morning-rituals-DFT_e2T0.png";
+const p3 = "https://nsdportfolio.lovable.app/assets/poster-handwriting-mastery-krse_OyI.png";
+const p4 = "https://nsdportfolio.lovable.app/assets/poster-360-wellness-BusWpKKP.png";
+const p5 = "https://nsdportfolio.lovable.app/assets/poster-keerthys-daycare-9fDDUZ1T.png";
+const p6 = "https://nsdportfolio.lovable.app/assets/poster-phonics-jACPHxD3.png";
+const p7 = "https://nsdportfolio.lovable.app/assets/poster-painting-course-os2sPpi4.png";
+const p8 = "https://nsdportfolio.lovable.app/assets/poster-nsd-creations-CfopbehW.png";
+const p9 = "https://nsdportfolio.lovable.app/assets/poster-summer-camp-fun-Bb0fZjCy.png";
+const p10 = "https://nsdportfolio.lovable.app/assets/poster-learning-creativity-N9WyGCAY.png";
 
 const posters = [
   { src: p8, title: "NSD Creations — Services & Pricing", category: "BRAND IDENTITY", year: "2026" },
