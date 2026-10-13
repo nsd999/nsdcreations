@@ -36,7 +36,7 @@ export function Nav() {
   return (
     <nav
       aria-label="Portfolio navigation"
-      className={`fixed left-1/2 top-3 z-50 w-[calc(100%-1.5rem)] max-w-[640px] -translate-x-1/2 transition-all duration-500 md:top-4 md:w-max ${scrolled ? "scale-[0.99]" : ""}`}
+      className={`fixed left-1/2 top-3 z-50 w-[calc(100vw_-_1.5rem)] max-w-[640px] -translate-x-1/2 transition-all duration-500 md:top-4 md:w-max ${scrolled ? "scale-[0.99]" : ""}`}
     >
       <div className={`glass flex w-full items-center justify-between gap-1 px-2 py-2 md:w-max md:justify-start ${menuOpen ? "rounded-2xl md:rounded-full" : "rounded-full"}`}>
         <a
