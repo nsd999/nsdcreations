@@ -1,52 +1,55 @@
 self.addEventListener('push', function (event) {
-  if (event.data) {
-    const data = event.data.json();
-    const options = {
-      body: data.body,
-      icon: data.icon || '/icon.png',
-      image: data.image,
-      vibrate: [100, 50, 100],
-      data: {
-        dateOfArrival: Date.now(),
-        primaryKey: '2',
-        url: data.url || '/'
-      },
-      // Note: Web Push API currently doesn't widely support custom sounds across all browsers
-      // for security reasons (mostly system default plays), but we include it in case of browser support.
-      sound: data.sound || '/notification.mp3' 
-    };
-    
-    // Show notification
-    const notificationPromise = self.registration.showNotification(data.title, options);
-    
-    // Broadcast to open clients so they can play custom programmatic audio
-    const broadcastPromise = clients.matchAll({ type: 'window', includeUncontrolled: true }).then(clientList => {
-      for (const client of clientList) {
-        client.postMessage({
-          type: 'PUSH_RECEIVED',
-          payload: data
-        });
-      }
-    });
+  if (!event.data) return;
 
-    event.waitUntil(Promise.all([notificationPromise, broadcastPromise]));
+  let data;
+  try {
+    data = event.data.json();
+  } catch {
+    data = { title: 'NSD Creations', body: event.data.text() };
   }
+
+  const targetUrl = data.url || '/';
+  const options = {
+    body: data.body,
+    icon: data.icon || '/icon.png',
+    image: data.image,
+    vibrate: [100, 50, 100],
+    data: {
+      dateOfArrival: Date.now(),
+      primaryKey: '2',
+      url: targetUrl,
+      channel: data.channel || 'general',
+      sound: data.sound || null,
+    },
+  };
+
+  const notificationPromise = self.registration.showNotification(data.title || 'NSD Creations', options);
+
+  // The page can play the custom admin sound while an admin tab is open.
+  // Browsers do not consistently support custom audio on OS-rendered push notifications.
+  const broadcastPromise = clients.matchAll({ type: 'window', includeUncontrolled: true }).then((clientList) => {
+    for (const client of clientList) {
+      client.postMessage({
+        type: 'PUSH_RECEIVED',
+        payload: data,
+      });
+    }
+  });
+
+  event.waitUntil(Promise.all([notificationPromise, broadcastPromise]));
 });
 
 self.addEventListener('notificationclick', function (event) {
   event.notification.close();
   event.waitUntil(
-    clients.matchAll({ type: 'window' }).then(function (clientList) {
-      const targetUrl = event.notification.data.url;
-      for (let i = 0; i < clientList.length; i++) {
-        const client = clientList[i];
+    clients.matchAll({ type: 'window', includeUncontrolled: true }).then(function (clientList) {
+      const targetUrl = new URL(event.notification.data?.url || '/', self.location.origin).href;
+      for (const client of clientList) {
         if (client.url === targetUrl && 'focus' in client) {
           return client.focus();
         }
       }
-      if (clients.openWindow) {
-        return clients.openWindow(targetUrl);
-      }
+      if (clients.openWindow) return clients.openWindow(targetUrl);
     })
   );
 });
