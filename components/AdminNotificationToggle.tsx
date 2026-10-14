@@ -41,6 +41,21 @@ export function AdminNotificationToggle() {
         setEnabled(Boolean(subscription));
       })
       .catch(() => undefined);
+
+    // Custom sound is played in the foreground admin page. The sound asset is
+    // bundled with the site so it works independently of the browser used to register.
+    const playAdminSound = (event: MessageEvent) => {
+      if (event.data?.type !== "PUSH_RECEIVED" || event.data?.payload?.channel !== "admin") return;
+      const audio = new Audio("/notification.mp3");
+      audio.preload = "auto";
+      audio.volume = 0.9;
+      void audio.play().catch(() => {
+        // Autoplay policies can block sound until the admin interacts with this page.
+      });
+    };
+
+    navigator.serviceWorker.addEventListener("message", playAdminSound);
+    return () => navigator.serviceWorker.removeEventListener("message", playAdminSound);
   }, []);
 
   if (!supported) return null;

@@ -50,6 +50,8 @@ export async function sendAdminPushNotification(payload: AdminPushPayload) {
             icon: "/icon.png",
             url: payload.url?.startsWith("/") ? payload.url : "/nsdtheadmin/dashboard",
             type: payload.type || "admin_activity",
+            channel: "admin",
+            sound: "/notification.mp3",
           }),
         );
 
