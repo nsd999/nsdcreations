@@ -3,12 +3,12 @@ import Link from "next/link";
 import { Navbar } from "@/components/Navbar";
 import { Footer } from "@/components/Footer";
 import { getServiceBySlug, getServicesWithOverrides } from "@/lib/service-catalog";
+import { ServicePricingSection } from "@/components/ServicePricingSection";
 import { 
   ArrowLeft, 
   CheckCircle, 
   ChevronRight, 
   Award, 
-  ArrowRight, 
   HelpCircle,
   Code2,
   ListTodo,
@@ -205,26 +205,12 @@ export default async function ServiceDetailPage({ params }: { params: Promise<{ 
             </div>
           </div>
 
-          {/* Direct CTA Box */}
-          <div className="p-6 rounded-3xl bg-indigo-600 text-white shadow-xl flex flex-col justify-between">
-            <div>
-              <h3 className="font-display font-bold text-lg leading-tight">Ready to start this project?</h3>
-              <p className="text-indigo-100 text-xs mt-2 leading-relaxed">
-                Contact us today to receive a precise quote and project scope for {service.name}.
-              </p>
-            </div>
-            <Link
-              href={`/#contact`}
-              className="mt-6 w-full inline-flex items-center justify-center px-4.5 py-3 rounded-xl text-xs font-bold tracking-widest uppercase bg-white text-indigo-600 hover:bg-zinc-50 transition-all text-center"
-            >
-              Start This Project
-              <ArrowRight className="w-4 h-4 ml-1.5" />
-            </Link>
-          </div>
 
         </div>
 
       </section>
+
+      <ServicePricingSection service={service} />
 
       {/* Related Services List */}
       <section className="py-20 px-6 border-t border-zinc-200/50 dark:border-zinc-900/50 max-w-7xl mx-auto w-full">
