@@ -63,6 +63,28 @@ function RevealText({ text, delay = 0 }: RevealTextProps) {
 }
 
 export function AnimatedStats() {
+  const [stats, setStats] = useState({ projectsCompleted: 50, happyClients: 30 });
+
+  useEffect(() => {
+    let active = true;
+    const refresh = async () => {
+      try {
+        const response = await fetch("/api/public/stats", { cache: "no-store" });
+        if (!response.ok) return;
+        const next = await response.json();
+        if (active) setStats({
+          projectsCompleted: Number(next.projectsCompleted) || 50,
+          happyClients: Number(next.happyClients) || 30,
+        });
+      } catch {
+        // Keep the established public baseline if the stats endpoint is temporarily unavailable.
+      }
+    };
+    void refresh();
+    const interval = window.setInterval(() => void refresh(), 10000);
+    return () => { active = false; window.clearInterval(interval); };
+  }, []);
+
   return (
     <section className="py-12 border-y border-zinc-200/50 dark:border-zinc-900/50 bg-zinc-50/50 dark:bg-[#030303]/40">
       <div className="max-w-7xl mx-auto px-6 grid grid-cols-2 md:grid-cols-4 gap-8 text-center">
@@ -72,7 +94,7 @@ export function AnimatedStats() {
           viewport={{ once: true, margin: "-100px" }}
           transition={{ duration: 0.6 }}
         >
-          <AnimatedCounter value={50} suffix="+" />
+          <AnimatedCounter value={stats.projectsCompleted} suffix="+" />
           <div className="text-xs font-mono tracking-wider text-zinc-500 dark:text-zinc-400 uppercase mt-1">
             Projects Completed
           </div>
@@ -85,7 +107,7 @@ export function AnimatedStats() {
           viewport={{ once: true, margin: "-100px" }}
           transition={{ duration: 0.6, delay: 0.1 }}
         >
-          <AnimatedCounter value={30} suffix="+" />
+          <AnimatedCounter value={stats.happyClients} suffix="+" />
           <div className="text-xs font-mono tracking-wider text-zinc-500 dark:text-zinc-400 uppercase mt-1">
             Happy Clients
           </div>

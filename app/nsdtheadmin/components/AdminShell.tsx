@@ -47,6 +47,7 @@ const sections = [
   { id: "bookings", label: "Bookings", icon: ClipboardList },
   { id: "payments", label: "Payments", icon: CircleDollarSign },
   { id: "leads", label: "Leads", icon: Users },
+  { id: "clients", label: "Clients", icon: BriefcaseBusiness },
   { id: "notifications", label: "Notifications", icon: Bell },
   { id: "notification-subscribers", label: "Subscribers", icon: MessageSquare },
   { id: "tips", label: "Tips", icon: FileText },
@@ -472,6 +473,7 @@ export default function AdminShell({ initialPath, admin }: { initialPath: string
           {section === "bookings" && <BookingsView initialId={detailId} />}
           {section === "payments" && <PaymentsView />}
           {section === "leads" && <LeadsView />}
+          {section === "clients" && <ClientsView />}
           {section === "notifications" && <NotificationsView />}
           {section === "notification-subscribers" && <SubscribersView />}
           {section === "tips" && <TipsView />}
@@ -690,13 +692,105 @@ function PaymentsView() {
 }
 
 function LeadsView() {
-  const [items, setItems] = useState<any[]>([]);
-  const [query, setQuery] = useState("");
-  const [status, setStatus] = useState("");
-  async function load(){const d=await api("leads?q="+encodeURIComponent(query)+"&status="+encodeURIComponent(status));setItems(d.items||[]);}
-  useEffect(()=>{load().catch(()=>setItems([]));},[status]);
-  async function setLead(id:string,next:string){await api("leads/"+id,{method:"PATCH",body:JSON.stringify({status:next})});load();}
-  return <div><Toolbar query={query} setQuery={setQuery} status={status} setStatus={setStatus} placeholder="Search lead, email or business…"/>{items.length===0?<Empty/>:<div className="space-y-2">{items.map(l=><div key={l.id} className="rounded-2xl border border-white/10 bg-white/[0.02] p-4"><div className="flex flex-col lg:flex-row lg:items-start justify-between gap-4"><div className="min-w-0"><div className="font-medium">{l.name}</div><div className="text-xs text-zinc-500">{l.email} {l.phone ? "• "+l.phone : ""}</div><div className="text-xs text-indigo-300 mt-2">{l.service || "General enquiry"}</div><p className="text-sm text-zinc-400 mt-2">{l.message}</p><div className="text-[10px] text-zinc-600 mt-2">{dateTime(l.created_at)}</div></div><div className="flex flex-wrap gap-2">{["contacted","qualified","proposal_sent","won","lost","archived"].map(s=><button key={s} onClick={()=>setLead(l.id,s)} className="rounded-lg border border-white/10 px-2.5 py-1.5 text-[10px] text-zinc-400 hover:text-white">{s}</button>)}</div></div></div>)}</div>}</div>;
+  const blank = { name:"", businessName:"", phone:"", email:"", service:"Poster Designing", source:"admin", estimatedBudgetInr:"", status:"new", followUpAt:"", notes:"" };
+  const [items,setItems]=useState<any[]>([]);
+  const [query,setQuery]=useState("");
+  const [status,setStatus]=useState("");
+  const [showCreate,setShowCreate]=useState(false);
+  const [form,setForm]=useState(blank);
+  const [saving,setSaving]=useState(false);
+  const [error,setError]=useState("");
+  const [success,setSuccess]=useState("");
+
+  async function load() {
+    const d=await api("leads?q="+encodeURIComponent(query)+"&status="+encodeURIComponent(status));
+    setItems(d.items||[]);
+  }
+  useEffect(()=>{const refresh=()=>load().catch((e:any)=>setError(e?.message||"Unable to load leads."));refresh();const interval=window.setInterval(refresh,5000);return()=>window.clearInterval(interval);},[status,query]);
+  async function createLead(){
+    setSaving(true);setError("");setSuccess("");
+    try {
+      const result=await api("leads",{method:"POST",body:JSON.stringify({...form,estimatedBudgetInr:form.estimatedBudgetInr===""?null:Number(form.estimatedBudgetInr),followUpAt:form.followUpAt?new Date(form.followUpAt).toISOString():null})});
+      setForm(blank);setShowCreate(false);await load();
+      setSuccess("Lead created successfully"+(result.item?.id?" • ID "+result.item.id:"")+".");
+    } catch(e:any) { setError(e?.message||"Unable to create lead. No success was reported."); }
+    finally { setSaving(false); }
+  }
+  async function setLead(id:string,next:string){
+    setError("");setSuccess("");
+    try { await api("leads/"+id,{method:"PATCH",body:JSON.stringify({status:next})}); await load();setSuccess("Lead updated."); }
+    catch(e:any){setError(e?.message||"Unable to update lead.");}
+  }
+  async function convert(id:string){
+    if(!confirm("Convert this lead into a client? The original lead will be preserved."))return;
+    setError("");setSuccess("");
+    try { const result=await api("leads/"+id,{method:"PATCH",body:JSON.stringify({convertToClient:true})});await load();setSuccess(result.alreadyConverted?"This lead is already linked to its client.":"Lead converted to client successfully."); }
+    catch(e:any){setError(e?.message||"Unable to convert lead.");}
+  }
+  return <div className="space-y-4">
+    <div className="flex flex-col sm:flex-row gap-3 sm:items-center sm:justify-between">
+      <div><h2 className="text-xl font-semibold">Lead CRM</h2><p className="text-xs text-zinc-500 mt-1">Enquiries remain leads until you explicitly convert them to clients.</p></div>
+      <button onClick={()=>{setShowCreate(v=>!v);setError("");setSuccess("");}} className="inline-flex min-h-11 items-center justify-center gap-2 rounded-xl bg-indigo-600 px-4 py-3 text-sm font-semibold"><Plus className="w-4 h-4"/> {showCreate?"Close form":"Create Lead"}</button>
+    </div>
+    {showCreate&&<Panel title="Create lead">
+      <div className="grid sm:grid-cols-2 gap-3">
+        <input required value={form.name} onChange={e=>setForm({...form,name:e.target.value})} placeholder="Full name *" className="min-h-11 w-full rounded-xl border border-white/10 bg-white/[0.03] px-3 py-3 text-sm"/>
+        <input value={form.businessName} onChange={e=>setForm({...form,businessName:e.target.value})} placeholder="Business / organisation (optional)" className="min-h-11 w-full rounded-xl border border-white/10 bg-white/[0.03] px-3 py-3 text-sm"/>
+        <input type="tel" inputMode="tel" value={form.phone} onChange={e=>setForm({...form,phone:e.target.value})} placeholder="Phone with country code (optional)" className="min-h-11 w-full rounded-xl border border-white/10 bg-white/[0.03] px-3 py-3 text-sm"/>
+        <input type="email" inputMode="email" value={form.email} onChange={e=>setForm({...form,email:e.target.value})} placeholder="Email (optional)" className="min-h-11 w-full rounded-xl border border-white/10 bg-white/[0.03] px-3 py-3 text-sm"/>
+        <select value={form.service} onChange={e=>setForm({...form,service:e.target.value})} className="min-h-11 w-full rounded-xl border border-white/10 bg-[#0b0b10] px-3 py-3 text-sm">{["Poster Designing","AI Video Ads","AI Product Commercials","Website Development","Mobile App Development","Branding","Digital Marketing","AI Automation","WhatsApp Automation","Other"].map(s=><option key={s}>{s}</option>)}</select>
+        <select value={form.source} onChange={e=>setForm({...form,source:e.target.value})} className="min-h-11 w-full rounded-xl border border-white/10 bg-[#0b0b10] px-3 py-3 text-sm">{["admin","Website","WhatsApp","Instagram","Facebook","Referral","Other"].map(s=><option key={s} value={s}>{s==="admin"?"Admin entry":s}</option>)}</select>
+        <input type="number" min="0" step="1" inputMode="decimal" value={form.estimatedBudgetInr} onChange={e=>setForm({...form,estimatedBudgetInr:e.target.value})} placeholder="Estimated budget (₹, optional)" className="min-h-11 w-full rounded-xl border border-white/10 bg-white/[0.03] px-3 py-3 text-sm"/>
+        <select value={form.status} onChange={e=>setForm({...form,status:e.target.value})} className="min-h-11 w-full rounded-xl border border-white/10 bg-[#0b0b10] px-3 py-3 text-sm">{["new","contacted","qualified","proposal_sent","negotiation","lost"].map(s=><option key={s} value={s}>{s.replaceAll("_"," ")}</option>)}</select>
+        <label className="text-xs text-zinc-500">Follow-up date (optional)<input type="date" value={form.followUpAt} onChange={e=>setForm({...form,followUpAt:e.target.value})} className="mt-1 min-h-11 w-full rounded-xl border border-white/10 bg-white/[0.03] px-3 py-3 text-sm text-zinc-200"/></label>
+        <textarea value={form.notes} onChange={e=>setForm({...form,notes:e.target.value})} placeholder="Follow-up notes / enquiry details (optional)" rows={3} className="sm:col-span-2 w-full rounded-xl border border-white/10 bg-white/[0.03] px-3 py-3 text-sm"/>
+      </div>
+      <button disabled={saving||!form.name.trim()} onClick={createLead} className="mt-3 min-h-12 w-full rounded-xl bg-indigo-600 py-3 font-semibold disabled:opacity-40">{saving?"Saving to database…":"Save Lead"}</button>
+    </Panel>}
+    <Toolbar query={query} setQuery={setQuery} status={status} setStatus={setStatus} placeholder="Search lead, email or business…"/>
+    <div className="flex gap-2"><button onClick={()=>load().catch((e:any)=>setError(e.message))} className="rounded-lg border border-white/10 px-3 py-2 text-xs">Refresh leads</button></div>
+    {error&&<p role="alert" className="text-xs text-red-300">{error}</p>}{success&&<p role="status" className="text-xs text-emerald-300">{success}</p>}
+    {items.length===0?<Empty text="No matching leads. Create a lead to start tracking an enquiry."/>:<div className="space-y-2">{items.map(l=><div key={l.id} className="rounded-2xl border border-white/10 bg-white/[0.02] p-4"><div className="flex flex-col lg:flex-row lg:items-start justify-between gap-4"><div className="min-w-0"><div className="font-medium">{l.name}</div><div className="text-xs text-zinc-500">{l.business_name||"Business not provided"} {l.email?" • "+l.email:""} {l.phone?" • "+l.phone:""}</div><div className="text-xs text-indigo-300 mt-2">{l.service||"General enquiry"}</div><p className="text-sm text-zinc-400 mt-2">{l.notes||l.message||"No notes yet."}</p><div className="text-[10px] text-zinc-600 mt-2">Created {dateTime(l.created_at)}{l.follow_up_at?" • Follow-up "+dateTime(l.follow_up_at):""}{l.estimated_budget_inr!=null?" • Budget ₹"+Number(l.estimated_budget_inr).toLocaleString("en-IN"):""}</div></div><div className="flex flex-wrap gap-2">{["contacted","qualified","proposal_sent","negotiation","lost","archived"].map(s=><button key={s} onClick={()=>setLead(l.id,s)} className="min-h-10 rounded-lg border border-white/10 px-2.5 py-2 text-[10px] text-zinc-400 hover:text-white">{s.replaceAll("_"," ")}</button>)}{!l.converted_client_id&&<button onClick={()=>convert(l.id)} className="min-h-10 rounded-lg bg-emerald-700 px-3 py-2 text-xs font-semibold">Convert to Client</button>}{l.converted_client_id&&<Badge tone="green">Converted</Badge>}</div></div></div>)}</div>}
+  </div>;
+}
+function ClientsView() {
+  const blank={fullName:"",businessName:"",phone:"",email:"",servicesPurchased:"",notes:""};
+  const [items,setItems]=useState<any[]>([]);
+  const [query,setQuery]=useState("");
+  const [status,setStatus]=useState("");
+  const [form,setForm]=useState(blank);
+  const [editingId,setEditingId]=useState("");
+  const [showForm,setShowForm]=useState(false);
+  const [error,setError]=useState("");
+  const [success,setSuccess]=useState("");
+  const [saving,setSaving]=useState(false);
+  async function load(){const d=await api("clients?q="+encodeURIComponent(query)+"&status="+encodeURIComponent(status));setItems(d.items||[]);}
+  useEffect(()=>{const refresh=()=>load().catch((e:any)=>setError(e?.message||"Unable to load clients."));refresh();const interval=window.setInterval(refresh,5000);return()=>window.clearInterval(interval);},[status,query]);
+  function edit(c:any){setEditingId(c.id);setForm({fullName:c.full_name||"",businessName:c.business_name||"",phone:c.phone||"",email:c.email||"",servicesPurchased:(c.services_purchased||[]).join(", "),notes:c.notes||""});setShowForm(true);setError("");setSuccess("");}
+  async function save(){
+    setSaving(true);setError("");setSuccess("");
+    try {
+      const payload={...form,servicesPurchased:form.servicesPurchased.split(",").map(x=>x.trim()).filter(Boolean)};
+      await api(editingId?"clients/"+editingId:"clients",{method:editingId?"PATCH":"POST",body:JSON.stringify(payload)});
+      setForm(blank);setEditingId("");setShowForm(false);await load();setSuccess(editingId?"Client updated.":"Client created.");
+    } catch(e:any){setError(e?.message||"Unable to save client.");}
+    finally{setSaving(false);}
+  }
+  return <div className="space-y-4">
+    <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3"><div><h2 className="text-xl font-semibold">Clients</h2><p className="text-xs text-zinc-500 mt-1">Confirmed clients only. Enquiries remain in Leads until converted.</p></div><button onClick={()=>{setShowForm(v=>!v);setEditingId("");setForm(blank);setError("");}} className="min-h-11 rounded-xl bg-indigo-600 px-4 py-3 text-sm font-semibold"><Plus className="inline w-4 h-4 mr-1"/> Add Client</button></div>
+    {showForm&&<Panel title={editingId?"Edit client":"Add client"}><div className="grid sm:grid-cols-2 gap-3">
+      <input value={form.fullName} onChange={e=>setForm({...form,fullName:e.target.value})} placeholder="Full name *" className="min-h-11 rounded-xl border border-white/10 bg-white/[0.03] px-3 py-3 text-sm"/>
+      <input value={form.businessName} onChange={e=>setForm({...form,businessName:e.target.value})} placeholder="Business / organisation" className="min-h-11 rounded-xl border border-white/10 bg-white/[0.03] px-3 py-3 text-sm"/>
+      <input type="tel" value={form.phone} onChange={e=>setForm({...form,phone:e.target.value})} placeholder="Phone (optional)" className="min-h-11 rounded-xl border border-white/10 bg-white/[0.03] px-3 py-3 text-sm"/>
+      <input type="email" value={form.email} onChange={e=>setForm({...form,email:e.target.value})} placeholder="Email (optional)" className="min-h-11 rounded-xl border border-white/10 bg-white/[0.03] px-3 py-3 text-sm"/>
+      <input value={form.servicesPurchased} onChange={e=>setForm({...form,servicesPurchased:e.target.value})} placeholder="Services purchased, comma-separated" className="min-h-11 rounded-xl border border-white/10 bg-white/[0.03] px-3 py-3 text-sm sm:col-span-2"/>
+      <textarea value={form.notes} onChange={e=>setForm({...form,notes:e.target.value})} placeholder="Client notes / communication history" rows={3} className="rounded-xl border border-white/10 bg-white/[0.03] px-3 py-3 text-sm sm:col-span-2"/>
+    </div><button disabled={saving||!form.fullName.trim()} onClick={save} className="mt-3 min-h-12 w-full rounded-xl bg-indigo-600 py-3 font-semibold disabled:opacity-40">{saving?"Saving…":editingId?"Save client":"Create client"}</button>{editingId&&<button onClick={()=>{setEditingId("");setForm(blank);setShowForm(false);}} className="mt-2 min-h-11 w-full rounded-xl border border-white/10 py-3 text-sm">Cancel edit</button>}</Panel>}
+    <Toolbar query={query} setQuery={setQuery} status={status} setStatus={setStatus} placeholder="Search client, business, phone or email…"/>
+    <div className="flex gap-2"><button onClick={()=>load().catch((e:any)=>setError(e.message))} className="rounded-lg border border-white/10 px-3 py-2 text-xs">Search / refresh</button></div>
+    {error&&<p role="alert" className="text-xs text-red-300">{error}</p>}{success&&<p role="status" className="text-xs text-emerald-300">{success}</p>}
+    {items.length===0?<Empty text="No clients found. Convert a confirmed lead or add an existing client."/>:<div className="space-y-2">{items.map(c=><div key={c.id} className="rounded-2xl border border-white/10 bg-white/[0.02] p-4"><div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-3"><div><div className="font-medium">{c.full_name}</div><div className="text-xs text-zinc-500 mt-1">{c.business_name||"Business not provided"}{c.phone?" • "+c.phone:""}{c.email?" • "+c.email:""}</div><div className="text-xs text-indigo-300 mt-2">{(c.services_purchased||[]).join(", ")||"No services recorded"}</div>{c.notes&&<p className="mt-2 text-sm text-zinc-400">{c.notes}</p>}<p className="mt-2 text-[10px] text-zinc-600">Created {dateTime(c.created_at)}{c.converted_from_lead_id?" • Converted from lead":""}</p></div><button onClick={()=>edit(c)} className="min-h-10 rounded-lg border border-indigo-500/30 px-3 py-2 text-xs text-indigo-300">Edit client</button></div></div>)}</div>}
+  </div>;
 }
 
 function NotificationsView() {
@@ -975,15 +1069,34 @@ function TestimonialsView() {
 }
 
 function PortfolioView() {
-  const blankForm = {title:"",category:"video",clientName:"",description:"",thumbnailUrl:"",projectUrl:"",status:"draft",featured:false};
+  const blankForm = {title:"",slug:"",category:"Poster Designing",clientName:"",description:"",thumbnailUrl:"",coverImageUrl:"",projectUrl:"",liveUrl:"",status:"draft",featured:false};
   const [items,setItems]=useState<any[]>([]);
   const [form,setForm]=useState(blankForm);
   const [editingId,setEditingId]=useState("");
   const [error,setError]=useState("");
   const [success,setSuccess]=useState("");
   const [saving,setSaving]=useState(false);
-  async function load(){const d=await api("portfolio");setItems(d.items||[]);}
-  useEffect(()=>{load().catch((e:any)=>setError(e?.message||"Unable to load portfolio items."));},[]);
+  const [uploading,setUploading]=useState(false);
+  const [query,setQuery]=useState("");
+  const [statusFilter,setStatusFilter]=useState("");
+  async function load(){const d=await api("portfolio?q="+encodeURIComponent(query)+"&status="+encodeURIComponent(statusFilter));setItems(d.items||[]);}
+  useEffect(()=>{const refresh=()=>load().catch((e:any)=>setError(e?.message||"Unable to load portfolio items."));refresh();const interval=window.setInterval(refresh,5000);return()=>window.clearInterval(interval);},[statusFilter]);
+  async function uploadImage(file?:File|null, field:"thumbnailUrl"|"coverImageUrl"="thumbnailUrl"){
+    if(!file)return;
+    setError("");setSuccess("");
+    if(!["image/jpeg","image/png","image/webp"].includes(file.type)){setError("Choose a JPG, PNG or WebP image.");return;}
+    if(file.size>8*1024*1024){setError("Image must be 8 MB or smaller.");return;}
+    setUploading(true);
+    try{
+      const data=new FormData();data.append("file",file);
+      const response=await fetch("/api/admin/portfolio-upload",{method:"POST",credentials:"same-origin",body:data,cache:"no-store"});
+      const result=await response.json().catch(()=>({}));
+      if(!response.ok)throw new Error(result.error||"Image upload failed.");
+      setForm(prev=>({...prev,[field]:result.url}));
+      setSuccess("Image uploaded and attached to the project.");
+    }catch(e:any){setError(e?.message||"Image upload failed.");}
+    finally{setUploading(false);}
+  }
   async function save(){
     setSaving(true);setError("");setSuccess("");
     try{
@@ -991,33 +1104,57 @@ function PortfolioView() {
       else await api("portfolio",{method:"POST",body:JSON.stringify(form)});
       const wasEditing=Boolean(editingId);
       setForm(blankForm);setEditingId("");await load();
-      setSuccess(wasEditing?"Portfolio changes saved.":"Portfolio project created.");
+      setSuccess(wasEditing?"Portfolio changes saved.":"Portfolio project created. Its identifier is generated automatically.");
     }catch(e:any){setError(e?.message||"Unable to save portfolio project.");}
     finally{setSaving(false);}
   }
-  async function status(id:string,next:string){
+  async function setProjectStatus(id:string,next:string){
     setError("");setSuccess("");
     try{await api("portfolio/"+id,{method:"PATCH",body:JSON.stringify({status:next})});await load();setSuccess("Portfolio status updated.");}
     catch(e:any){setError(e?.message||"Unable to update portfolio status.");}
   }
   function editItem(p:any){
     setEditingId(p.id);
-    setForm({
-      title:p.title||"",
-      category:p.category||"video",
-      clientName:p.client_name||"",
-      description:p.description||"",
-      thumbnailUrl:p.thumbnail_url||"",
-      projectUrl:p.project_url||"",
-      status:p.status||"draft",
-      featured:Boolean(p.featured),
-    });
+    setForm({title:p.title||"",slug:p.slug||"",category:p.category||"Other",clientName:p.client_name||"",description:p.description||"",thumbnailUrl:p.thumbnail_url||"",coverImageUrl:p.cover_image_url||"",projectUrl:p.project_url||"",liveUrl:p.live_url||"",status:p.status||"draft",featured:Boolean(p.featured)});
     setError("");setSuccess("");
   }
   function cancelEdit(){setEditingId("");setForm(blankForm);setError("");setSuccess("");}
-  return <div className="grid xl:grid-cols-[420px_1fr] gap-4"><Panel title={editingId?"Edit portfolio project":"Add portfolio project"}><div className="space-y-2">{Object.entries(form).filter(([k])=>k!=="status"&&k!=="featured").map(([key,value])=>key==="description"?<textarea key={key} value={String(value)} onChange={e=>setForm({...form,[key]:e.target.value})} placeholder={key} rows={4} className="w-full rounded-xl border border-white/10 bg-white/[0.03] px-3 py-2.5 text-sm"/>:<input key={key} value={String(value)} onChange={e=>setForm({...form,[key]:e.target.value})} placeholder={key} className="w-full rounded-xl border border-white/10 bg-white/[0.03] px-3 py-2.5 text-sm"/>)}<label className="flex gap-2 text-xs"><input type="checkbox" checked={form.featured} onChange={e=>setForm({...form,featured:e.target.checked})}/> Featured</label>{error&&<p role="alert" className="text-xs text-red-300">{error}</p>}{success&&<p role="status" className="text-xs text-emerald-300">{success}</p>}<button disabled={saving||!form.title.trim()} onClick={save} className="w-full rounded-xl bg-indigo-600 disabled:opacity-40 py-3 font-semibold">{saving?"Saving…":editingId?"Save Changes":"Create Project"}</button>{editingId&&<button onClick={cancelEdit} className="w-full rounded-xl border border-white/10 py-3 text-sm">Cancel Edit</button>}</div></Panel><div className="space-y-2">{items.length===0?<Empty text="No CMS portfolio items yet. Existing static work remains intact."/>:items.map(p=><div key={p.id} className="rounded-2xl border border-white/10 p-4"><div className="flex justify-between gap-3"><div><div className="font-medium">{p.title}</div><div className="text-xs text-zinc-600">{p.category} • {p.client_name||"—"}</div></div><Badge tone={getTone(p.status)}>{p.status}</Badge></div><p className="text-sm text-zinc-500 mt-2">{p.description}</p><div className="mt-3 flex flex-wrap gap-2"><button onClick={()=>editItem(p)} className="rounded-lg border border-indigo-500/30 px-3 py-2 text-xs text-indigo-300">Edit</button>{p.status!=="published"&&<button onClick={()=>status(p.id,"published")} className="rounded-lg bg-emerald-600 px-3 py-2 text-xs">Publish</button>} {p.status!=="archived"&&<button onClick={()=>status(p.id,"archived")} className="rounded-lg border border-white/10 px-3 py-2 text-xs">Archive</button>}</div></div>)}</div></div>;
+  const fieldClass="min-h-11 w-full rounded-xl border border-white/10 bg-white/[0.03] px-3 py-3 text-sm";
+  return <div className="space-y-4">
+    <div><h2 className="text-xl font-semibold">Portfolio CMS</h2><p className="mt-1 text-xs text-zinc-500">Database-generated identifiers • direct image uploads • drafts remain private.</p></div>
+    <div className="grid xl:grid-cols-[420px_1fr] gap-4"><Panel title={editingId?"Edit portfolio project":"Add portfolio project"}>
+      <div className="space-y-3">
+        <input value={form.title} onChange={e=>setForm({...form,title:e.target.value,slug:form.slug||e.target.value.toLowerCase().trim().replace(/[^a-z0-9]+/g,"-").replace(/^-|-$/g,"")})} placeholder="Project title *" className={fieldClass}/>
+        <input value={form.slug} onChange={e=>setForm({...form,slug:e.target.value.toLowerCase()})} placeholder="Slug (auto-generated if empty)" className={fieldClass}/>
+        <select value={form.category} onChange={e=>setForm({...form,category:e.target.value})} className={fieldClass+" bg-[#0b0b10]"}>{["Poster Designing","AI Video Ads","AI Product Commercials","Website Development","Mobile App Development","Branding","Digital Marketing","AI Automation","WhatsApp Automation","Other"].map(x=><option key={x}>{x}</option>)}</select>
+        <input value={form.clientName} onChange={e=>setForm({...form,clientName:e.target.value})} placeholder="Client name (optional)" className={fieldClass}/>
+        <textarea value={form.description} onChange={e=>setForm({...form,description:e.target.value})} placeholder="Project description *" rows={4} className={fieldClass}/>
+        <div className="rounded-xl border border-white/10 p-3 space-y-2">
+          <div className="text-xs font-semibold text-zinc-300">Thumbnail image</div>
+          <input type="file" accept="image/png,image/jpeg,image/webp" capture="environment" onChange={e=>uploadImage(e.target.files?.[0],"thumbnailUrl")} className="block w-full text-xs text-zinc-400 file:mr-3 file:rounded-lg file:border-0 file:bg-indigo-600 file:px-3 file:py-2 file:text-white"/>
+          {form.thumbnailUrl&&<div className="flex items-center gap-3"><img src={form.thumbnailUrl} alt="Thumbnail preview" className="h-20 w-24 rounded-lg object-cover border border-white/10"/><button type="button" onClick={()=>setForm({...form,thumbnailUrl:""})} className="text-xs text-red-300">Remove thumbnail</button></div>}
+        </div>
+        <div className="rounded-xl border border-white/10 p-3 space-y-2">
+          <div className="text-xs font-semibold text-zinc-300">Cover image (optional)</div>
+          <input type="file" accept="image/png,image/jpeg,image/webp" capture="environment" onChange={e=>uploadImage(e.target.files?.[0],"coverImageUrl")} className="block w-full text-xs text-zinc-400 file:mr-3 file:rounded-lg file:border-0 file:bg-indigo-600 file:px-3 file:py-2 file:text-white"/>
+          {form.coverImageUrl&&<div className="flex items-center gap-3"><img src={form.coverImageUrl} alt="Cover preview" className="h-20 w-24 rounded-lg object-cover border border-white/10"/><button type="button" onClick={()=>setForm({...form,coverImageUrl:""})} className="text-xs text-red-300">Remove cover</button></div>}
+        </div>
+        <input type="url" value={form.projectUrl} onChange={e=>setForm({...form,projectUrl:e.target.value})} placeholder="External project URL (optional)" className={fieldClass}/>
+        <input type="url" value={form.liveUrl} onChange={e=>setForm({...form,liveUrl:e.target.value})} placeholder="Live website URL (optional)" className={fieldClass}/>
+        <select value={form.status} onChange={e=>setForm({...form,status:e.target.value})} className={fieldClass+" bg-[#0b0b10]"}><option value="draft">Draft</option><option value="published">Published</option><option value="completed">Completed</option><option value="archived">Archived</option></select>
+        <label className="flex min-h-11 items-center gap-2 text-sm"><input type="checkbox" checked={form.featured} onChange={e=>setForm({...form,featured:e.target.checked})}/> Featured project</label>
+        {uploading&&<p role="status" className="text-xs text-indigo-300">Uploading image…</p>}
+        {error&&<p role="alert" className="text-xs text-red-300">{error}</p>}{success&&<p role="status" className="text-xs text-emerald-300">{success}</p>}
+        <button disabled={saving||uploading||!form.title.trim()||!form.description.trim()} onClick={save} className="min-h-12 w-full rounded-xl bg-indigo-600 disabled:opacity-40 py-3 font-semibold">{saving?"Saving…":editingId?"Save Changes":"Create Project"}</button>
+        {editingId&&<button onClick={cancelEdit} className="min-h-11 w-full rounded-xl border border-white/10 py-3 text-sm">Cancel Edit</button>}
+      </div>
+    </Panel>
+    <div className="space-y-3">
+      <div className="flex flex-col sm:flex-row gap-2"><input value={query} onChange={e=>setQuery(e.target.value)} placeholder="Search title, category or client" className={fieldClass}/><button onClick={()=>load().catch((e:any)=>setError(e.message))} className="min-h-11 rounded-xl border border-white/10 px-4 text-sm">Search</button><select value={statusFilter} onChange={e=>setStatusFilter(e.target.value)} className={fieldClass+" bg-[#0b0b10]"}><option value="">All statuses</option><option value="draft">Draft</option><option value="published">Published</option><option value="completed">Completed</option><option value="archived">Archived</option></select></div>
+      {items.length===0?<Empty text="No matching CMS portfolio items. Existing static portfolio work remains intact."/>:items.map(p=><div key={p.id} className="rounded-2xl border border-white/10 p-4"><div className="flex gap-3">{p.thumbnail_url&&<img src={p.thumbnail_url} alt="" className="h-16 w-20 rounded-lg object-cover"/>}<div className="min-w-0 flex-1"><div className="font-medium">{p.title}</div><div className="text-xs text-zinc-500">{p.category} • {p.client_name||"—"}</div><div className="text-[10px] text-zinc-600 mt-1 break-all">ID: {p.id} • Slug: {p.slug||"generated on save"}</div></div><Badge tone={getTone(p.status)}>{p.status}</Badge></div><p className="text-sm text-zinc-500 mt-2">{p.description}</p><div className="mt-3 flex flex-wrap gap-2"><button onClick={()=>editItem(p)} className="min-h-10 rounded-lg border border-indigo-500/30 px-3 py-2 text-xs text-indigo-300">Edit</button>{p.status!=="published"&&<button onClick={()=>setProjectStatus(p.id,"published")} className="min-h-10 rounded-lg bg-emerald-600 px-3 py-2 text-xs">Publish</button>}{p.status==="published"&&<button onClick={()=>setProjectStatus(p.id,"draft")} className="min-h-10 rounded-lg border border-white/10 px-3 py-2 text-xs">Unpublish</button>}{p.status!=="completed"&&<button onClick={()=>setProjectStatus(p.id,"completed")} className="min-h-10 rounded-lg border border-white/10 px-3 py-2 text-xs">Mark completed</button>}{p.status!=="archived"&&<button onClick={()=>setProjectStatus(p.id,"archived")} className="min-h-10 rounded-lg border border-white/10 px-3 py-2 text-xs">Archive</button>}</div></div>)}
+    </div></div>
+  </div>;
 }
-
 function SettingsView({ mode }: { mode: string }) {
   const [items,setItems]=useState<any[]>([]);
   const [key,setKey]=useState("");

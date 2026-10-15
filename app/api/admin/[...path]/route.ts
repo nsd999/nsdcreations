@@ -238,6 +238,15 @@ export async function GET(
       return NextResponse.json({ items: data || [], total: count || 0, page, limit });
     }
 
+    if (resource === "clients") {
+      let query = db.from("clients").select("*", { count: "exact" });
+      if (status) query = query.eq("status", status);
+      if (q) query = query.or("full_name.ilike.%"+q+"%,business_name.ilike.%"+q+"%,email.ilike.%"+q+"%,phone.ilike.%"+q+"%");
+      const { data, error, count } = await query.order("created_at", { ascending: false }).range(fromIndex, toIndex);
+      if (error) return NextResponse.json({ error: "Unable to load clients." }, { status: 500 });
+      return NextResponse.json({ items: data || [], total: count || 0, page, limit });
+    }
+
     if (resource === "leads") {
       let query = db.from("contact_submissions").select("*", { count: "exact" });
       if (status) query = query.eq("status", status);
@@ -635,6 +644,65 @@ export async function POST(
       return NextResponse.json({ success: true, payment });
     }
 
+    if (resource === "leads") {
+      const name = String(body.name || body.fullName || "").trim().slice(0, 180);
+      const email = String(body.email || "").trim().toLowerCase().slice(0, 254);
+      const phone = String(body.phone || "").trim().slice(0, 40);
+      const businessName = String(body.businessName || body.business_name || "").trim().slice(0, 180);
+      const serviceName = String(body.service || "").trim().slice(0, 120);
+      const message = String(body.message || body.notes || "").trim().slice(0, 5000);
+      const leadStatus = String(body.status || "new").trim().toLowerCase();
+      const allowedStatuses = ["new","contacted","qualified","proposal_sent","negotiation","converted","won","lost","archived"];
+      const budget = body.estimatedBudgetInr === "" || body.estimatedBudgetInr == null ? null : Number(body.estimatedBudgetInr);
+      if (!name) return NextResponse.json({ error: "Lead name is required." }, { status: 400 });
+      if (email && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) return NextResponse.json({ error: "Enter a valid email address." }, { status: 400 });
+      if (!allowedStatuses.includes(leadStatus) || leadStatus === "converted") return NextResponse.json({ error: "Choose a valid initial lead status." }, { status: 400 });
+      if (budget !== null && (!Number.isFinite(budget) || budget < 0 || budget > 1000000000)) return NextResponse.json({ error: "Estimated budget must be a valid non-negative INR amount." }, { status: 400 });
+      const followUp = body.followUpAt ? new Date(body.followUpAt) : null;
+      if (followUp && Number.isNaN(followUp.getTime())) return NextResponse.json({ error: "Follow-up date is invalid." }, { status: 400 });
+      const { data, error } = await db.from("contact_submissions").insert({
+        name,
+        email: email || null,
+        country_code: String(body.countryCode || "+91").slice(0, 8),
+        phone: phone || null,
+        business_name: businessName || null,
+        service: serviceName || null,
+        message: message || "Admin-created lead",
+        status: leadStatus,
+        lead_source: String(body.source || "admin").slice(0, 80),
+        estimated_budget_inr: budget,
+        follow_up_at: followUp ? followUp.toISOString() : null,
+        assigned_to: body.assignedTo ? String(body.assignedTo).slice(0, 180) : null,
+        notes: body.notes ? String(body.notes).slice(0, 5000) : null,
+        updated_at: new Date().toISOString(),
+      }).select("*").single();
+      if (error || !data) {
+        console.error("[admin/leads] create failed", { code: error?.code, message: error?.message });
+        return NextResponse.json({ error: "Unable to create lead. No record was saved." }, { status: 500 });
+      }
+      await writeAuditLog(admin, "LEAD_CREATED", "Lead created from admin CRM.", request, data.id);
+      return NextResponse.json({ item: data }, { status: 201, headers: { "Cache-Control": "no-store" } });
+    }
+
+    if (resource === "clients") {
+      const fullName = String(body.fullName || body.full_name || "").trim().slice(0, 180);
+      if (!fullName) return NextResponse.json({ error: "Client name is required." }, { status: 400 });
+      const email = String(body.email || "").trim().toLowerCase().slice(0, 254);
+      if (email && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) return NextResponse.json({ error: "Enter a valid email address." }, { status: 400 });
+      const { data, error } = await db.from("clients").insert({
+        full_name: fullName,
+        business_name: body.businessName ? String(body.businessName).slice(0, 180) : null,
+        phone: body.phone ? String(body.phone).slice(0, 40) : null,
+        email: email || null,
+        services_purchased: Array.isArray(body.servicesPurchased) ? body.servicesPurchased.filter((x:any)=>typeof x==="string").slice(0,30) : [],
+        notes: body.notes ? String(body.notes).slice(0,5000) : null,
+        status: body.status === "inactive" ? "inactive" : "active",
+      }).select("*").single();
+      if (error || !data) return NextResponse.json({ error: "Unable to create client." }, { status: 500 });
+      await writeAuditLog(admin, "CLIENT_CREATED", "Client created from admin CRM.", request, data.id);
+      return NextResponse.json({ item: data }, { status: 201, headers: { "Cache-Control": "no-store" } });
+    }
+
     if (resource === "tips") {
       const title = String(body.title || "").trim();
       const slug = String(body.slug || title.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "")).slice(0, 120);
@@ -665,27 +733,43 @@ export async function POST(
     }
 
     if (resource === "portfolio") {
-      const title = String(body.title || "").trim();
-      const category = String(body.category || "video").trim();
-      const description = String(body.description || "").trim();
+      const title = String(body.title || "").trim().slice(0, 180);
+      const category = String(body.category || "video").trim().slice(0, 80);
+      const description = String(body.description || "").trim().slice(0, 10000);
       if (!title || !description) return NextResponse.json({ error: "Title and description are required." }, { status: 400 });
+      const allowedStatuses = ["draft","published","archived","completed"];
+      const projectStatus = String(body.status || "draft");
+      if (!allowedStatuses.includes(projectStatus)) return NextResponse.json({ error: "Invalid project status." }, { status: 400 });
+      const slug = String(body.slug || "").trim().toLowerCase().slice(0, 180);
+      if (slug && !/^[a-z0-9]+(?:-[a-z0-9]+)*$/.test(slug)) return NextResponse.json({ error: "Slug may contain lowercase letters, numbers and hyphens." }, { status: 400 });
 
       const { data, error } = await db.from("cms_portfolio").insert({
         title,
+        ...(slug ? { slug } : {}),
         category,
         client_name: body.clientName ? String(body.clientName).slice(0, 160) : null,
+        client_id: body.clientId || null,
         description,
-        thumbnail_url: body.thumbnailUrl ? String(body.thumbnailUrl).slice(0, 500) : null,
-        project_url: body.projectUrl ? String(body.projectUrl).slice(0, 500) : null,
+        thumbnail_url: body.thumbnailUrl ? String(body.thumbnailUrl).slice(0, 2000) : null,
+        cover_image_url: body.coverImageUrl ? String(body.coverImageUrl).slice(0, 2000) : null,
+        additional_images: Array.isArray(body.additionalImages) ? body.additionalImages.slice(0, 20) : [],
+        project_url: body.projectUrl ? String(body.projectUrl).slice(0, 2000) : null,
+        live_url: body.liveUrl ? String(body.liveUrl).slice(0, 2000) : null,
         tech: Array.isArray(body.tech) ? body.tech.slice(0, 20) : [],
-        status: body.status || "draft",
+        status: projectStatus,
+        completed_at: projectStatus === "completed" ? new Date().toISOString() : null,
         featured: Boolean(body.featured),
         display_order: Number.isFinite(Number(body.displayOrder)) ? Number(body.displayOrder) : 0,
       }).select("*").single();
 
-      if (error) return NextResponse.json({ error: "Unable to create portfolio item." }, { status: 500 });
+      if (error || !data) {
+        console.error("[admin/portfolio] create failed", { code: error?.code, message: error?.message });
+        return NextResponse.json({ error: "Unable to create portfolio item. Check the portfolio migration and required fields; no success was reported." }, { status: 500 });
+      }
       await writeAuditLog(admin, "CONTENT_CHANGED", "Portfolio item created.", request, data.id);
-      return NextResponse.json({ item: data });
+      revalidatePath("/portfolio");
+      revalidatePath("/");
+      return NextResponse.json({ item: data }, { status: 201, headers: { "Cache-Control": "no-store" } });
     }
 
     if (resource === "quotes") {
@@ -766,20 +850,110 @@ export async function PATCH(
     }
 
     if (resource === "leads" && id) {
-      const allowed = ["unread","contacted","qualified","proposal_sent","won","lost","archived","read"];
-      const status = String(body.status || "");
-      if (!allowed.includes(status)) return NextResponse.json({ error: "Invalid lead status." }, { status: 400 });
+      const { data: lead, error: leadReadError } = await db.from("contact_submissions").select("*").eq("id", id).maybeSingle();
+      if (leadReadError || !lead) return NextResponse.json({ error: "Lead not found." }, { status: 404 });
 
-      const update: Record<string, any> = {
-        status,
-        notes: typeof body.notes === "string" ? body.notes.slice(0, 5000) : undefined,
-        updated_at: new Date().toISOString(),
-      };
+      if (body.convertToClient === true) {
+        if (lead.converted_client_id) {
+          const { data: existingClient } = await db.from("clients").select("*").eq("id", lead.converted_client_id).maybeSingle();
+          if (existingClient) return NextResponse.json({ item: existingClient, client: existingClient, alreadyConverted: true });
+        }
+        const fullName = String(lead.name || "").trim();
+        if (!fullName) return NextResponse.json({ error: "Lead needs a name before conversion." }, { status: 422 });
+        const { data: createdClient, error: clientError } = await db.from("clients").insert({
+          full_name: fullName,
+          business_name: lead.business_name || null,
+          phone: lead.phone || null,
+          email: lead.email || null,
+          services_purchased: lead.service ? [String(lead.service)] : [],
+          notes: lead.notes || lead.message || null,
+          converted_from_lead_id: lead.id,
+        }).select("*").single();
+        if (clientError || !createdClient) {
+          // If another request won the conversion race, return that canonical client.
+          const { data: racedClient } = await db.from("clients").select("*").eq("converted_from_lead_id", lead.id).maybeSingle();
+          if (racedClient) {
+            const repairedAt = new Date().toISOString();
+            const { data: repairedLead } = await db.from("contact_submissions").update({
+              converted_client_id: racedClient.id,
+              converted_at: lead.converted_at || repairedAt,
+              status: "converted",
+              updated_at: repairedAt,
+            }).eq("id", lead.id).select("*").single();
+            return NextResponse.json({ item: repairedLead || lead, lead: repairedLead || lead, client: racedClient, alreadyConverted: true });
+          }
+          console.error("[admin/leads] conversion failed", { code: clientError?.code, message: clientError?.message });
+          return NextResponse.json({ error: "Unable to convert lead to client. The lead was preserved." }, { status: 500 });
+        }
+        const convertedAt = new Date().toISOString();
+        const { data: updatedLead, error: updateError } = await db.from("contact_submissions").update({
+          converted_client_id: createdClient.id,
+          converted_at: convertedAt,
+          status: "converted",
+          updated_at: convertedAt,
+          notes: typeof body.notes === "string" ? body.notes.slice(0, 5000) : lead.notes,
+        }).eq("id", lead.id).select("*").single();
+        if (updateError) {
+          console.error("[admin/leads] conversion link failed", { code: updateError.code });
+          return NextResponse.json({ error: "Client was created but the lead link needs reconciliation. Retry conversion; duplicates are prevented." }, { status: 500 });
+        }
+        await writeAuditLog(admin, "LEAD_CONVERTED_TO_CLIENT", "Lead converted to client.", request, lead.id);
+        return NextResponse.json({ item: updatedLead, lead: updatedLead, client: createdClient });
+      }
+
+      const allowed = ["unread","read","new","contacted","qualified","proposal_sent","negotiation","won","converted","lost","archived"];
+      const status = String(body.status || "").toLowerCase();
+      if (!allowed.includes(status)) return NextResponse.json({ error: "Invalid lead status." }, { status: 400 });
+      const update: Record<string, any> = { status, updated_at: new Date().toISOString() };
+      if (typeof body.notes === "string") update.notes = body.notes.slice(0, 5000);
+      if (body.followUpAt !== undefined) {
+        const followUp = body.followUpAt ? new Date(body.followUpAt) : null;
+        if (followUp && Number.isNaN(followUp.getTime())) return NextResponse.json({ error: "Follow-up date is invalid." }, { status: 400 });
+        update.follow_up_at = followUp ? followUp.toISOString() : null;
+      }
+      if (body.estimatedBudgetInr !== undefined) {
+        const budget = body.estimatedBudgetInr === "" || body.estimatedBudgetInr == null ? null : Number(body.estimatedBudgetInr);
+        if (budget !== null && (!Number.isFinite(budget) || budget < 0)) return NextResponse.json({ error: "Estimated budget is invalid." }, { status: 400 });
+        update.estimated_budget_inr = budget;
+      }
+      if (body.assignedTo !== undefined) update.assigned_to = body.assignedTo ? String(body.assignedTo).slice(0, 180) : null;
+      if (body.source !== undefined) update.lead_source = String(body.source).slice(0, 80);
+      if (body.name !== undefined) update.name = String(body.name).trim().slice(0, 180);
+      if (body.email !== undefined) update.email = body.email ? String(body.email).trim().toLowerCase().slice(0, 254) : null;
+      if (body.phone !== undefined) update.phone = body.phone ? String(body.phone).slice(0, 40) : null;
+      if (body.businessName !== undefined) update.business_name = body.businessName ? String(body.businessName).slice(0, 180) : null;
+      if (body.service !== undefined) update.service = body.service ? String(body.service).slice(0, 120) : null;
       if (status === "qualified") update.qualified_at = new Date().toISOString();
 
       const { data, error } = await db.from("contact_submissions").update(update).eq("id", id).select("*").single();
       if (error) return NextResponse.json({ error: "Unable to update lead." }, { status: 500 });
-      await writeAuditLog(admin, "LEAD_STATUS_CHANGED", "Lead status changed.", request, id);
+      await writeAuditLog(admin, status === "converted" ? "LEAD_STATUS_CHANGED" : "LEAD_UPDATED", "Lead updated.", request, id);
+      return NextResponse.json({ item: data }, { headers: { "Cache-Control": "no-store" } });
+    }
+
+    if (resource === "clients" && id) {
+      const update: Record<string, any> = { updated_at: new Date().toISOString() };
+      if (body.fullName !== undefined) {
+        const fullName = String(body.fullName).trim().slice(0, 180);
+        if (!fullName) return NextResponse.json({ error: "Client name is required." }, { status: 400 });
+        update.full_name = fullName;
+      }
+      if (body.businessName !== undefined) update.business_name = body.businessName ? String(body.businessName).slice(0,180) : null;
+      if (body.phone !== undefined) update.phone = body.phone ? String(body.phone).slice(0,40) : null;
+      if (body.email !== undefined) {
+        const email = String(body.email || "").trim().toLowerCase().slice(0,254);
+        if (email && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) return NextResponse.json({ error: "Enter a valid email address." }, { status: 400 });
+        update.email = email || null;
+      }
+      if (body.notes !== undefined) update.notes = String(body.notes || "").slice(0,5000) || null;
+      if (body.servicesPurchased !== undefined) update.services_purchased = Array.isArray(body.servicesPurchased) ? body.servicesPurchased.filter((x:any)=>typeof x==="string").slice(0,30) : [];
+      if (body.status !== undefined) {
+        if (!["active","inactive","archived"].includes(String(body.status))) return NextResponse.json({ error: "Invalid client status." }, { status: 400 });
+        update.status = String(body.status);
+      }
+      const { data, error } = await db.from("clients").update(update).eq("id", id).select("*").single();
+      if (error || !data) return NextResponse.json({ error: "Unable to update client." }, { status: 500 });
+      await writeAuditLog(admin, "CLIENT_UPDATED", "Client record updated.", request, id);
       return NextResponse.json({ item: data });
     }
 
@@ -943,10 +1117,19 @@ export async function PATCH(
     if (resource === "portfolio" && id) {
       const update: Record<string, any> = {};
       for (const [key, dbKey] of [
-        ["title","title"],["category","category"],["clientName","client_name"],["description","description"],
-        ["thumbnailUrl","thumbnail_url"],["projectUrl","project_url"],["status","status"],
+        ["title","title"],["slug","slug"],["category","category"],["clientName","client_name"],["description","description"],
+        ["thumbnailUrl","thumbnail_url"],["coverImageUrl","cover_image_url"],["projectUrl","project_url"],["liveUrl","live_url"],
       ]) {
-        if (body[key] !== undefined) update[dbKey] = body[key] === null ? null : String(body[key]);
+        if (body[key] !== undefined) update[dbKey] = body[key] === null || body[key] === "" ? null : String(body[key]).slice(0, key === "description" ? 10000 : 2000);
+      }
+      if (body.clientId !== undefined) update.client_id = body.clientId || null;
+      if (body.additionalImages !== undefined) update.additional_images = Array.isArray(body.additionalImages) ? body.additionalImages.slice(0, 20) : [];
+      if (body.status !== undefined) {
+        const allowed = ["draft","published","archived","completed"];
+        if (!allowed.includes(String(body.status))) return NextResponse.json({ error: "Invalid portfolio status." }, { status: 400 });
+        update.status = String(body.status);
+        if (body.status === "completed") update.completed_at = new Date().toISOString();
+        else if (body.status !== "completed") update.completed_at = null;
       }
       if (body.tech !== undefined) update.tech = Array.isArray(body.tech) ? body.tech.slice(0, 20) : [];
       if (body.featured !== undefined) update.featured = Boolean(body.featured);
@@ -955,8 +1138,10 @@ export async function PATCH(
 
       const { data, error } = await db.from("cms_portfolio").update(update).eq("id", id).select("*").single();
       if (error) return NextResponse.json({ error: "Unable to update portfolio item." }, { status: 500 });
-      await writeAuditLog(admin, "CONTENT_CHANGED", "Portfolio item updated.", request, id);
-      return NextResponse.json({ item: data });
+      await writeAuditLog(admin, body.status === "published" ? "PORTFOLIO_PUBLISHED" : "CONTENT_CHANGED", "Portfolio item updated.", request, id);
+      revalidatePath("/portfolio");
+      revalidatePath("/");
+      return NextResponse.json({ item: data }, { headers: { "Cache-Control": "no-store" } });
     }
 
     if ((resource === "site-settings" || resource === "content" || resource === "seo") && id) {
