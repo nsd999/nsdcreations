@@ -1069,15 +1069,34 @@ function TestimonialsView() {
 }
 
 function PortfolioView() {
-  const blankForm = {title:"",category:"video",clientName:"",description:"",thumbnailUrl:"",projectUrl:"",status:"draft",featured:false};
+  const blankForm = {title:"",slug:"",category:"Poster Designing",clientName:"",description:"",thumbnailUrl:"",coverImageUrl:"",projectUrl:"",liveUrl:"",status:"draft",featured:false};
   const [items,setItems]=useState<any[]>([]);
   const [form,setForm]=useState(blankForm);
   const [editingId,setEditingId]=useState("");
   const [error,setError]=useState("");
   const [success,setSuccess]=useState("");
   const [saving,setSaving]=useState(false);
-  async function load(){const d=await api("portfolio");setItems(d.items||[]);}
-  useEffect(()=>{load().catch((e:any)=>setError(e?.message||"Unable to load portfolio items."));},[]);
+  const [uploading,setUploading]=useState(false);
+  const [query,setQuery]=useState("");
+  const [statusFilter,setStatusFilter]=useState("");
+  async function load(){const d=await api("portfolio?q="+encodeURIComponent(query)+"&status="+encodeURIComponent(statusFilter));setItems(d.items||[]);}
+  useEffect(()=>{load().catch((e:any)=>setError(e?.message||"Unable to load portfolio items."));},[statusFilter]);
+  async function uploadImage(file?:File|null, field:"thumbnailUrl"|"coverImageUrl"="thumbnailUrl"){
+    if(!file)return;
+    setError("");setSuccess("");
+    if(!["image/jpeg","image/png","image/webp"].includes(file.type)){setError("Choose a JPG, PNG or WebP image.");return;}
+    if(file.size>8*1024*1024){setError("Image must be 8 MB or smaller.");return;}
+    setUploading(true);
+    try{
+      const data=new FormData();data.append("file",file);
+      const response=await fetch("/api/admin/portfolio-upload",{method:"POST",credentials:"same-origin",body:data,cache:"no-store"});
+      const result=await response.json().catch(()=>({}));
+      if(!response.ok)throw new Error(result.error||"Image upload failed.");
+      setForm(prev=>({...prev,[field]:result.url}));
+      setSuccess("Image uploaded and attached to the project.");
+    }catch(e:any){setError(e?.message||"Image upload failed.");}
+    finally{setUploading(false);}
+  }
   async function save(){
     setSaving(true);setError("");setSuccess("");
     try{
@@ -1085,33 +1104,57 @@ function PortfolioView() {
       else await api("portfolio",{method:"POST",body:JSON.stringify(form)});
       const wasEditing=Boolean(editingId);
       setForm(blankForm);setEditingId("");await load();
-      setSuccess(wasEditing?"Portfolio changes saved.":"Portfolio project created.");
+      setSuccess(wasEditing?"Portfolio changes saved.":"Portfolio project created. Its identifier is generated automatically.");
     }catch(e:any){setError(e?.message||"Unable to save portfolio project.");}
     finally{setSaving(false);}
   }
-  async function status(id:string,next:string){
+  async function setProjectStatus(id:string,next:string){
     setError("");setSuccess("");
     try{await api("portfolio/"+id,{method:"PATCH",body:JSON.stringify({status:next})});await load();setSuccess("Portfolio status updated.");}
     catch(e:any){setError(e?.message||"Unable to update portfolio status.");}
   }
   function editItem(p:any){
     setEditingId(p.id);
-    setForm({
-      title:p.title||"",
-      category:p.category||"video",
-      clientName:p.client_name||"",
-      description:p.description||"",
-      thumbnailUrl:p.thumbnail_url||"",
-      projectUrl:p.project_url||"",
-      status:p.status||"draft",
-      featured:Boolean(p.featured),
-    });
+    setForm({title:p.title||"",slug:p.slug||"",category:p.category||"Other",clientName:p.client_name||"",description:p.description||"",thumbnailUrl:p.thumbnail_url||"",coverImageUrl:p.cover_image_url||"",projectUrl:p.project_url||"",liveUrl:p.live_url||"",status:p.status||"draft",featured:Boolean(p.featured)});
     setError("");setSuccess("");
   }
   function cancelEdit(){setEditingId("");setForm(blankForm);setError("");setSuccess("");}
-  return <div className="grid xl:grid-cols-[420px_1fr] gap-4"><Panel title={editingId?"Edit portfolio project":"Add portfolio project"}><div className="space-y-2">{Object.entries(form).filter(([k])=>k!=="status"&&k!=="featured").map(([key,value])=>key==="description"?<textarea key={key} value={String(value)} onChange={e=>setForm({...form,[key]:e.target.value})} placeholder={key} rows={4} className="w-full rounded-xl border border-white/10 bg-white/[0.03] px-3 py-2.5 text-sm"/>:<input key={key} value={String(value)} onChange={e=>setForm({...form,[key]:e.target.value})} placeholder={key} className="w-full rounded-xl border border-white/10 bg-white/[0.03] px-3 py-2.5 text-sm"/>)}<label className="flex gap-2 text-xs"><input type="checkbox" checked={form.featured} onChange={e=>setForm({...form,featured:e.target.checked})}/> Featured</label>{error&&<p role="alert" className="text-xs text-red-300">{error}</p>}{success&&<p role="status" className="text-xs text-emerald-300">{success}</p>}<button disabled={saving||!form.title.trim()} onClick={save} className="w-full rounded-xl bg-indigo-600 disabled:opacity-40 py-3 font-semibold">{saving?"Saving…":editingId?"Save Changes":"Create Project"}</button>{editingId&&<button onClick={cancelEdit} className="w-full rounded-xl border border-white/10 py-3 text-sm">Cancel Edit</button>}</div></Panel><div className="space-y-2">{items.length===0?<Empty text="No CMS portfolio items yet. Existing static work remains intact."/>:items.map(p=><div key={p.id} className="rounded-2xl border border-white/10 p-4"><div className="flex justify-between gap-3"><div><div className="font-medium">{p.title}</div><div className="text-xs text-zinc-600">{p.category} • {p.client_name||"—"}</div></div><Badge tone={getTone(p.status)}>{p.status}</Badge></div><p className="text-sm text-zinc-500 mt-2">{p.description}</p><div className="mt-3 flex flex-wrap gap-2"><button onClick={()=>editItem(p)} className="rounded-lg border border-indigo-500/30 px-3 py-2 text-xs text-indigo-300">Edit</button>{p.status!=="published"&&<button onClick={()=>status(p.id,"published")} className="rounded-lg bg-emerald-600 px-3 py-2 text-xs">Publish</button>} {p.status!=="archived"&&<button onClick={()=>status(p.id,"archived")} className="rounded-lg border border-white/10 px-3 py-2 text-xs">Archive</button>}</div></div>)}</div></div>;
+  const fieldClass="min-h-11 w-full rounded-xl border border-white/10 bg-white/[0.03] px-3 py-3 text-sm";
+  return <div className="space-y-4">
+    <div><h2 className="text-xl font-semibold">Portfolio CMS</h2><p className="mt-1 text-xs text-zinc-500">Database-generated identifiers • direct image uploads • drafts remain private.</p></div>
+    <div className="grid xl:grid-cols-[420px_1fr] gap-4"><Panel title={editingId?"Edit portfolio project":"Add portfolio project"}>
+      <div className="space-y-3">
+        <input value={form.title} onChange={e=>setForm({...form,title:e.target.value,slug:form.slug||e.target.value.toLowerCase().trim().replace(/[^a-z0-9]+/g,"-").replace(/^-|-$/g,"")})} placeholder="Project title *" className={fieldClass}/>
+        <input value={form.slug} onChange={e=>setForm({...form,slug:e.target.value.toLowerCase()})} placeholder="Slug (auto-generated if empty)" className={fieldClass}/>
+        <select value={form.category} onChange={e=>setForm({...form,category:e.target.value})} className={fieldClass+" bg-[#0b0b10]"}>{["Poster Designing","AI Video Ads","AI Product Commercials","Website Development","Mobile App Development","Branding","Digital Marketing","AI Automation","WhatsApp Automation","Other"].map(x=><option key={x}>{x}</option>)}</select>
+        <input value={form.clientName} onChange={e=>setForm({...form,clientName:e.target.value})} placeholder="Client name (optional)" className={fieldClass}/>
+        <textarea value={form.description} onChange={e=>setForm({...form,description:e.target.value})} placeholder="Project description *" rows={4} className={fieldClass}/>
+        <div className="rounded-xl border border-white/10 p-3 space-y-2">
+          <div className="text-xs font-semibold text-zinc-300">Thumbnail image</div>
+          <input type="file" accept="image/png,image/jpeg,image/webp" capture="environment" onChange={e=>uploadImage(e.target.files?.[0],"thumbnailUrl")} className="block w-full text-xs text-zinc-400 file:mr-3 file:rounded-lg file:border-0 file:bg-indigo-600 file:px-3 file:py-2 file:text-white"/>
+          {form.thumbnailUrl&&<div className="flex items-center gap-3"><img src={form.thumbnailUrl} alt="Thumbnail preview" className="h-20 w-24 rounded-lg object-cover border border-white/10"/><button type="button" onClick={()=>setForm({...form,thumbnailUrl:""})} className="text-xs text-red-300">Remove thumbnail</button></div>}
+        </div>
+        <div className="rounded-xl border border-white/10 p-3 space-y-2">
+          <div className="text-xs font-semibold text-zinc-300">Cover image (optional)</div>
+          <input type="file" accept="image/png,image/jpeg,image/webp" capture="environment" onChange={e=>uploadImage(e.target.files?.[0],"coverImageUrl")} className="block w-full text-xs text-zinc-400 file:mr-3 file:rounded-lg file:border-0 file:bg-indigo-600 file:px-3 file:py-2 file:text-white"/>
+          {form.coverImageUrl&&<div className="flex items-center gap-3"><img src={form.coverImageUrl} alt="Cover preview" className="h-20 w-24 rounded-lg object-cover border border-white/10"/><button type="button" onClick={()=>setForm({...form,coverImageUrl:""})} className="text-xs text-red-300">Remove cover</button></div>}
+        </div>
+        <input type="url" value={form.projectUrl} onChange={e=>setForm({...form,projectUrl:e.target.value})} placeholder="External project URL (optional)" className={fieldClass}/>
+        <input type="url" value={form.liveUrl} onChange={e=>setForm({...form,liveUrl:e.target.value})} placeholder="Live website URL (optional)" className={fieldClass}/>
+        <select value={form.status} onChange={e=>setForm({...form,status:e.target.value})} className={fieldClass+" bg-[#0b0b10]"}><option value="draft">Draft</option><option value="published">Published</option><option value="completed">Completed</option><option value="archived">Archived</option></select>
+        <label className="flex min-h-11 items-center gap-2 text-sm"><input type="checkbox" checked={form.featured} onChange={e=>setForm({...form,featured:e.target.checked})}/> Featured project</label>
+        {uploading&&<p role="status" className="text-xs text-indigo-300">Uploading image…</p>}
+        {error&&<p role="alert" className="text-xs text-red-300">{error}</p>}{success&&<p role="status" className="text-xs text-emerald-300">{success}</p>}
+        <button disabled={saving||uploading||!form.title.trim()||!form.description.trim()} onClick={save} className="min-h-12 w-full rounded-xl bg-indigo-600 disabled:opacity-40 py-3 font-semibold">{saving?"Saving…":editingId?"Save Changes":"Create Project"}</button>
+        {editingId&&<button onClick={cancelEdit} className="min-h-11 w-full rounded-xl border border-white/10 py-3 text-sm">Cancel Edit</button>}
+      </div>
+    </Panel>
+    <div className="space-y-3">
+      <div className="flex flex-col sm:flex-row gap-2"><input value={query} onChange={e=>setQuery(e.target.value)} placeholder="Search title, category or client" className={fieldClass}/><button onClick={()=>load().catch((e:any)=>setError(e.message))} className="min-h-11 rounded-xl border border-white/10 px-4 text-sm">Search</button><select value={statusFilter} onChange={e=>setStatusFilter(e.target.value)} className={fieldClass+" bg-[#0b0b10]"}><option value="">All statuses</option><option value="draft">Draft</option><option value="published">Published</option><option value="completed">Completed</option><option value="archived">Archived</option></select></div>
+      {items.length===0?<Empty text="No matching CMS portfolio items. Existing static portfolio work remains intact."/>:items.map(p=><div key={p.id} className="rounded-2xl border border-white/10 p-4"><div className="flex gap-3">{p.thumbnail_url&&<img src={p.thumbnail_url} alt="" className="h-16 w-20 rounded-lg object-cover"/>}<div className="min-w-0 flex-1"><div className="font-medium">{p.title}</div><div className="text-xs text-zinc-500">{p.category} • {p.client_name||"—"}</div><div className="text-[10px] text-zinc-600 mt-1 break-all">ID: {p.id} • Slug: {p.slug||"generated on save"}</div></div><Badge tone={getTone(p.status)}>{p.status}</Badge></div><p className="text-sm text-zinc-500 mt-2">{p.description}</p><div className="mt-3 flex flex-wrap gap-2"><button onClick={()=>editItem(p)} className="min-h-10 rounded-lg border border-indigo-500/30 px-3 py-2 text-xs text-indigo-300">Edit</button>{p.status!=="published"&&<button onClick={()=>setProjectStatus(p.id,"published")} className="min-h-10 rounded-lg bg-emerald-600 px-3 py-2 text-xs">Publish</button>}{p.status==="published"&&<button onClick={()=>setProjectStatus(p.id,"draft")} className="min-h-10 rounded-lg border border-white/10 px-3 py-2 text-xs">Unpublish</button>}{p.status!=="completed"&&<button onClick={()=>setProjectStatus(p.id,"completed")} className="min-h-10 rounded-lg border border-white/10 px-3 py-2 text-xs">Mark completed</button>}{p.status!=="archived"&&<button onClick={()=>setProjectStatus(p.id,"archived")} className="min-h-10 rounded-lg border border-white/10 px-3 py-2 text-xs">Archive</button>}</div></div>)}
+    </div></div>
+  </div>;
 }
-
 function SettingsView({ mode }: { mode: string }) {
   const [items,setItems]=useState<any[]>([]);
   const [key,setKey]=useState("");
