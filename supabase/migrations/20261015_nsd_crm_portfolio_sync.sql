@@ -124,3 +124,12 @@ begin
     end;
   end if;
 end $$;
+
+-- Extend legacy status checks without invalidating existing rows.
+alter table public.contact_submissions drop constraint if exists contact_submissions_status_check;
+alter table public.contact_submissions add constraint contact_submissions_status_check
+  check (status in ('unread','read','new','contacted','qualified','proposal_sent','negotiation','won','converted','lost','archived'));
+
+alter table public.cms_portfolio drop constraint if exists cms_portfolio_status_check;
+alter table public.cms_portfolio add constraint cms_portfolio_status_check
+  check (status in ('draft','published','archived','completed'));
