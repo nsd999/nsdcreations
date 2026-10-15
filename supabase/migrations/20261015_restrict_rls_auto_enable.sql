@@ -1,0 +1,2 @@
+-- Keep the schema-hardening event trigger unavailable to public API roles.
+revoke execute on function public.rls_auto_enable() from public, anon, authenticated;
