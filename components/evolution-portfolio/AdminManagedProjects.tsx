@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { getSupabaseBrowser } from "@/lib/supabase-browser";
 
 interface CmsProject {
   id: string;
@@ -31,7 +32,15 @@ export function AdminManagedProjects() {
     };
     void refresh();
     const interval = window.setInterval(() => void refresh(), 10000);
-    return () => { active = false; window.clearInterval(interval); };
+    const supabase = getSupabaseBrowser();
+    const channel = supabase?.channel("public-cms-portfolio-page-sync")
+      .on("postgres_changes", { event: "*", schema: "public", table: "cms_portfolio" }, () => { void refresh(); })
+      .subscribe();
+    return () => {
+      active = false;
+      window.clearInterval(interval);
+      if (channel && supabase) void supabase.removeChannel(channel);
+    };
   }, []);
 
   if (!items.length) return null;
