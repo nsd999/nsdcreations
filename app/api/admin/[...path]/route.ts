@@ -238,6 +238,15 @@ export async function GET(
       return NextResponse.json({ items: data || [], total: count || 0, page, limit });
     }
 
+    if (resource === "clients") {
+      let query = db.from("clients").select("*", { count: "exact" });
+      if (status) query = query.eq("status", status);
+      if (q) query = query.or("full_name.ilike.%"+q+"%,business_name.ilike.%"+q+"%,email.ilike.%"+q+"%,phone.ilike.%"+q+"%");
+      const { data, error, count } = await query.order("created_at", { ascending: false }).range(fromIndex, toIndex);
+      if (error) return NextResponse.json({ error: "Unable to load clients." }, { status: 500 });
+      return NextResponse.json({ items: data || [], total: count || 0, page, limit });
+    }
+
     if (resource === "leads") {
       let query = db.from("contact_submissions").select("*", { count: "exact" });
       if (status) query = query.eq("status", status);
@@ -675,6 +684,25 @@ export async function POST(
       return NextResponse.json({ item: data }, { status: 201, headers: { "Cache-Control": "no-store" } });
     }
 
+    if (resource === "clients") {
+      const fullName = String(body.fullName || body.full_name || "").trim().slice(0, 180);
+      if (!fullName) return NextResponse.json({ error: "Client name is required." }, { status: 400 });
+      const email = String(body.email || "").trim().toLowerCase().slice(0, 254);
+      if (email && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) return NextResponse.json({ error: "Enter a valid email address." }, { status: 400 });
+      const { data, error } = await db.from("clients").insert({
+        full_name: fullName,
+        business_name: body.businessName ? String(body.businessName).slice(0, 180) : null,
+        phone: body.phone ? String(body.phone).slice(0, 40) : null,
+        email: email || null,
+        services_purchased: Array.isArray(body.servicesPurchased) ? body.servicesPurchased.filter((x:any)=>typeof x==="string").slice(0,30) : [],
+        notes: body.notes ? String(body.notes).slice(0,5000) : null,
+        status: body.status === "inactive" ? "inactive" : "active",
+      }).select("*").single();
+      if (error || !data) return NextResponse.json({ error: "Unable to create client." }, { status: 500 });
+      await writeAuditLog(admin, "CLIENT_CREATED", "Client created from admin CRM.", request, data.id);
+      return NextResponse.json({ item: data }, { status: 201, headers: { "Cache-Control": "no-store" } });
+    }
+
     if (resource === "tips") {
       const title = String(body.title || "").trim();
       const slug = String(body.slug || title.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "")).slice(0, 120);
@@ -892,6 +920,32 @@ export async function PATCH(
       if (error) return NextResponse.json({ error: "Unable to update lead." }, { status: 500 });
       await writeAuditLog(admin, status === "converted" ? "LEAD_STATUS_CHANGED" : "LEAD_UPDATED", "Lead updated.", request, id);
       return NextResponse.json({ item: data }, { headers: { "Cache-Control": "no-store" } });
+    }
+
+    if (resource === "clients" && id) {
+      const update: Record<string, any> = { updated_at: new Date().toISOString() };
+      if (body.fullName !== undefined) {
+        const fullName = String(body.fullName).trim().slice(0, 180);
+        if (!fullName) return NextResponse.json({ error: "Client name is required." }, { status: 400 });
+        update.full_name = fullName;
+      }
+      if (body.businessName !== undefined) update.business_name = body.businessName ? String(body.businessName).slice(0,180) : null;
+      if (body.phone !== undefined) update.phone = body.phone ? String(body.phone).slice(0,40) : null;
+      if (body.email !== undefined) {
+        const email = String(body.email || "").trim().toLowerCase().slice(0,254);
+        if (email && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) return NextResponse.json({ error: "Enter a valid email address." }, { status: 400 });
+        update.email = email || null;
+      }
+      if (body.notes !== undefined) update.notes = String(body.notes || "").slice(0,5000) || null;
+      if (body.servicesPurchased !== undefined) update.services_purchased = Array.isArray(body.servicesPurchased) ? body.servicesPurchased.filter((x:any)=>typeof x==="string").slice(0,30) : [];
+      if (body.status !== undefined) {
+        if (!["active","inactive","archived"].includes(String(body.status))) return NextResponse.json({ error: "Invalid client status." }, { status: 400 });
+        update.status = String(body.status);
+      }
+      const { data, error } = await db.from("clients").update(update).eq("id", id).select("*").single();
+      if (error || !data) return NextResponse.json({ error: "Unable to update client." }, { status: 500 });
+      await writeAuditLog(admin, "CLIENT_UPDATED", "Client record updated.", request, id);
+      return NextResponse.json({ item: data });
     }
 
     if (resource === "notification-subscribers" && id) {
