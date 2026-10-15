@@ -21,6 +21,7 @@ create index if not exists clients_business_name_idx on public.clients (lower(bu
 create index if not exists clients_email_idx on public.clients (lower(email));
 
 alter table public.contact_submissions add column if not exists business_name text;
+alter table public.contact_submissions add column if not exists notes text;
 alter table public.contact_submissions add column if not exists lead_source text;
 alter table public.contact_submissions add column if not exists estimated_budget_inr numeric(12,2);
 alter table public.contact_submissions add column if not exists follow_up_at timestamptz;
