@@ -690,15 +690,67 @@ function PaymentsView() {
 }
 
 function LeadsView() {
-  const [items, setItems] = useState<any[]>([]);
-  const [query, setQuery] = useState("");
-  const [status, setStatus] = useState("");
-  async function load(){const d=await api("leads?q="+encodeURIComponent(query)+"&status="+encodeURIComponent(status));setItems(d.items||[]);}
-  useEffect(()=>{load().catch(()=>setItems([]));},[status]);
-  async function setLead(id:string,next:string){await api("leads/"+id,{method:"PATCH",body:JSON.stringify({status:next})});load();}
-  return <div><Toolbar query={query} setQuery={setQuery} status={status} setStatus={setStatus} placeholder="Search lead, email or business…"/>{items.length===0?<Empty/>:<div className="space-y-2">{items.map(l=><div key={l.id} className="rounded-2xl border border-white/10 bg-white/[0.02] p-4"><div className="flex flex-col lg:flex-row lg:items-start justify-between gap-4"><div className="min-w-0"><div className="font-medium">{l.name}</div><div className="text-xs text-zinc-500">{l.email} {l.phone ? "• "+l.phone : ""}</div><div className="text-xs text-indigo-300 mt-2">{l.service || "General enquiry"}</div><p className="text-sm text-zinc-400 mt-2">{l.message}</p><div className="text-[10px] text-zinc-600 mt-2">{dateTime(l.created_at)}</div></div><div className="flex flex-wrap gap-2">{["contacted","qualified","proposal_sent","won","lost","archived"].map(s=><button key={s} onClick={()=>setLead(l.id,s)} className="rounded-lg border border-white/10 px-2.5 py-1.5 text-[10px] text-zinc-400 hover:text-white">{s}</button>)}</div></div></div>)}</div>}</div>;
-}
+  const blank = { name:"", businessName:"", phone:"", email:"", service:"Poster Designing", source:"admin", estimatedBudgetInr:"", status:"new", followUpAt:"", notes:"" };
+  const [items,setItems]=useState<any[]>([]);
+  const [query,setQuery]=useState("");
+  const [status,setStatus]=useState("");
+  const [showCreate,setShowCreate]=useState(false);
+  const [form,setForm]=useState(blank);
+  const [saving,setSaving]=useState(false);
+  const [error,setError]=useState("");
+  const [success,setSuccess]=useState("");
 
+  async function load() {
+    const d=await api("leads?q="+encodeURIComponent(query)+"&status="+encodeURIComponent(status));
+    setItems(d.items||[]);
+  }
+  useEffect(()=>{load().catch((e:any)=>setError(e?.message||"Unable to load leads."));},[status]);
+  async function createLead(){
+    setSaving(true);setError("");setSuccess("");
+    try {
+      const result=await api("leads",{method:"POST",body:JSON.stringify({...form,estimatedBudgetInr:form.estimatedBudgetInr===""?null:Number(form.estimatedBudgetInr),followUpAt:form.followUpAt?new Date(form.followUpAt).toISOString():null})});
+      setForm(blank);setShowCreate(false);await load();
+      setSuccess("Lead created successfully"+(result.item?.id?" • ID "+result.item.id:"")+".");
+    } catch(e:any) { setError(e?.message||"Unable to create lead. No success was reported."); }
+    finally { setSaving(false); }
+  }
+  async function setLead(id:string,next:string){
+    setError("");setSuccess("");
+    try { await api("leads/"+id,{method:"PATCH",body:JSON.stringify({status:next})}); await load();setSuccess("Lead updated."); }
+    catch(e:any){setError(e?.message||"Unable to update lead.");}
+  }
+  async function convert(id:string){
+    if(!confirm("Convert this lead into a client? The original lead will be preserved."))return;
+    setError("");setSuccess("");
+    try { const result=await api("leads/"+id,{method:"PATCH",body:JSON.stringify({convertToClient:true})});await load();setSuccess(result.alreadyConverted?"This lead is already linked to its client.":"Lead converted to client successfully."); }
+    catch(e:any){setError(e?.message||"Unable to convert lead.");}
+  }
+  return <div className="space-y-4">
+    <div className="flex flex-col sm:flex-row gap-3 sm:items-center sm:justify-between">
+      <div><h2 className="text-xl font-semibold">Lead CRM</h2><p className="text-xs text-zinc-500 mt-1">Enquiries remain leads until you explicitly convert them to clients.</p></div>
+      <button onClick={()=>{setShowCreate(v=>!v);setError("");setSuccess("");}} className="inline-flex min-h-11 items-center justify-center gap-2 rounded-xl bg-indigo-600 px-4 py-3 text-sm font-semibold"><Plus className="w-4 h-4"/> {showCreate?"Close form":"Create Lead"}</button>
+    </div>
+    {showCreate&&<Panel title="Create lead">
+      <div className="grid sm:grid-cols-2 gap-3">
+        <input required value={form.name} onChange={e=>setForm({...form,name:e.target.value})} placeholder="Full name *" className="min-h-11 w-full rounded-xl border border-white/10 bg-white/[0.03] px-3 py-3 text-sm"/>
+        <input value={form.businessName} onChange={e=>setForm({...form,businessName:e.target.value})} placeholder="Business / organisation (optional)" className="min-h-11 w-full rounded-xl border border-white/10 bg-white/[0.03] px-3 py-3 text-sm"/>
+        <input type="tel" inputMode="tel" value={form.phone} onChange={e=>setForm({...form,phone:e.target.value})} placeholder="Phone with country code (optional)" className="min-h-11 w-full rounded-xl border border-white/10 bg-white/[0.03] px-3 py-3 text-sm"/>
+        <input type="email" inputMode="email" value={form.email} onChange={e=>setForm({...form,email:e.target.value})} placeholder="Email (optional)" className="min-h-11 w-full rounded-xl border border-white/10 bg-white/[0.03] px-3 py-3 text-sm"/>
+        <select value={form.service} onChange={e=>setForm({...form,service:e.target.value})} className="min-h-11 w-full rounded-xl border border-white/10 bg-[#0b0b10] px-3 py-3 text-sm">{["Poster Designing","AI Video Ads","AI Product Commercials","Website Development","Mobile App Development","Branding","Digital Marketing","AI Automation","WhatsApp Automation","Other"].map(s=><option key={s}>{s}</option>)}</select>
+        <select value={form.source} onChange={e=>setForm({...form,source:e.target.value})} className="min-h-11 w-full rounded-xl border border-white/10 bg-[#0b0b10] px-3 py-3 text-sm">{["admin","Website","WhatsApp","Instagram","Facebook","Referral","Other"].map(s=><option key={s} value={s}>{s==="admin"?"Admin entry":s}</option>)}</select>
+        <input type="number" min="0" step="1" inputMode="decimal" value={form.estimatedBudgetInr} onChange={e=>setForm({...form,estimatedBudgetInr:e.target.value})} placeholder="Estimated budget (₹, optional)" className="min-h-11 w-full rounded-xl border border-white/10 bg-white/[0.03] px-3 py-3 text-sm"/>
+        <select value={form.status} onChange={e=>setForm({...form,status:e.target.value})} className="min-h-11 w-full rounded-xl border border-white/10 bg-[#0b0b10] px-3 py-3 text-sm">{["new","contacted","qualified","proposal_sent","negotiation","lost"].map(s=><option key={s} value={s}>{s.replaceAll("_"," ")}</option>)}</select>
+        <label className="text-xs text-zinc-500">Follow-up date (optional)<input type="date" value={form.followUpAt} onChange={e=>setForm({...form,followUpAt:e.target.value})} className="mt-1 min-h-11 w-full rounded-xl border border-white/10 bg-white/[0.03] px-3 py-3 text-sm text-zinc-200"/></label>
+        <textarea value={form.notes} onChange={e=>setForm({...form,notes:e.target.value})} placeholder="Follow-up notes / enquiry details (optional)" rows={3} className="sm:col-span-2 w-full rounded-xl border border-white/10 bg-white/[0.03] px-3 py-3 text-sm"/>
+      </div>
+      <button disabled={saving||!form.name.trim()} onClick={createLead} className="mt-3 min-h-12 w-full rounded-xl bg-indigo-600 py-3 font-semibold disabled:opacity-40">{saving?"Saving to database…":"Save Lead"}</button>
+    </Panel>}
+    <Toolbar query={query} setQuery={setQuery} status={status} setStatus={setStatus} placeholder="Search lead, email or business…"/>
+    <div className="flex gap-2"><button onClick={()=>load().catch((e:any)=>setError(e.message))} className="rounded-lg border border-white/10 px-3 py-2 text-xs">Refresh leads</button></div>
+    {error&&<p role="alert" className="text-xs text-red-300">{error}</p>}{success&&<p role="status" className="text-xs text-emerald-300">{success}</p>}
+    {items.length===0?<Empty text="No matching leads. Create a lead to start tracking an enquiry."/>:<div className="space-y-2">{items.map(l=><div key={l.id} className="rounded-2xl border border-white/10 bg-white/[0.02] p-4"><div className="flex flex-col lg:flex-row lg:items-start justify-between gap-4"><div className="min-w-0"><div className="font-medium">{l.name}</div><div className="text-xs text-zinc-500">{l.business_name||"Business not provided"} {l.email?" • "+l.email:""} {l.phone?" • "+l.phone:""}</div><div className="text-xs text-indigo-300 mt-2">{l.service||"General enquiry"}</div><p className="text-sm text-zinc-400 mt-2">{l.notes||l.message||"No notes yet."}</p><div className="text-[10px] text-zinc-600 mt-2">Created {dateTime(l.created_at)}{l.follow_up_at?" • Follow-up "+dateTime(l.follow_up_at):""}{l.estimated_budget_inr!=null?" • Budget ₹"+Number(l.estimated_budget_inr).toLocaleString("en-IN"):""}</div></div><div className="flex flex-wrap gap-2">{["contacted","qualified","proposal_sent","negotiation","lost","archived"].map(s=><button key={s} onClick={()=>setLead(l.id,s)} className="min-h-10 rounded-lg border border-white/10 px-2.5 py-2 text-[10px] text-zinc-400 hover:text-white">{s.replaceAll("_"," ")}</button>)}{!l.converted_client_id&&<button onClick={()=>convert(l.id)} className="min-h-10 rounded-lg bg-emerald-700 px-3 py-2 text-xs font-semibold">Convert to Client</button>}{l.converted_client_id&&<Badge tone="green">Converted</Badge>}</div></div></div>)}</div>}
+  </div>;
+}
 function NotificationsView() {
   const [history, setHistory] = useState<any[]>([]);
   const [form, setForm] = useState({ title:"", message:"", url:"/", notificationType:"announcement", audience:"all", scheduledFor:"" });
