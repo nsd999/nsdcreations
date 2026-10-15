@@ -47,6 +47,7 @@ const sections = [
   { id: "bookings", label: "Bookings", icon: ClipboardList },
   { id: "payments", label: "Payments", icon: CircleDollarSign },
   { id: "leads", label: "Leads", icon: Users },
+  { id: "clients", label: "Clients", icon: BriefcaseBusiness },
   { id: "notifications", label: "Notifications", icon: Bell },
   { id: "notification-subscribers", label: "Subscribers", icon: MessageSquare },
   { id: "tips", label: "Tips", icon: FileText },
@@ -472,6 +473,7 @@ export default function AdminShell({ initialPath, admin }: { initialPath: string
           {section === "bookings" && <BookingsView initialId={detailId} />}
           {section === "payments" && <PaymentsView />}
           {section === "leads" && <LeadsView />}
+          {section === "clients" && <ClientsView />}
           {section === "notifications" && <NotificationsView />}
           {section === "notification-subscribers" && <SubscribersView />}
           {section === "tips" && <TipsView />}
@@ -751,6 +753,46 @@ function LeadsView() {
     {items.length===0?<Empty text="No matching leads. Create a lead to start tracking an enquiry."/>:<div className="space-y-2">{items.map(l=><div key={l.id} className="rounded-2xl border border-white/10 bg-white/[0.02] p-4"><div className="flex flex-col lg:flex-row lg:items-start justify-between gap-4"><div className="min-w-0"><div className="font-medium">{l.name}</div><div className="text-xs text-zinc-500">{l.business_name||"Business not provided"} {l.email?" • "+l.email:""} {l.phone?" • "+l.phone:""}</div><div className="text-xs text-indigo-300 mt-2">{l.service||"General enquiry"}</div><p className="text-sm text-zinc-400 mt-2">{l.notes||l.message||"No notes yet."}</p><div className="text-[10px] text-zinc-600 mt-2">Created {dateTime(l.created_at)}{l.follow_up_at?" • Follow-up "+dateTime(l.follow_up_at):""}{l.estimated_budget_inr!=null?" • Budget ₹"+Number(l.estimated_budget_inr).toLocaleString("en-IN"):""}</div></div><div className="flex flex-wrap gap-2">{["contacted","qualified","proposal_sent","negotiation","lost","archived"].map(s=><button key={s} onClick={()=>setLead(l.id,s)} className="min-h-10 rounded-lg border border-white/10 px-2.5 py-2 text-[10px] text-zinc-400 hover:text-white">{s.replaceAll("_"," ")}</button>)}{!l.converted_client_id&&<button onClick={()=>convert(l.id)} className="min-h-10 rounded-lg bg-emerald-700 px-3 py-2 text-xs font-semibold">Convert to Client</button>}{l.converted_client_id&&<Badge tone="green">Converted</Badge>}</div></div></div>)}</div>}
   </div>;
 }
+function ClientsView() {
+  const blank={fullName:"",businessName:"",phone:"",email:"",servicesPurchased:"",notes:""};
+  const [items,setItems]=useState<any[]>([]);
+  const [query,setQuery]=useState("");
+  const [status,setStatus]=useState("");
+  const [form,setForm]=useState(blank);
+  const [editingId,setEditingId]=useState("");
+  const [showForm,setShowForm]=useState(false);
+  const [error,setError]=useState("");
+  const [success,setSuccess]=useState("");
+  const [saving,setSaving]=useState(false);
+  async function load(){const d=await api("clients?q="+encodeURIComponent(query)+"&status="+encodeURIComponent(status));setItems(d.items||[]);}
+  useEffect(()=>{load().catch((e:any)=>setError(e?.message||"Unable to load clients."));},[status]);
+  function edit(c:any){setEditingId(c.id);setForm({fullName:c.full_name||"",businessName:c.business_name||"",phone:c.phone||"",email:c.email||"",servicesPurchased:(c.services_purchased||[]).join(", "),notes:c.notes||""});setShowForm(true);setError("");setSuccess("");}
+  async function save(){
+    setSaving(true);setError("");setSuccess("");
+    try {
+      const payload={...form,servicesPurchased:form.servicesPurchased.split(",").map(x=>x.trim()).filter(Boolean)};
+      await api(editingId?"clients/"+editingId:"clients",{method:editingId?"PATCH":"POST",body:JSON.stringify(payload)});
+      setForm(blank);setEditingId("");setShowForm(false);await load();setSuccess(editingId?"Client updated.":"Client created.");
+    } catch(e:any){setError(e?.message||"Unable to save client.");}
+    finally{setSaving(false);}
+  }
+  return <div className="space-y-4">
+    <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3"><div><h2 className="text-xl font-semibold">Clients</h2><p className="text-xs text-zinc-500 mt-1">Confirmed clients only. Enquiries remain in Leads until converted.</p></div><button onClick={()=>{setShowForm(v=>!v);setEditingId("");setForm(blank);setError("");}} className="min-h-11 rounded-xl bg-indigo-600 px-4 py-3 text-sm font-semibold"><Plus className="inline w-4 h-4 mr-1"/> Add Client</button></div>
+    {showForm&&<Panel title={editingId?"Edit client":"Add client"}><div className="grid sm:grid-cols-2 gap-3">
+      <input value={form.fullName} onChange={e=>setForm({...form,fullName:e.target.value})} placeholder="Full name *" className="min-h-11 rounded-xl border border-white/10 bg-white/[0.03] px-3 py-3 text-sm"/>
+      <input value={form.businessName} onChange={e=>setForm({...form,businessName:e.target.value})} placeholder="Business / organisation" className="min-h-11 rounded-xl border border-white/10 bg-white/[0.03] px-3 py-3 text-sm"/>
+      <input type="tel" value={form.phone} onChange={e=>setForm({...form,phone:e.target.value})} placeholder="Phone (optional)" className="min-h-11 rounded-xl border border-white/10 bg-white/[0.03] px-3 py-3 text-sm"/>
+      <input type="email" value={form.email} onChange={e=>setForm({...form,email:e.target.value})} placeholder="Email (optional)" className="min-h-11 rounded-xl border border-white/10 bg-white/[0.03] px-3 py-3 text-sm"/>
+      <input value={form.servicesPurchased} onChange={e=>setForm({...form,servicesPurchased:e.target.value})} placeholder="Services purchased, comma-separated" className="min-h-11 rounded-xl border border-white/10 bg-white/[0.03] px-3 py-3 text-sm sm:col-span-2"/>
+      <textarea value={form.notes} onChange={e=>setForm({...form,notes:e.target.value})} placeholder="Client notes / communication history" rows={3} className="rounded-xl border border-white/10 bg-white/[0.03] px-3 py-3 text-sm sm:col-span-2"/>
+    </div><button disabled={saving||!form.fullName.trim()} onClick={save} className="mt-3 min-h-12 w-full rounded-xl bg-indigo-600 py-3 font-semibold disabled:opacity-40">{saving?"Saving…":editingId?"Save client":"Create client"}</button>{editingId&&<button onClick={()=>{setEditingId("");setForm(blank);setShowForm(false);}} className="mt-2 min-h-11 w-full rounded-xl border border-white/10 py-3 text-sm">Cancel edit</button>}</Panel>}
+    <Toolbar query={query} setQuery={setQuery} status={status} setStatus={setStatus} placeholder="Search client, business, phone or email…"/>
+    <div className="flex gap-2"><button onClick={()=>load().catch((e:any)=>setError(e.message))} className="rounded-lg border border-white/10 px-3 py-2 text-xs">Search / refresh</button></div>
+    {error&&<p role="alert" className="text-xs text-red-300">{error}</p>}{success&&<p role="status" className="text-xs text-emerald-300">{success}</p>}
+    {items.length===0?<Empty text="No clients found. Convert a confirmed lead or add an existing client."/>:<div className="space-y-2">{items.map(c=><div key={c.id} className="rounded-2xl border border-white/10 bg-white/[0.02] p-4"><div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-3"><div><div className="font-medium">{c.full_name}</div><div className="text-xs text-zinc-500 mt-1">{c.business_name||"Business not provided"}{c.phone?" • "+c.phone:""}{c.email?" • "+c.email:""}</div><div className="text-xs text-indigo-300 mt-2">{(c.services_purchased||[]).join(", ")||"No services recorded"}</div>{c.notes&&<p className="mt-2 text-sm text-zinc-400">{c.notes}</p>}<p className="mt-2 text-[10px] text-zinc-600">Created {dateTime(c.created_at)}{c.converted_from_lead_id?" • Converted from lead":""}</p></div><button onClick={()=>edit(c)} className="min-h-10 rounded-lg border border-indigo-500/30 px-3 py-2 text-xs text-indigo-300">Edit client</button></div></div>)}</div>}
+  </div>;
+}
+
 function NotificationsView() {
   const [history, setHistory] = useState<any[]>([]);
   const [form, setForm] = useState({ title:"", message:"", url:"/", notificationType:"announcement", audience:"all", scheduledFor:"" });
