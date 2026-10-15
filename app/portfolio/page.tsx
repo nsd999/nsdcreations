@@ -11,6 +11,7 @@ import { BehindTheEdit } from "@/components/evolution-portfolio/BehindTheEdit";
 import { Evolution } from "@/components/evolution-portfolio/Evolution";
 import { Skills } from "@/components/evolution-portfolio/Skills";
 import { FeaturedProjects } from "@/components/evolution-portfolio/FeaturedProjects";
+import { AdminManagedProjects } from "@/components/evolution-portfolio/AdminManagedProjects";
 import { Projects } from "@/components/evolution-portfolio/Projects";
 import { Experiments } from "@/components/evolution-portfolio/Experiments";
 import { Vision } from "@/components/evolution-portfolio/Vision";
@@ -39,6 +40,7 @@ export default function PortfolioPage() {
         <div id="tech" className="relative scroll-mt-24 bg-background">
           <Skills />
           <FeaturedProjects />
+          <AdminManagedProjects />
           <Projects />
           <Experiments />
           <Vision />
