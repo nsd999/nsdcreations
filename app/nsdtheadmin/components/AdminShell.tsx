@@ -706,7 +706,7 @@ function LeadsView() {
     const d=await api("leads?q="+encodeURIComponent(query)+"&status="+encodeURIComponent(status));
     setItems(d.items||[]);
   }
-  useEffect(()=>{load().catch((e:any)=>setError(e?.message||"Unable to load leads."));},[status]);
+  useEffect(()=>{const refresh=()=>load().catch((e:any)=>setError(e?.message||"Unable to load leads."));refresh();const interval=window.setInterval(refresh,5000);return()=>window.clearInterval(interval);},[status,query]);
   async function createLead(){
     setSaving(true);setError("");setSuccess("");
     try {
@@ -765,7 +765,7 @@ function ClientsView() {
   const [success,setSuccess]=useState("");
   const [saving,setSaving]=useState(false);
   async function load(){const d=await api("clients?q="+encodeURIComponent(query)+"&status="+encodeURIComponent(status));setItems(d.items||[]);}
-  useEffect(()=>{load().catch((e:any)=>setError(e?.message||"Unable to load clients."));},[status]);
+  useEffect(()=>{const refresh=()=>load().catch((e:any)=>setError(e?.message||"Unable to load clients."));refresh();const interval=window.setInterval(refresh,5000);return()=>window.clearInterval(interval);},[status,query]);
   function edit(c:any){setEditingId(c.id);setForm({fullName:c.full_name||"",businessName:c.business_name||"",phone:c.phone||"",email:c.email||"",servicesPurchased:(c.services_purchased||[]).join(", "),notes:c.notes||""});setShowForm(true);setError("");setSuccess("");}
   async function save(){
     setSaving(true);setError("");setSuccess("");
@@ -1080,7 +1080,7 @@ function PortfolioView() {
   const [query,setQuery]=useState("");
   const [statusFilter,setStatusFilter]=useState("");
   async function load(){const d=await api("portfolio?q="+encodeURIComponent(query)+"&status="+encodeURIComponent(statusFilter));setItems(d.items||[]);}
-  useEffect(()=>{load().catch((e:any)=>setError(e?.message||"Unable to load portfolio items."));},[statusFilter]);
+  useEffect(()=>{const refresh=()=>load().catch((e:any)=>setError(e?.message||"Unable to load portfolio items."));refresh();const interval=window.setInterval(refresh,5000);return()=>window.clearInterval(interval);},[statusFilter]);
   async function uploadImage(file?:File|null, field:"thumbnailUrl"|"coverImageUrl"="thumbnailUrl"){
     if(!file)return;
     setError("");setSuccess("");
