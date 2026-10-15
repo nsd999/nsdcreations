@@ -1108,10 +1108,19 @@ export async function PATCH(
     if (resource === "portfolio" && id) {
       const update: Record<string, any> = {};
       for (const [key, dbKey] of [
-        ["title","title"],["category","category"],["clientName","client_name"],["description","description"],
-        ["thumbnailUrl","thumbnail_url"],["projectUrl","project_url"],["status","status"],
+        ["title","title"],["slug","slug"],["category","category"],["clientName","client_name"],["description","description"],
+        ["thumbnailUrl","thumbnail_url"],["coverImageUrl","cover_image_url"],["projectUrl","project_url"],["liveUrl","live_url"],
       ]) {
-        if (body[key] !== undefined) update[dbKey] = body[key] === null ? null : String(body[key]);
+        if (body[key] !== undefined) update[dbKey] = body[key] === null || body[key] === "" ? null : String(body[key]).slice(0, key === "description" ? 10000 : 2000);
+      }
+      if (body.clientId !== undefined) update.client_id = body.clientId || null;
+      if (body.additionalImages !== undefined) update.additional_images = Array.isArray(body.additionalImages) ? body.additionalImages.slice(0, 20) : [];
+      if (body.status !== undefined) {
+        const allowed = ["draft","published","archived","completed"];
+        if (!allowed.includes(String(body.status))) return NextResponse.json({ error: "Invalid portfolio status." }, { status: 400 });
+        update.status = String(body.status);
+        if (body.status === "completed") update.completed_at = new Date().toISOString();
+        else if (body.status !== "completed") update.completed_at = null;
       }
       if (body.tech !== undefined) update.tech = Array.isArray(body.tech) ? body.tech.slice(0, 20) : [];
       if (body.featured !== undefined) update.featured = Boolean(body.featured);
@@ -1120,8 +1129,10 @@ export async function PATCH(
 
       const { data, error } = await db.from("cms_portfolio").update(update).eq("id", id).select("*").single();
       if (error) return NextResponse.json({ error: "Unable to update portfolio item." }, { status: 500 });
-      await writeAuditLog(admin, "CONTENT_CHANGED", "Portfolio item updated.", request, id);
-      return NextResponse.json({ item: data });
+      await writeAuditLog(admin, body.status === "published" ? "PORTFOLIO_PUBLISHED" : "CONTENT_CHANGED", "Portfolio item updated.", request, id);
+      revalidatePath("/portfolio");
+      revalidatePath("/");
+      return NextResponse.json({ item: data }, { headers: { "Cache-Control": "no-store" } });
     }
 
     if ((resource === "site-settings" || resource === "content" || resource === "seo") && id) {
