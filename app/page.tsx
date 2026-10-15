@@ -7,6 +7,7 @@ import { Footer } from "@/components/Footer";
 import { PhoneInput } from "@/components/PhoneInput";
 import { servicesData } from "@/lib/services-data";
 import { useSiteSettings } from "@/components/SiteSettingsProvider";
+import { getSupabaseBrowser } from "@/lib/supabase-browser";
 import { ImageWithNSDFallback } from "@/components/ImageWithNSDFallback";
 import { Testimonials } from "@/components/Testimonials";
 import { AnimatedStats } from "@/components/AnimatedStats";
@@ -69,7 +70,15 @@ export default function HomePage() {
     };
     void refresh();
     const interval = window.setInterval(() => void refresh(), 10000);
-    return () => { active = false; window.clearInterval(interval); };
+    const supabase = getSupabaseBrowser();
+    const channel = supabase?.channel("public-cms-home-sync")
+      .on("postgres_changes", { event: "*", schema: "public", table: "cms_portfolio" }, () => { void refresh(); })
+      .subscribe();
+    return () => {
+      active = false;
+      window.clearInterval(interval);
+      if (channel && supabase) void supabase.removeChannel(channel);
+    };
   }, []);
   const [activeCategory, setActiveCategory] = useState<string>("all");
   const [faqOpen, setFaqOpen] = useState<number | null>(null);
