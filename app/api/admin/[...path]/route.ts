@@ -872,7 +872,16 @@ export async function PATCH(
         if (clientError || !createdClient) {
           // If another request won the conversion race, return that canonical client.
           const { data: racedClient } = await db.from("clients").select("*").eq("converted_from_lead_id", lead.id).maybeSingle();
-          if (racedClient) return NextResponse.json({ item: racedClient, client: racedClient, alreadyConverted: true });
+          if (racedClient) {
+            const repairedAt = new Date().toISOString();
+            const { data: repairedLead } = await db.from("contact_submissions").update({
+              converted_client_id: racedClient.id,
+              converted_at: lead.converted_at || repairedAt,
+              status: "converted",
+              updated_at: repairedAt,
+            }).eq("id", lead.id).select("*").single();
+            return NextResponse.json({ item: repairedLead || lead, lead: repairedLead || lead, client: racedClient, alreadyConverted: true });
+          }
           console.error("[admin/leads] conversion failed", { code: clientError?.code, message: clientError?.message });
           return NextResponse.json({ error: "Unable to convert lead to client. The lead was preserved." }, { status: 500 });
         }
