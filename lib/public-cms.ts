@@ -40,7 +40,7 @@ export async function getPublishedCmsPortfolio() {
     const { data } = await db
       .from("cms_portfolio")
       .select("id,slug,title,category,client_name,description,thumbnail_url,cover_image_url,additional_images,project_url,live_url,tech,featured,display_order,created_at,updated_at,completed_at")
-      .eq("status", "published")
+      .in("status", ["published", "completed"])
       .order("display_order", { ascending: true });
 
     return data || [];
