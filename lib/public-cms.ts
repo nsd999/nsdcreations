@@ -39,7 +39,7 @@ export async function getPublishedCmsPortfolio() {
     const db = getSupabaseAdmin();
     const { data } = await db
       .from("cms_portfolio")
-      .select("id,title,category,client_name,description,thumbnail_url,project_url,tech,featured,display_order")
+      .select("id,slug,title,category,client_name,description,thumbnail_url,cover_image_url,additional_images,project_url,live_url,tech,featured,display_order,created_at,updated_at,completed_at")
       .eq("status", "published")
       .order("display_order", { ascending: true });
 
