@@ -42,6 +42,35 @@ import { motion, AnimatePresence } from "motion/react";
 
 export default function HomePage() {
   const siteSettings = useSiteSettings();
+  const [cmsPortfolio, setCmsPortfolio] = useState<any[]>([]);
+  const [publicStats, setPublicStats] = useState({ projectsCompleted: 50, happyClients: 30 });
+  useEffect(() => {
+    let active = true;
+    const refresh = async () => {
+      try {
+        const [portfolioResponse, statsResponse] = await Promise.all([
+          fetch("/api/public/portfolio", { cache: "no-store" }),
+          fetch("/api/public/stats", { cache: "no-store" }),
+        ]);
+        if (portfolioResponse.ok) {
+          const payload = await portfolioResponse.json();
+          if (active) setCmsPortfolio(Array.isArray(payload.items) ? payload.items : []);
+        }
+        if (statsResponse.ok) {
+          const payload = await statsResponse.json();
+          if (active) setPublicStats({
+            projectsCompleted: Number(payload.projectsCompleted) || 50,
+            happyClients: Number(payload.happyClients) || 30,
+          });
+        }
+      } catch {
+        // Keep the curated portfolio and established stats if CMS is temporarily unavailable.
+      }
+    };
+    void refresh();
+    const interval = window.setInterval(() => void refresh(), 10000);
+    return () => { active = false; window.clearInterval(interval); };
+  }, []);
   const [activeCategory, setActiveCategory] = useState<string>("all");
   const [faqOpen, setFaqOpen] = useState<number | null>(null);
   const [servicesTab, setServicesTab] = useState<"creative" | "technical">("creative");
@@ -137,9 +166,30 @@ export default function HomePage() {
     }
   ];
 
-  const filteredPortfolio = activeCategory === "all" 
-    ? portfolioWorks 
-    : portfolioWorks.filter(w => w.category === activeCategory);
+  const cmsWorks = cmsPortfolio.map((item: any) => {
+    const categoryText = String(item.category || "project").toLowerCase();
+    const category = /poster|flyer|print/.test(categoryText) ? "poster"
+      : /brand|identity|logo/.test(categoryText) ? "branding"
+      : /automation|whatsapp|workflow/.test(categoryText) ? "automation"
+      : /website|web|app|software/.test(categoryText) ? "web"
+      : /video|tribute|commercial/.test(categoryText) ? "video"
+      : categoryText;
+    return {
+      id: "cms-" + item.id,
+      title: item.title,
+      category,
+      client: item.client || "NSD Creations",
+      status: "Published project",
+      type: item.category || "Project",
+      image: item.coverImage || item.image || "/nsdlogo.png",
+      description: item.description || "",
+      link: item.liveUrl || item.link || "#",
+    };
+  });
+  const allPortfolioWorks = [...portfolioWorks, ...cmsWorks];
+  const filteredPortfolio = activeCategory === "all"
+    ? allPortfolioWorks
+    : allPortfolioWorks.filter(w => w.category === activeCategory);
 
   const homeFaqs = [
     {
@@ -255,11 +305,11 @@ export default function HomePage() {
             <div className="flex flex-wrap items-center gap-x-6 gap-y-3 pt-6 border-t border-zinc-100 dark:border-zinc-900 text-xs text-zinc-500 dark:text-zinc-400 font-mono">
               <span className="flex items-center">
                 <CheckCircle className="w-4 h-4 text-indigo-500 mr-2" />
-                Trusted by 30+ Clients
+                Trusted by {publicStats.happyClients}+ Clients
               </span>
               <span className="flex items-center">
                 <CheckCircle className="w-4 h-4 text-indigo-500 mr-2" />
-                50+ Projects Completed
+                {publicStats.projectsCompleted}+ Projects Completed
               </span>
               <span className="flex items-center">
                 <CheckCircle className="w-4 h-4 text-indigo-500 mr-2" />
