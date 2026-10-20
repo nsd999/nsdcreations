@@ -1,4 +1,5 @@
 "use client";
+import { WHATSAPP_URL } from "@/lib/whatsapp";
 
 import Link from "next/link";
 import { useEffect, useState } from "react";
@@ -107,7 +108,7 @@ export default function BookingSuccessPage() {
                   Download Receipt
                 </a>
                 <a
-                  href="https://wa.me/919492651908"
+                  href=WHATSAPP_URL
                   target="_blank"
                   rel="noopener noreferrer"
                   className="flex-1 py-3 rounded-xl bg-[#25D366] text-white flex items-center justify-center gap-2"
