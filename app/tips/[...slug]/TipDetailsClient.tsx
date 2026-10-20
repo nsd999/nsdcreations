@@ -1,4 +1,5 @@
 "use client";
+import { WHATSAPP_URL } from "@/lib/whatsapp";
 
 import React, { useState } from "react";
 import Link from "next/link";
@@ -37,7 +38,7 @@ export default function TipDetailsClient({ slug, tipOverride }: { slug: string; 
   const whatsappMessage = encodeURIComponent(
     `Hi, I have seen this tip "${tip.title}" and I have found it useful. Thank you NSD Creations.`
   );
-  const whatsappLink = `https://wa.me/919492651908?text=${whatsappMessage}`;
+  const whatsappLink = `${WHATSAPP_URL}?text=${whatsappMessage}`;
 
   const handleShare = async () => {
     if (typeof window !== "undefined") {
