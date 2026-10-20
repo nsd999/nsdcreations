@@ -1,4 +1,5 @@
 "use client";
+import { WHATSAPP_URL } from "@/lib/whatsapp";
 
 import React, { useState } from "react";
 import Link from "next/link";
@@ -89,7 +90,7 @@ export default function ContactPage() {
     }
   };
 
-  const whatsappUrl = `https://wa.me/919492651908?text=${encodeURIComponent(
+  const whatsappUrl = `${WHATSAPP_URL}?text=${encodeURIComponent(
     `Hello Sai Dheeraj! I am submitting an inquiry. Name: ${formData.name || "Client"}, Service: ${formData.service}, Message: ${formData.message || "I'd like to discuss a project."}`
   )}`;
 
