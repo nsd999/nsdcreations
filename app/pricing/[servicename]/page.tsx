@@ -1,4 +1,5 @@
 import React from "react";
+import { WHATSAPP_URL } from "@/lib/whatsapp";
 import { LiveCatalogueRefresh } from "@/components/LiveCatalogueRefresh";
 
 import { notFound } from "next/navigation";
@@ -567,7 +568,7 @@ export default async function ServicePricingPage({ params }: Props) {
                   <ArrowRight className="w-4 h-4 ml-2" />
                 </Link>
                 <a
-                  href="https://wa.me/919492651908"
+                  href=WHATSAPP_URL
                   target="_blank"
                   rel="noopener noreferrer"
                   className="inline-flex items-center justify-center px-8 py-4 rounded-full text-sm font-bold tracking-widest uppercase bg-white/5 hover:bg-white/10 text-white border border-white/10 hover:border-white/20 transition-all active:scale-95 w-full sm:w-auto"
