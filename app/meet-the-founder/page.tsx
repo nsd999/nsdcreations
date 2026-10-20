@@ -1,4 +1,5 @@
 "use client";
+import { WHATSAPP_URL } from "@/lib/whatsapp";
 
 import React from "react";
 import Link from "next/link";
@@ -618,7 +619,7 @@ export default function MeetTheFounder() {
               Book a Free Consultation
             </a>
             <Link
-              href="https://wa.me/919492651908?text=Hello%20Sai%20Dheeraj!%20I%20saw%20your%20Meet%20the%20Founder%20page%20and%20want%20to%20start%20a%20project."
+              href={`${WHATSAPP_URL}?text=Hello%20Sai%20Dheeraj!%20I%20saw%20your%20Meet%20the%20Founder%20page%20and%20want%20to%20start%20a%20project.`}
               target="_blank"
               rel="noopener noreferrer"
               className="inline-flex items-center justify-center px-7 py-4 rounded-full text-xs font-bold tracking-widest uppercase bg-emerald-600 hover:bg-emerald-700 text-white shadow-lg active:scale-95 transition-all text-center"
