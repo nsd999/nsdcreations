@@ -221,24 +221,33 @@ export default function HomePage() {
 
   const handleFormSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    setFormSubmitted(true);
-    
+    setFormSubmitted(false);
+
     try {
-      await fetch('/api/contact', {
+      const response = await fetch('/api/contact', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          name: formData.name,
-          email: formData.email,
-          countryCode: '+91', // Defaulting as form handles full phone
+          name: formData.name.trim(),
+          email: formData.email.trim(),
+          countryCode: '+91',
           phone: formData.phone,
           businessName: '',
           service: formData.service,
-          message: formData.message,
+          message: formData.message.trim(),
         }),
       });
+
+      const result = await response.json().catch(() => ({}));
+      if (!response.ok || result.success !== true) {
+        throw new Error(result.error || 'Your request could not be saved. Please try again.');
+      }
+
+      // Show success only after the API confirms the database insert succeeded.
+      setFormSubmitted(true);
     } catch (err) {
-      console.error('Submission error:', err);
+      console.error('Contact form submission failed:', err);
+      window.alert(err instanceof Error ? err.message : 'Your request could not be submitted. Please try again.');
     }
   };
 
