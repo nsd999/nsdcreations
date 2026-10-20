@@ -108,7 +108,7 @@ export default function BookingSuccessPage() {
                   Download Receipt
                 </a>
                 <a
-                  href=WHATSAPP_URL
+                  href={WHATSAPP_URL}
                   target="_blank"
                   rel="noopener noreferrer"
                   className="flex-1 py-3 rounded-xl bg-[#25D366] text-white flex items-center justify-center gap-2"
