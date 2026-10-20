@@ -6,6 +6,7 @@ import { Mail, Phone, MessageSquare, Instagram, Youtube, Facebook, Linkedin, Arr
 import { NsdLogo } from "./NsdLogo";
 import { useGlobalReview } from "./GlobalReviewProvider";
 import { useSiteSettings } from "./SiteSettingsProvider";
+import { WHATSAPP_URL } from "@/lib/whatsapp";
 
 function safeHttpsUrl(value: string | undefined, fallback: string) {
   return value && /^https?:\/\//i.test(value) ? value : fallback;
@@ -22,8 +23,7 @@ export function Footer() {
   const instagramUrl = safeHttpsUrl(settings.instagram_url, "https://instagram.com/nsd.creations.official");
   const youtubeUrl = safeHttpsUrl(settings.youtube_url, "https://youtube.com/@nsdkaraoke");
   const email = safeEmail(settings.contact_email, "nsd.creations.official@gmail.com");
-  const configuredWhatsappUrl = safeHttpsUrl(settings.whatsapp_url, "https://wa.me/919492651908");
-  const whatsappUrl = "https://wa.me/919492651908";
+  const whatsappUrl = WHATSAPP_URL;
   const phone = "+919492651908";
   const linkedinUrl = settings.linkedin_url ? safeHttpsUrl(settings.linkedin_url, "") : "";
   const facebookUrl = settings.facebook_url ? safeHttpsUrl(settings.facebook_url, "") : "";
