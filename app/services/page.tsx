@@ -20,12 +20,15 @@ import {
   TrendingUp, 
   Share2, 
   Settings, 
-  Workflow, 
+  Workflow,
+  Music,
+  Mail,
+  BookOpen,
   ArrowRight,
   Search,
 } from "lucide-react";
 
-const CATEGORIES = ["All", "Creative", "Branding", "Marketing", "Automation", "Technology"];
+const CATEGORIES = ["All", "Creative", "Branding", "Marketing", "Automation", "Technology", "Music & Creator", "Education & Digital Learning"];
 
 export default function ServicesPage() {
   const [activeCategory, setActiveCategory] = useState("All");
@@ -85,6 +88,9 @@ export default function ServicesPage() {
       case "trending-up": return <TrendingUp className="w-5 h-5 text-indigo-500" />;
       case "share": return <Share2 className="w-5 h-5 text-indigo-500" />;
       case "workflow": return <Workflow className="w-5 h-5 text-indigo-500" />;
+      case "music": return <Music className="w-5 h-5 text-indigo-500" />;
+      case "mail": return <Mail className="w-5 h-5 text-indigo-500" />;
+      case "book-open": return <BookOpen className="w-5 h-5 text-indigo-500" />;
       case "settings": return <Settings className="w-5 h-5 text-indigo-500" />;
       default: return <Award className="w-5 h-5 text-indigo-500" />;
     }
