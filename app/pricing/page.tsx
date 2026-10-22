@@ -31,6 +31,7 @@ import {
   Layers,
   Code2,
   Music,
+  Mail,
   BookOpen,
 } from "lucide-react";
 
@@ -71,6 +72,12 @@ export const metadata: Metadata = {
 
 function getServiceIcon(iconName: string, size = "w-5 h-5") {
   switch (iconName) {
+    case "music":
+      return <Music className={`${size} text-violet-500`} />;
+    case "mail":
+      return <Mail className={`${size} text-indigo-500`} />;
+    case "book-open":
+      return <BookOpen className={`${size} text-emerald-500`} />;
     case "video":
       return <Video className={`${size} text-indigo-500`} />;
     case "tv":
@@ -106,48 +113,54 @@ function getServiceIcon(iconName: string, size = "w-5 h-5") {
 
 const categoryMeta = [
   {
-    id: "Creative",
-    label: "Creative",
-    title: "Creative Services",
-    subtitle: "Video + Graphics",
-    description:
-      "High-impact AI video production, graphic design, and visual content engineered to capture attention and drive action.",
+    id: "AI Creative & Video Production",
+    label: "AI Creative & Video",
+    title: "AI Creative & Video Production",
+    subtitle: "Ads + Reels + Promotional Videos",
+    description: "AI-led ads, product commercials, promotional video and tribute production with deliverables defined before work starts.",
     icon: <Layers className="w-5 h-5" />,
     color: "indigo",
-    anchor: "creative",
+    anchor: "ai-creative-video",
   },
   {
-    id: "Brand & Marketing",
-    label: "Brand & Marketing",
-    title: "Brand & Marketing",
-    subtitle: "Brand Identity + Digital Marketing",
-    description:
-      "Strategic brand identities and performance-driven digital campaigns built for modern business growth.",
-    icon: <Zap className="w-5 h-5" />,
+    id: "Graphic Design & Branding",
+    label: "Design & Branding",
+    title: "Graphic Design & Branding",
+    subtitle: "Visual Design + Brand Identity",
+    description: "Poster, graphic, brand identity and corporate digital card work quoted against the agreed output and revision scope.",
+    icon: <Palette className="w-5 h-5" />,
     color: "violet",
-    anchor: "brand-marketing",
+    anchor: "design-branding",
   },
   {
-    id: "Automation",
-    label: "Automation",
-    title: "Automation",
-    subtitle: "AI + WhatsApp + Business Automation",
-    description:
-      "Intelligent workflows, WhatsApp bots, and end-to-end business automation that save time and scale operations.",
+    id: "Digital Marketing",
+    label: "Digital Marketing",
+    title: "Digital Marketing",
+    subtitle: "Social + SEO + Campaigns",
+    description: "Social and digital campaign services with scope and third-party ad spend clarified before approval.",
+    icon: <TrendingUp className="w-5 h-5" />,
+    color: "sky",
+    anchor: "digital-marketing",
+  },
+  {
+    id: "AI & Business Automation",
+    label: "AI & Automation",
+    title: "AI & Business Automation",
+    subtitle: "Assistants + WhatsApp + Workflows",
+    description: "Defined automation workflows and integrations with external platform costs listed separately where applicable.",
     icon: <Cpu className="w-5 h-5" />,
     color: "emerald",
-    anchor: "automation",
+    anchor: "business-automation",
   },
   {
-    id: "Technology",
-    label: "Technology",
-    title: "Technology",
-    subtitle: "Websites + Apps + Software",
-    description:
-      "Scalable hand-coded websites, cross-platform mobile apps, and custom software engineered for performance and growth.",
+    id: "Websites, Apps & Software",
+    label: "Web & Software",
+    title: "Websites, Apps & Software",
+    subtitle: "Sites + Apps + Custom Systems",
+    description: "Website, app and software projects scoped to agreed functionality, integrations, performance and support.",
     icon: <Code2 className="w-5 h-5" />,
     color: "sky",
-    anchor: "technology",
+    anchor: "websites-apps-software",
   },
   {
     id: "Music & Creator",
@@ -161,7 +174,7 @@ const categoryMeta = [
   },
   {
     id: "Education & Digital Learning",
-    label: "Education & Digital Learning",
+    label: "Education & Learning",
     title: "Education & Digital Learning",
     subtitle: "Worksheets + Learning Materials",
     description: "Scoped print-ready learning materials and educational assets for schools, tutors and learning providers.",
@@ -210,10 +223,11 @@ const structuredData = {
 export default async function PricingPage() {
   const services = await getServicesWithOverrides();
   const groupedServices: Record<string, typeof servicesData> = {
-    Creative: [],
-    "Brand & Marketing": [],
-    Automation: [],
-    Technology: [],
+    "AI Creative & Video Production": [],
+    "Graphic Design & Branding": [],
+    "Digital Marketing": [],
+    "AI & Business Automation": [],
+    "Websites, Apps & Software": [],
     "Music & Creator": [],
     "Education & Digital Learning": [],
   };
