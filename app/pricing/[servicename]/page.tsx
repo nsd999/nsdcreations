@@ -4,7 +4,8 @@ import { LiveCatalogueRefresh } from "@/components/LiveCatalogueRefresh";
 
 import { notFound } from "next/navigation";
 import { getServiceBySlug } from "@/lib/service-catalog";
-import { Metadata } from "next";
+import type { Metadata } from "next";
+import { SITE_URL } from "@/lib/site-config";
 import { Navbar } from "@/components/Navbar";
 import { Footer } from "@/components/Footer";
 import { ScrollReveal } from "@/components/ScrollReveal";
@@ -33,7 +34,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const service = await getServiceBySlug(resolvedParams.servicename);
 
   if (!service) {
-    return { title: "Service Not Found | NSD Creations" };
+    return { title: "Service Not Found | NSD Creations", robots: { index: false, follow: false } };
   }
 
   return {
@@ -43,7 +44,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
     openGraph: {
       title: service.seo.title,
       description: service.seo.description,
-      url: `https://nsdcreations.vercel.app/pricing/${service.slug}`,
+      url: `${SITE_URL}/pricing/${service.slug}`,
       siteName: "NSD Creations",
       type: "website",
     },
@@ -84,13 +85,13 @@ export default async function ServicePricingPage({ params }: Props) {
             "@type": "ListItem",
             position: 1,
             name: "Home",
-            item: "https://nsdcreations.vercel.app",
+            item: SITE_URL,
           },
           {
             "@type": "ListItem",
             position: 2,
             name: "Pricing",
-            item: "https://nsdcreations.vercel.app/pricing",
+            item: `${SITE_URL}/pricing`,
           },
           {
             "@type": "ListItem",
