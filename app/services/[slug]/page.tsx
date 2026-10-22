@@ -66,9 +66,39 @@ export default async function ServiceDetailPage({ params }: { params: Promise<{ 
     notFound();
   }
 
+  // Escape "<" before placing catalogue text inside JSON-LD script tags.
+  const serviceJsonLd = JSON.stringify({
+    "@context": "https://schema.org",
+    "@type": "Service",
+    name: service.name,
+    serviceType: service.category,
+    description: service.longDescription,
+    url: `${SITE_URL}/services/${service.slug}`,
+    provider: {
+      "@type": "Organization",
+      name: "NSD Creations",
+      url: SITE_URL,
+    },
+    areaServed: {
+      "@type": "Country",
+      name: "India",
+    },
+  }).replace(/</g, "\\u003c");
+
+  const breadcrumbsJsonLd = JSON.stringify({
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    itemListElement: [
+      { "@type": "ListItem", position: 1, name: "Home", item: SITE_URL },
+      { "@type": "ListItem", position: 2, name: "Services", item: `${SITE_URL}/services` },
+      { "@type": "ListItem", position: 3, name: service.name, item: `${SITE_URL}/services/${service.slug}` },
+    ],
+  }).replace(/</g, "\\u003c");
 
   return (
     <div className="flex-1 flex flex-col relative overflow-x-hidden">
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: serviceJsonLd }} />
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: breadcrumbsJsonLd }} />
       <Navbar />
 
       {/* Grid Overlay background */}
