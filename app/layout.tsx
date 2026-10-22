@@ -8,6 +8,7 @@ import { PushNotificationManager } from "@/components/PushNotificationManager";
 import { FilmGrain } from "@/components/FilmGrain";
 import { GlobalReviewProvider } from "@/components/GlobalReviewProvider";
 import { SiteSettingsProvider } from "@/components/SiteSettingsProvider";
+import { SITE_URL } from "@/lib/site-config";
 
 const inter = Inter({
   subsets: ["latin"],
@@ -35,6 +36,7 @@ const fredoka = Fredoka({
 });
 
 export const metadata = {
+  metadataBase: new URL(SITE_URL),
   title: "NSD Creations | AI Creative Studio & Digital Agency",
   description: "A world-class AI Creative Studio & Digital Agency combining software engineering, AI automation, cinematic storytelling, and branding.",
   verification: {
