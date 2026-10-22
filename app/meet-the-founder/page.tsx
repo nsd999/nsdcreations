@@ -187,7 +187,7 @@ export default function MeetTheFounder() {
     {
       year: "Today",
       title: "Building the Future",
-      description: "Actively scaling NSD Creations, delivering hand-crafted digital assets and custom automations for over 30+ happy clients while ensuring every project receives my direct, premium attention."
+      description: "Actively building NSD Creations around hand-crafted digital assets and custom automations, with direct attention to every agreed project."
     }
   ];
 
@@ -379,14 +379,14 @@ export default function MeetTheFounder() {
 
               <div className="p-4 rounded-2xl bg-white/50 dark:bg-zinc-900/40 border border-zinc-200/50 dark:border-zinc-900/50">
                 <Award className="w-5 h-5 text-indigo-500 mb-2" />
-                <p className="text-[10px] font-mono text-zinc-400 uppercase">Delivered</p>
-                <p className="text-sm font-bold text-zinc-800 dark:text-zinc-100 mt-0.5">50+ Projects</p>
+                <p className="text-[10px] font-mono text-zinc-400 uppercase">Focus</p>
+                <p className="text-sm font-bold text-zinc-800 dark:text-zinc-100 mt-0.5">Creative + Tech</p>
               </div>
 
               <div className="p-4 rounded-2xl bg-white/50 dark:bg-zinc-900/40 border border-zinc-200/50 dark:border-zinc-900/50">
                 <Users className="w-5 h-5 text-indigo-500 mb-2" />
-                <p className="text-[10px] font-mono text-zinc-400 uppercase">Clients</p>
-                <p className="text-sm font-bold text-zinc-800 dark:text-zinc-100 mt-0.5">30+ Happy</p>
+                <p className="text-[10px] font-mono text-zinc-400 uppercase">Approach</p>
+                <p className="text-sm font-bold text-zinc-800 dark:text-zinc-100 mt-0.5">Client-first</p>
               </div>
 
               <div className="p-4 rounded-2xl bg-white/50 dark:bg-zinc-900/40 border border-zinc-200/50 dark:border-zinc-900/50">
