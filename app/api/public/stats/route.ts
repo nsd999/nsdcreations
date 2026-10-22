@@ -13,14 +13,19 @@ export async function GET() {
       auth: { autoRefreshToken: false, persistSession: false, detectSessionInUrl: false },
     });
     const { data, error } = await db.from("public_agency_stats").select("projects_completed,happy_clients").single();
-    if (error || !data) throw new Error("Public stats are unavailable.");
+    if (error || !data) throw new Error("Owner-managed public metrics are unavailable.");
+    const projectsCompleted = Number(data.projects_completed);
+    const happyClients = Number(data.happy_clients);
+    if (!Number.isSafeInteger(projectsCompleted) || projectsCompleted < 0 || !Number.isSafeInteger(happyClients) || happyClients < 0) {
+      throw new Error("Owner-managed public metrics are invalid.");
+    }
     return NextResponse.json({
-      projectsCompleted: Number(data.projects_completed),
-      happyClients: Number(data.happy_clients),
+      projectsCompleted,
+      happyClients,
       source: "cms",
     }, { headers: { "Cache-Control": "no-store, max-age=0, must-revalidate" } });
   } catch {
-    return NextResponse.json({ projectsCompleted: 50, happyClients: 30, source: "baseline" }, {
+    return NextResponse.json({ projectsCompleted: null, happyClients: null, source: "unavailable" }, {
       headers: { "Cache-Control": "no-store, max-age=0, must-revalidate" },
     });
   }

@@ -6,6 +6,7 @@ import { Navbar } from "@/components/Navbar";
 import { Footer } from "@/components/Footer";
 import { servicesData } from "@/lib/services-data";
 import { getServicesWithOverrides } from "@/lib/service-catalog";
+import { SITE_URL } from "@/lib/site-config";
 import { ScrollReveal } from "@/components/ScrollReveal";
 import { Metadata } from "next";
 import {
@@ -29,6 +30,9 @@ import {
   Zap,
   Layers,
   Code2,
+  Music,
+  Mail,
+  BookOpen,
 } from "lucide-react";
 
 export const dynamic = "force-dynamic";
@@ -36,7 +40,7 @@ export const dynamic = "force-dynamic";
 export const metadata: Metadata = {
   title: "Pricing | NSD Creations — AI Creative Studio & Digital Agency",
   description:
-    "Transparent pricing for all 16 NSD Creations services — AI video production, branding, digital marketing, automation, website and app development. Services starting from ₹299.",
+    "Transparent pricing across the NSD Creations catalogue, covering creative production, branding, marketing, automation, software and digital learning.",
   keywords: [
     "NSD Creations pricing",
     "AI video advertisement cost",
@@ -50,8 +54,8 @@ export const metadata: Metadata = {
   openGraph: {
     title: "Pricing | NSD Creations",
     description:
-      "Transparent pricing for AI creative, branding, marketing, automation and technology services. Starting from ₹299.",
-    url: "https://nsdcreations.vercel.app/pricing",
+      "Explore defined packages and request a custom quote when project scope or delivery costs require individual assessment.",
+    url: `${SITE_URL}/pricing`,
     siteName: "NSD Creations",
     type: "website",
   },
@@ -59,15 +63,21 @@ export const metadata: Metadata = {
     card: "summary_large_image",
     title: "Pricing | NSD Creations",
     description:
-      "Transparent pricing for AI creative, branding, marketing, automation and technology services. Starting from ₹299.",
+      "Explore defined packages and request a custom quote when project scope or delivery costs require individual assessment.",
   },
   alternates: {
-    canonical: "https://nsdcreations.vercel.app/pricing",
+    canonical: `${SITE_URL}/pricing`,
   },
 };
 
 function getServiceIcon(iconName: string, size = "w-5 h-5") {
   switch (iconName) {
+    case "music":
+      return <Music className={`${size} text-violet-500`} />;
+    case "mail":
+      return <Mail className={`${size} text-indigo-500`} />;
+    case "book-open":
+      return <BookOpen className={`${size} text-emerald-500`} />;
     case "video":
       return <Video className={`${size} text-indigo-500`} />;
     case "tv":
@@ -103,48 +113,74 @@ function getServiceIcon(iconName: string, size = "w-5 h-5") {
 
 const categoryMeta = [
   {
-    id: "Creative",
-    label: "Creative",
-    title: "Creative Services",
-    subtitle: "Video + Graphics",
-    description:
-      "High-impact AI video production, graphic design, and visual content engineered to capture attention and drive action.",
+    id: "AI Creative & Video Production",
+    label: "AI Creative & Video",
+    title: "AI Creative & Video Production",
+    subtitle: "Ads + Reels + Promotional Videos",
+    description: "AI-led ads, product commercials, promotional video and tribute production with deliverables defined before work starts.",
     icon: <Layers className="w-5 h-5" />,
     color: "indigo",
-    anchor: "creative",
+    anchor: "ai-creative-video",
   },
   {
-    id: "Brand & Marketing",
-    label: "Brand & Marketing",
-    title: "Brand & Marketing",
-    subtitle: "Brand Identity + Digital Marketing",
-    description:
-      "Strategic brand identities and performance-driven digital campaigns built for modern business growth.",
-    icon: <Zap className="w-5 h-5" />,
+    id: "Graphic Design & Branding",
+    label: "Design & Branding",
+    title: "Graphic Design & Branding",
+    subtitle: "Visual Design + Brand Identity",
+    description: "Poster, graphic, brand identity and corporate digital card work quoted against the agreed output and revision scope.",
+    icon: <Palette className="w-5 h-5" />,
     color: "violet",
-    anchor: "brand-marketing",
+    anchor: "design-branding",
   },
   {
-    id: "Automation",
-    label: "Automation",
-    title: "Automation",
-    subtitle: "AI + WhatsApp + Business Automation",
-    description:
-      "Intelligent workflows, WhatsApp bots, and end-to-end business automation that save time and scale operations.",
+    id: "Digital Marketing",
+    label: "Digital Marketing",
+    title: "Digital Marketing",
+    subtitle: "Social + SEO + Campaigns",
+    description: "Social and digital campaign services with scope and third-party ad spend clarified before approval.",
+    icon: <TrendingUp className="w-5 h-5" />,
+    color: "sky",
+    anchor: "digital-marketing",
+  },
+  {
+    id: "AI & Business Automation",
+    label: "AI & Automation",
+    title: "AI & Business Automation",
+    subtitle: "Assistants + WhatsApp + Workflows",
+    description: "Defined automation workflows and integrations with external platform costs listed separately where applicable.",
     icon: <Cpu className="w-5 h-5" />,
     color: "emerald",
-    anchor: "automation",
+    anchor: "business-automation",
   },
   {
-    id: "Technology",
-    label: "Technology",
-    title: "Technology",
-    subtitle: "Websites + Apps + Software",
-    description:
-      "Scalable hand-coded websites, cross-platform mobile apps, and custom software engineered for performance and growth.",
+    id: "Websites, Apps & Software",
+    label: "Web & Software",
+    title: "Websites, Apps & Software",
+    subtitle: "Sites + Apps + Custom Systems",
+    description: "Website, app and software projects scoped to agreed functionality, integrations, performance and support.",
     icon: <Code2 className="w-5 h-5" />,
     color: "sky",
-    anchor: "technology",
+    anchor: "websites-apps-software",
+  },
+  {
+    id: "Music & Creator",
+    label: "Music & Creator",
+    title: "Music & Creator Services",
+    subtitle: "Lyric Videos + Music Visualisers",
+    description: "Music-led visual production for artists and creator channels, quoted against the track, duration and required formats.",
+    icon: <Music className="w-5 h-5" />,
+    color: "violet",
+    anchor: "music-creator",
+  },
+  {
+    id: "Education & Digital Learning",
+    label: "Education & Learning",
+    title: "Education & Digital Learning",
+    subtitle: "Worksheets + Learning Materials",
+    description: "Scoped print-ready learning materials and educational assets for schools, tutors and learning providers.",
+    icon: <BookOpen className="w-5 h-5" />,
+    color: "emerald",
+    anchor: "education-learning",
   },
 ];
 
@@ -153,9 +189,9 @@ const structuredData = {
   "@graph": [
     {
       "@type": "Organization",
-      "@id": "https://nsdcreations.vercel.app/#organization",
+      "@id": `${SITE_URL}/#organization`,
       name: "NSD Creations",
-      url: "https://nsdcreations.vercel.app",
+      url: SITE_URL,
       description:
         "AI Creative Studio & Digital Agency offering video production, branding, marketing, automation and technology solutions.",
       contactPoint: {
@@ -171,13 +207,13 @@ const structuredData = {
           "@type": "ListItem",
           position: 1,
           name: "Home",
-          item: "https://nsdcreations.vercel.app",
+          item: SITE_URL,
         },
         {
           "@type": "ListItem",
           position: 2,
           name: "Pricing",
-          item: "https://nsdcreations.vercel.app/pricing",
+          item: `${SITE_URL}/pricing`,
         },
       ],
     },
@@ -187,10 +223,13 @@ const structuredData = {
 export default async function PricingPage() {
   const services = await getServicesWithOverrides();
   const groupedServices: Record<string, typeof servicesData> = {
-    Creative: [],
-    "Brand & Marketing": [],
-    Automation: [],
-    Technology: [],
+    "AI Creative & Video Production": [],
+    "Graphic Design & Branding": [],
+    "Digital Marketing": [],
+    "AI & Business Automation": [],
+    "Websites, Apps & Software": [],
+    "Music & Creator": [],
+    "Education & Digital Learning": [],
   };
 
   services.forEach((service) => {
@@ -306,10 +345,8 @@ export default async function PricingPage() {
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
                   {services.map((service, index) => {
                     const rawPrice = service.startingPrice;
-                    const formattedPrice =
-                      rawPrice === "Custom"
-                        ? "Custom"
-                        : `${service.currency}${rawPrice}`;
+                    const isCustomQuote = service.pricingPrefix === "Custom Quote" || rawPrice === "Custom";
+                    const formattedPrice = isCustomQuote ? "Custom Quote" : `${service.currency}${rawPrice}`;
                     const period = service.pricingPeriod ?? "";
 
                     return (
@@ -347,9 +384,11 @@ export default async function PricingPage() {
 
                             {/* Price block */}
                             <div className="mb-5 pt-5 border-t border-zinc-100 dark:border-zinc-800">
-                              <div className="text-xs font-medium text-zinc-400 dark:text-zinc-500 mb-1">
-                                {service.pricingPrefix}
-                              </div>
+                              {!isCustomQuote && (
+                                <div className="text-xs font-medium text-zinc-400 dark:text-zinc-500 mb-1">
+                                  {service.pricingPrefix}
+                                </div>
+                              )}
                               <div className="flex items-baseline gap-1 flex-wrap">
                                 <span className="font-display font-bold text-2xl text-zinc-900 dark:text-white">
                                   {formattedPrice}

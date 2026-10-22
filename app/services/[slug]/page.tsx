@@ -1,9 +1,12 @@
 import React from "react";
+import type { Metadata } from "next";
+import { notFound } from "next/navigation";
 import Link from "next/link";
 import { Navbar } from "@/components/Navbar";
 import { Footer } from "@/components/Footer";
 import { getServiceBySlug, getServicesWithOverrides } from "@/lib/service-catalog";
 import { ServicePricingSection } from "@/components/ServicePricingSection";
+import { SITE_URL } from "@/lib/site-config";
 import { 
   ArrowLeft, 
   CheckCircle, 
@@ -15,6 +18,41 @@ import {
   Rocket
 } from "lucide-react";
 
+export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }): Promise<Metadata> {
+  const { slug } = await params;
+  const service = await getServiceBySlug(slug);
+
+  if (!service) {
+    return {
+      title: "Service Not Found | NSD Creations",
+      robots: { index: false, follow: false },
+    };
+  }
+
+  const canonical = `${SITE_URL}/services/${service.slug}`;
+  const title = `${service.name} | NSD Creations`;
+  const description = service.shortDescription || service.longDescription.slice(0, 160);
+
+  return {
+    title,
+    description,
+    keywords: service.seo.keywords,
+    alternates: { canonical },
+    openGraph: {
+      title,
+      description,
+      url: canonical,
+      siteName: "NSD Creations",
+      type: "website",
+    },
+    twitter: {
+      card: "summary_large_image",
+      title,
+      description,
+    },
+  };
+}
+
 export default async function ServiceDetailPage({ params }: { params: Promise<{ slug: string }> }) {
   const { slug } = await params;
   const service = await getServiceBySlug(slug);
@@ -25,32 +63,42 @@ export default async function ServiceDetailPage({ params }: { params: Promise<{ 
     .slice(0, 3);
 
   if (!service) {
-    return (
-      <div className="flex-1 flex flex-col items-center justify-center min-h-screen relative text-center px-6">
-        <Navbar />
-        <div className="absolute inset-0 grid-background pointer-events-none -z-10" />
-        <div className="max-w-md p-8 glass-card rounded-3xl flex flex-col items-center space-y-4">
-          <h1 className="font-display font-bold text-2xl text-zinc-900 dark:text-zinc-50">Service Not Found</h1>
-          <p className="text-zinc-500 dark:text-zinc-400 text-sm">
-            The service path you requested could not be resolved.
-          </p>
-          <Link
-            href="/services"
-            className="inline-flex items-center text-xs font-bold tracking-widest uppercase bg-indigo-600 hover:bg-indigo-700 text-white px-5 py-3 rounded-full"
-          >
-            <ArrowLeft className="w-3.5 h-3.5 mr-2" />
-            Back to Services
-          </Link>
-        </div>
-        <Footer />
-      </div>
-    );
+    notFound();
   }
 
+  // Escape "<" before placing catalogue text inside JSON-LD script tags.
+  const serviceJsonLd = JSON.stringify({
+    "@context": "https://schema.org",
+    "@type": "Service",
+    name: service.name,
+    serviceType: service.category,
+    description: service.longDescription,
+    url: `${SITE_URL}/services/${service.slug}`,
+    provider: {
+      "@type": "Organization",
+      name: "NSD Creations",
+      url: SITE_URL,
+    },
+    areaServed: {
+      "@type": "Country",
+      name: "India",
+    },
+  }).replace(/</g, "\\u003c");
 
+  const breadcrumbsJsonLd = JSON.stringify({
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    itemListElement: [
+      { "@type": "ListItem", position: 1, name: "Home", item: SITE_URL },
+      { "@type": "ListItem", position: 2, name: "Services", item: `${SITE_URL}/services` },
+      { "@type": "ListItem", position: 3, name: service.name, item: `${SITE_URL}/services/${service.slug}` },
+    ],
+  }).replace(/</g, "\\u003c");
 
   return (
     <div className="flex-1 flex flex-col relative overflow-x-hidden">
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: serviceJsonLd }} />
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: breadcrumbsJsonLd }} />
       <Navbar />
 
       {/* Grid Overlay background */}
@@ -97,6 +145,51 @@ export default async function ServiceDetailPage({ params }: { params: Promise<{ 
               {service.longDescription}
             </p>
           </div>
+
+          {/* Scope & delivery terms */}
+          <section aria-labelledby="service-scope-title" className="space-y-5">
+            <h2 id="service-scope-title" className="font-display font-bold text-xl text-zinc-900 dark:text-zinc-100">
+              Scope & Delivery Terms
+            </h2>
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              <div className="rounded-2xl border border-zinc-200/60 dark:border-zinc-800 bg-white dark:bg-[#09090b] p-5">
+                <p className="text-xs font-semibold uppercase tracking-wider text-indigo-600 dark:text-indigo-400">Best suited for</p>
+                <p className="mt-2 text-sm leading-relaxed text-zinc-600 dark:text-zinc-300">{service.targetCustomer ?? "Customers with an approved project brief"}</p>
+              </div>
+              <div className="rounded-2xl border border-zinc-200/60 dark:border-zinc-800 bg-white dark:bg-[#09090b] p-5">
+                <p className="text-xs font-semibold uppercase tracking-wider text-indigo-600 dark:text-indigo-400">Billing unit</p>
+                <p className="mt-2 text-sm leading-relaxed text-zinc-600 dark:text-zinc-300">{service.billingUnit ?? "Per defined project"}</p>
+              </div>
+              <div className="rounded-2xl border border-zinc-200/60 dark:border-zinc-800 bg-white dark:bg-[#09090b] p-5">
+                <p className="text-xs font-semibold uppercase tracking-wider text-indigo-600 dark:text-indigo-400">Revisions</p>
+                <p className="mt-2 text-sm leading-relaxed text-zinc-600 dark:text-zinc-300">{service.revisionPolicy ?? "Revision rounds and scope changes are confirmed in the written quote."}</p>
+              </div>
+              <div className="rounded-2xl border border-zinc-200/60 dark:border-zinc-800 bg-white dark:bg-[#09090b] p-5">
+                <p className="text-xs font-semibold uppercase tracking-wider text-indigo-600 dark:text-indigo-400">Delivery estimate</p>
+                <p className="mt-2 text-sm leading-relaxed text-zinc-600 dark:text-zinc-300">{service.deliveryEstimate ?? "Timing is confirmed in the written quote after scope approval."}</p>
+              </div>
+            </div>
+            <div className="rounded-2xl border border-zinc-200/60 dark:border-zinc-800 bg-zinc-50 dark:bg-[#09090b] p-5">
+              <h3 className="font-display font-bold text-base text-zinc-900 dark:text-zinc-100">Included deliverables</h3>
+              <ul className="mt-3 grid grid-cols-1 md:grid-cols-2 gap-2">
+                {(service.deliverables ?? service.features).map((item) => (
+                  <li key={item} className="flex items-start gap-2 text-sm leading-relaxed text-zinc-600 dark:text-zinc-300">
+                    <CheckCircle className="mt-0.5 h-4 w-4 shrink-0 text-emerald-500" />
+                    <span>{item}</span>
+                  </li>
+                ))}
+              </ul>
+              <h3 className="mt-5 font-display font-bold text-base text-zinc-900 dark:text-zinc-100">Not included unless quoted</h3>
+              <ul className="mt-3 space-y-2">
+                {(service.exclusions ?? ["Work outside the agreed project scope is quoted separately."]).map((item) => (
+                  <li key={item} className="flex items-start gap-2 text-sm leading-relaxed text-zinc-500 dark:text-zinc-400">
+                    <span aria-hidden="true" className="mt-1 text-amber-600 dark:text-amber-400">•</span>
+                    <span>{item}</span>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          </section>
 
           {/* Benefits Block */}
           <div className="space-y-4">

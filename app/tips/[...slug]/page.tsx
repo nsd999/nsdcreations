@@ -3,6 +3,7 @@ import { notFound } from "next/navigation";
 import { Metadata } from "next";
 import { tipsData } from "@/lib/tips-data";
 import { getCmsTipBySlug } from "@/lib/public-cms";
+import { SITE_URL } from "@/lib/site-config";
 import TipsPage from "@/app/tips/page";
 import TipDetailsClient from "./TipDetailsClient";
 
@@ -15,35 +16,67 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
   if (slugSegments.length === 1) {
     const rawParam = slugSegments[0].toLowerCase();
     const matchingCategory = categories.find((cat) => cat === rawParam);
+
     if (matchingCategory) {
+      const title = `${matchingCategory.charAt(0).toUpperCase() + matchingCategory.slice(1)} Strategies | NSD Creations`;
+      const description = `Explore our top ${matchingCategory} strategies and actionable tips from NSD Creations to accelerate your business growth.`;
+      const canonical = `${SITE_URL}/tips/${matchingCategory}`;
       return {
-        title: `${matchingCategory.charAt(0).toUpperCase() + matchingCategory.slice(1)} Strategies | NSD Creations`,
-        description: `Explore our top ${matchingCategory} strategies and actionable tips from NSD Creations to accelerate your business growth.`,
+        title,
+        description,
+        alternates: { canonical },
+        openGraph: { title, description, url: canonical, siteName: "NSD Creations", type: "website" },
+        twitter: { card: "summary_large_image", title, description },
       };
     }
 
-    const tip = tipsData.find((t) => t.slug.toLowerCase() === rawParam);
+    let tip = tipsData.find((item) => item.slug.toLowerCase() === rawParam);
+    if (!tip) {
+      try {
+        const cmsTip = await getCmsTipBySlug(rawParam);
+        if (cmsTip) tip = cmsTip;
+      } catch { /* fall through to the not-found metadata */ }
+    }
     if (tip) {
+      const title = `${tip.title} | NSD Creations`;
+      const description = tip.excerpt;
+      const canonical = `${SITE_URL}/tips/${tip.category.toLowerCase()}/${tip.slug}`;
       return {
-        title: `${tip.title} | NSD Creations`,
-        description: tip.excerpt,
+        title,
+        description,
+        alternates: { canonical },
+        openGraph: { title, description, url: canonical, siteName: "NSD Creations", type: "article" },
+        twitter: { card: "summary_large_image", title, description },
       };
     }
   }
 
   if (slugSegments.length === 2) {
     const tipSlug = slugSegments[1].toLowerCase();
-    const tip = tipsData.find((t) => t.slug.toLowerCase() === tipSlug);
+    let tip = tipsData.find((item) => item.slug.toLowerCase() === tipSlug);
+    if (!tip) {
+      try {
+        const cmsTip = await getCmsTipBySlug(tipSlug);
+        if (cmsTip) tip = cmsTip;
+      } catch { /* fall through to the not-found metadata */ }
+    }
     if (tip) {
+      const title = `${tip.title} | NSD Creations`;
+      const description = tip.excerpt;
+      const canonical = `${SITE_URL}/tips/${tip.category.toLowerCase()}/${tip.slug}`;
       return {
-        title: `${tip.title} | NSD Creations`,
-        description: tip.excerpt,
+        title,
+        description,
+        alternates: { canonical },
+        openGraph: { title, description, url: canonical, siteName: "NSD Creations", type: "article" },
+        twitter: { card: "summary_large_image", title, description },
       };
     }
   }
 
   return {
     title: "Tips & Strategies | NSD Creations",
+    robots: { index: false, follow: false },
   };
 }
 
@@ -81,17 +114,17 @@ export default async function DynamicTipsPage({ params }: { params: Promise<{ sl
       "author": {
         "@type": "Organization",
         "name": "NSD Creations",
-        "url": "https://nsdcreations.vercel.app/"
+        "url": `${SITE_URL}/`
       },
       "publisher": {
         "@type": "Organization",
         "name": "NSD Creations",
         "logo": {
           "@type": "ImageObject",
-          "url": "https://nsdcreations.vercel.app/icons/icon-512.png"
+          "url": `${SITE_URL}/icons/icon-512.png`
         }
       },
-      "url": `https://nsdcreations.vercel.app/tips/${tip.category.toLowerCase()}/${tip.slug}`
+      "url": `${SITE_URL}/tips/${tip.category.toLowerCase()}/${tip.slug}`
     };
 
     return (

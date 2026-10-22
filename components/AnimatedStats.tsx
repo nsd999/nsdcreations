@@ -63,7 +63,7 @@ function RevealText({ text, delay = 0 }: RevealTextProps) {
 }
 
 export function AnimatedStats() {
-  const [stats, setStats] = useState({ projectsCompleted: 50, happyClients: 30 });
+  const [stats, setStats] = useState<{ projectsCompleted: number | null; happyClients: number | null }>({ projectsCompleted: null, happyClients: null });
 
   useEffect(() => {
     let active = true;
@@ -72,12 +72,19 @@ export function AnimatedStats() {
         const response = await fetch("/api/public/stats", { cache: "no-store" });
         if (!response.ok) return;
         const next = await response.json();
-        if (active) setStats({
-          projectsCompleted: Number(next.projectsCompleted) || 50,
-          happyClients: Number(next.happyClients) || 30,
-        });
+        const projectsCompleted = next.projectsCompleted;
+        const happyClients = next.happyClients;
+        const hasOwnerSuppliedMetrics =
+          next.source === "cms" &&
+          Number.isSafeInteger(projectsCompleted) &&
+          Number.isSafeInteger(happyClients) &&
+          projectsCompleted >= 0 &&
+          happyClients >= 0;
+        if (active) setStats(hasOwnerSuppliedMetrics
+          ? { projectsCompleted, happyClients }
+          : { projectsCompleted: null, happyClients: null });
       } catch {
-        // Keep the established public baseline if the stats endpoint is temporarily unavailable.
+        // Never substitute made-up public metrics when the CMS is unavailable.
       }
     };
     void refresh();
@@ -94,9 +101,11 @@ export function AnimatedStats() {
           viewport={{ once: true, margin: "-100px" }}
           transition={{ duration: 0.6 }}
         >
-          <AnimatedCounter value={stats.projectsCompleted} suffix="+" />
+          {stats.projectsCompleted !== null
+            ? <AnimatedCounter value={stats.projectsCompleted} suffix="+" />
+            : <RevealText text="Scope-Led" />}
           <div className="text-xs font-mono tracking-wider text-zinc-500 dark:text-zinc-400 uppercase mt-1">
-            Projects Completed
+            {stats.projectsCompleted !== null ? "Projects Completed" : "Defined Deliverables"}
           </div>
         </motion.div>
 
@@ -107,9 +116,11 @@ export function AnimatedStats() {
           viewport={{ once: true, margin: "-100px" }}
           transition={{ duration: 0.6, delay: 0.1 }}
         >
-          <AnimatedCounter value={stats.happyClients} suffix="+" />
+          {stats.happyClients !== null
+            ? <AnimatedCounter value={stats.happyClients} suffix="+" />
+            : <RevealText text="Client-First" />}
           <div className="text-xs font-mono tracking-wider text-zinc-500 dark:text-zinc-400 uppercase mt-1">
-            Happy Clients
+            {stats.happyClients !== null ? "Happy Clients" : "Direct Collaboration"}
           </div>
         </motion.div>
 
