@@ -32,7 +32,10 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
 
     let tip = tipsData.find((item) => item.slug.toLowerCase() === rawParam);
     if (!tip) {
-      try { tip = await getCmsTipBySlug(rawParam); } catch { /* fall through to the not-found metadata */ }
+      try {
+        const cmsTip = await getCmsTipBySlug(rawParam);
+        if (cmsTip) tip = cmsTip;
+      } catch { /* fall through to the not-found metadata */ }
     }
     if (tip) {
       const title = `${tip.title} | NSD Creations`;
@@ -52,7 +55,10 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
     const tipSlug = slugSegments[1].toLowerCase();
     let tip = tipsData.find((item) => item.slug.toLowerCase() === tipSlug);
     if (!tip) {
-      try { tip = await getCmsTipBySlug(tipSlug); } catch { /* fall through to the not-found metadata */ }
+      try {
+        const cmsTip = await getCmsTipBySlug(tipSlug);
+        if (cmsTip) tip = cmsTip;
+      } catch { /* fall through to the not-found metadata */ }
     }
     if (tip) {
       const title = `${tip.title} | NSD Creations`;
