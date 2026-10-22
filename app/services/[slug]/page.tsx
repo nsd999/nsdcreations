@@ -1,4 +1,5 @@
 import React from "react";
+import { notFound } from "next/navigation";
 import Link from "next/link";
 import { Navbar } from "@/components/Navbar";
 import { Footer } from "@/components/Footer";
@@ -25,28 +26,8 @@ export default async function ServiceDetailPage({ params }: { params: Promise<{ 
     .slice(0, 3);
 
   if (!service) {
-    return (
-      <div className="flex-1 flex flex-col items-center justify-center min-h-screen relative text-center px-6">
-        <Navbar />
-        <div className="absolute inset-0 grid-background pointer-events-none -z-10" />
-        <div className="max-w-md p-8 glass-card rounded-3xl flex flex-col items-center space-y-4">
-          <h1 className="font-display font-bold text-2xl text-zinc-900 dark:text-zinc-50">Service Not Found</h1>
-          <p className="text-zinc-500 dark:text-zinc-400 text-sm">
-            The service path you requested could not be resolved.
-          </p>
-          <Link
-            href="/services"
-            className="inline-flex items-center text-xs font-bold tracking-widest uppercase bg-indigo-600 hover:bg-indigo-700 text-white px-5 py-3 rounded-full"
-          >
-            <ArrowLeft className="w-3.5 h-3.5 mr-2" />
-            Back to Services
-          </Link>
-        </div>
-        <Footer />
-      </div>
-    );
+    notFound();
   }
-
 
 
   return (

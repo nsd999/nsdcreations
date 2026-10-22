@@ -11,6 +11,12 @@ export default function sitemap(): MetadataRoute.Sitemap {
     changeFrequency: 'weekly' as const,
     priority: route === '' ? 1 : 0.8,
   }));
+  const serviceRoutes = servicesData.map((service) => ({
+    url: `${baseUrl}/services/${service.slug}`,
+    lastModified: new Date(),
+    changeFrequency: 'weekly' as const,
+    priority: 0.85,
+  }));
   const pricingRoutes = servicesData.map((service) => ({
     url: `${baseUrl}/pricing/${service.slug}`,
     lastModified: new Date(),
@@ -29,5 +35,5 @@ export default function sitemap(): MetadataRoute.Sitemap {
     changeFrequency: 'monthly' as const,
     priority: 0.6,
   }));
-  return [...routes, ...pricingRoutes, ...categories, ...tips];
+  return [...routes, ...serviceRoutes, ...pricingRoutes, ...categories, ...tips];
 }
