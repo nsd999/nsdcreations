@@ -8,7 +8,7 @@
 
 Prices below are publicly displayed prices or starting/indicative prices found on the linked provider pages as of the date above. Package scope varies: a monthly retainer is not comparable with a one-off setup; a fixed 30-second AI ad is not the same as a custom product commercial; per-page collateral cannot be compared directly with a brochure bundle. Taxes, media budgets, usage rights, hosting, third-party API or WhatsApp fees, revisions and source files are only included when the source explicitly states them.
 
-The companion workbook `nsd_creations_pricing_cost_model.xlsx` retains 75 itemized price observations with a URL, service, billing unit, scope notes/exclusions and source confidence. The price list in this document is a selected summary, not an exhaustive internet survey.
+The selected benchmark table below is a sourced summary, not an exhaustive internet survey. An editable service-by-service cost and margin template is provided in `docs/pricing-cost-model.csv`; input costs remain blank until the owner validates actual labour, contractor, tool and payment-fee assumptions.
 
 ## Selected published benchmarks
 
@@ -54,12 +54,12 @@ The companion workbook `nsd_creations_pricing_cost_model.xlsx` retains 75 itemiz
 
 ## Recommended pricing approval rule
 
-Keep the user's suggested figures as editable **hypotheses**, not as confirmed profitable prices. For each scope, fill in and owner-validate estimated delivery hours, loaded labour rate, contractor charges, software/API charges, other direct costs, revision/rework allowance, payment fees and target gross margin in the companion workbook.
+Keep the user's suggested figures as editable **hypotheses**, not as confirmed profitable prices. For each scope, fill in and owner-validate estimated delivery hours, loaded labour rate, contractor charges, software/API charges, other direct costs, revision/rework allowance, payment fees and target gross margin in `docs/pricing-cost-model.csv`.
 
 Use:
 
 `Minimum quote = Total delivery cost / (1 - target gross margin)`
 
-Where percentage-based payment processing is charged on the sale price, calculate the fee algebraically in the cost model so the fee itself is covered; the workbook uses that gross-up. Founder time must have a cost. Third-party media budgets, platform subscriptions, messaging fees and licences should be itemised unless explicitly included.
+Where percentage-based payment processing is charged on the sale price, calculate the fee algebraically in the cost model so the fee itself is covered; the CSV model uses that gross-up. Founder time must have a cost. Third-party media budgets, platform subscriptions, messaging fees and licences should be itemised unless explicitly included.
 
 **Approval status as of 22 October 2026:** owner labour rates, time estimates and contractor/tool costs were not provided; no row is marked owner-validated. This report does not certify current NSD prices as profitable. Do not publish a new fixed price until its scope and minimum quote pass the cost model.
