@@ -1,6 +1,7 @@
 import type { MetadataRoute } from "next";
 import { tipsData } from "@/lib/tips-data";
 import { getServicesWithOverrides } from "@/lib/service-catalog";
+import { getPublishedCmsTips } from "@/lib/public-cms";
 import { SITE_URL } from "@/lib/site-config";
 
 export const revalidate = 3600;
@@ -20,7 +21,7 @@ const tipCategories = ["branding", "marketing", "development", "automation", "fi
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   // Use the effective public catalogue so services disabled by the admin are not advertised to crawlers.
-  const services = await getServicesWithOverrides();
+  const [services, cmsTips] = await Promise.all([getServicesWithOverrides(), getPublishedCmsTips()]);
 
   const candidates: MetadataRoute.Sitemap = [
     ...staticRoutes.map((route) => ({
@@ -50,6 +51,17 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       changeFrequency: "monthly" as const,
       priority: 0.6,
     })),
+    // Include published CMS articles while keeping draft/future content out of the crawl surface.
+    ...cmsTips
+      .filter((tip) => typeof tip.slug === "string" && /^[a-z0-9]+(?:-[a-z0-9]+)*$/i.test(tip.slug))
+      .map((tip) => ({
+        url: `${SITE_URL}/tips/${String(tip.category || "operations").toLowerCase()}/${tip.slug}`,
+        ...(tip.published_at && Number.isFinite(Date.parse(tip.published_at))
+          ? { lastModified: new Date(tip.published_at) }
+          : {}),
+        changeFrequency: "monthly" as const,
+        priority: 0.6,
+      })),
   ];
 
   // Keep each canonical URL once and avoid timestamps that change on every sitemap request.
