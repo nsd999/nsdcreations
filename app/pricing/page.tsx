@@ -62,7 +62,7 @@ export const metadata: Metadata = {
     card: "summary_large_image",
     title: "Pricing | NSD Creations",
     description:
-      "Transparent pricing for AI creative, branding, marketing, automation and technology services. Starting from ₹299.",
+      "Explore defined packages and request a custom quote when project scope or delivery costs require individual assessment.",
   },
   alternates: {
     canonical: `${SITE_URL}/pricing`,
@@ -331,10 +331,8 @@ export default async function PricingPage() {
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
                   {services.map((service, index) => {
                     const rawPrice = service.startingPrice;
-                    const formattedPrice =
-                      rawPrice === "Custom"
-                        ? "Custom"
-                        : `${service.currency}${rawPrice}`;
+                    const isCustomQuote = service.pricingPrefix === "Custom Quote" || rawPrice === "Custom";
+                    const formattedPrice = isCustomQuote ? "Custom Quote" : `${service.currency}${rawPrice}`;
                     const period = service.pricingPeriod ?? "";
 
                     return (
@@ -372,9 +370,11 @@ export default async function PricingPage() {
 
                             {/* Price block */}
                             <div className="mb-5 pt-5 border-t border-zinc-100 dark:border-zinc-800">
-                              <div className="text-xs font-medium text-zinc-400 dark:text-zinc-500 mb-1">
-                                {service.pricingPrefix}
-                              </div>
+                              {!isCustomQuote && (
+                                <div className="text-xs font-medium text-zinc-400 dark:text-zinc-500 mb-1">
+                                  {service.pricingPrefix}
+                                </div>
+                              )}
                               <div className="flex items-baseline gap-1 flex-wrap">
                                 <span className="font-display font-bold text-2xl text-zinc-900 dark:text-white">
                                   {formattedPrice}
