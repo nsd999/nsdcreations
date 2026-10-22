@@ -205,3 +205,14 @@ test("public site settings cannot override the official business WhatsApp destin
   const adminShell = readRepoFile("app/nsdtheadmin/components/AdminShell.tsx");
   assert.doesNotMatch(adminShell, /"whatsapp_url",\s*"contact_email"/);
 });
+
+test("service CTA query parameters preselect the enquiry form", () => {
+  const contact = readRepoFile("app/contact/page.tsx");
+  assert.match(contact, /new URLSearchParams\(window\.location\.search\)/);
+  assert.match(contact, /params\.get\("service"\)/);
+  assert.match(contact, /params\.get\("package"\)/);
+  assert.match(contact, /service\.slug\.toLowerCase\(\) === requestedService/);
+  assert.match(contact, /servicesData\.map\(\(service\) =>/);
+  assert.match(contact, /value=\{service\.slug\}/);
+  assert.match(contact, /fetch\("\/api\/contact"/);
+});
