@@ -92,7 +92,7 @@ test("sitemap and robots use the canonical origin, keep the founder page, and de
   const robots = readRepoFile("app/robots.ts");
   assert.match(sitemap, /getServicesWithOverrides/);
   assert.match(sitemap, /getPublishedCmsTips/);
-  assert.match(sitemap, /cmsTips\.filter/);
+  assert.match(sitemap, /cmsTips[\\s\\n]*\\.filter/);
   assert.match(sitemap, /new Map<string, MetadataRoute\.Sitemap\[number\]>/);
   assert.match(sitemap, /"\/meet-the-founder"/);
   assert.match(sitemap, /\/services\/\$\{service\.slug\}/);
