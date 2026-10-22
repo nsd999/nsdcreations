@@ -79,9 +79,8 @@ export function Testimonials({ contextSlug }: { contextSlug?: string } = {}) {
               Client Testimonials.
             </h2>
             <p className="text-sm md:text-base text-zinc-500 dark:text-zinc-400 max-w-lg leading-relaxed font-sans">
-              Real stories from industry leaders and creators who partnered with
-              NSD Creations to deliver cinematic, AI-enhanced, and premium
-              software products.
+              Feedback submitted by clients and published after moderation. Only approved
+              reviews are shown; this section stays empty when no reviews are approved.
             </p>
           </div>
 
@@ -171,7 +170,7 @@ export function Testimonials({ contextSlug }: { contextSlug?: string } = {}) {
                             strokeLinejoin="round"
                           />
                         </svg>
-                        <span>Verified Client</span>
+                        <span>Approved Review</span>
                       </div>
                     </div>
 
