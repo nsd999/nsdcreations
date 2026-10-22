@@ -37,7 +37,7 @@ export interface ServiceDetail {
   shortDescription: string;
   longDescription: string;
   category: string;
-  categoryGroup: "Creative" | "Brand & Marketing" | "Automation" | "Technology";
+  categoryGroup: "Creative" | "Brand & Marketing" | "Automation" | "Technology" | "Music & Creator" | "Education & Digital Learning";
   startingPrice: string;
   currency: string;
   pricingPrefix: PricingPrefix;
@@ -49,9 +49,15 @@ export interface ServiceDetail {
   faqs: ServiceFAQ[];
   seo: ServiceSEO;
   iconName: string;
+  billingUnit?: string;
+  deliverables?: string[];
+  targetCustomer?: string;
+  revisionPolicy?: string;
+  deliveryEstimate?: string;
+  exclusions?: string[];
 }
 
-export const servicesData: ServiceDetail[] = [
+const rawServicesData: ServiceDetail[] = [
   // -----------------------------------------------------
   // CATEGORY 1: AI CREATIVE & VIDEO PRODUCTION (Creative)
   // -----------------------------------------------------
@@ -1430,4 +1436,169 @@ export const servicesData: ServiceDetail[] = [
       keywords: ["custom software cost", "SaaS development pricing", "custom CRM builder", "enterprise web app development"]
     }
   }
+,
+  {
+    id: "lyric-videos-music-visualisers",
+    slug: "lyric-videos-music-visualisers",
+    name: "Lyric Videos & Music Visualisers",
+    shortDescription: "Release-ready lyric videos and music-led visuals for independent artists and creator channels.",
+    longDescription: "Create a clear, music-first video for a single release, karaoke upload, or creator channel. Each project is scoped around the supplied audio, approved lyrics, visual references, platform formats, and licensing needs. Final pricing is confirmed after the length and production style are agreed.",
+    category: "Music & Creator Services",
+    categoryGroup: "Music & Creator",
+    startingPrice: "",
+    currency: "",
+    pricingPrefix: "Custom Quote",
+    pricingPeriod: "",
+    iconName: "music",
+    billingUnit: "per song / defined video deliverable",
+    targetCustomer: "Independent artists, music channels, podcasters and creators",
+    deliverables: ["One agreed lyric video or music visualiser", "MP4 export in one agreed aspect ratio", "Typography and motion aligned with supplied brand assets", "Audio synchronisation and final playback check"],
+    revisionPolicy: "Two consolidated revision rounds on the approved direction; new lyrics, audio replacements, or a concept change after approval are quoted separately.",
+    deliveryEstimate: "Timing is confirmed in the quote after song length, lyric readiness, and visual complexity are reviewed.",
+    exclusions: ["Music master, composition, lyric ownership, and third-party licensing must be supplied or cleared by the client.", "Additional aspect ratios, language versions, source project files, and rush delivery are excluded unless quoted."],
+    packages: [
+      {
+        name: "Defined Music Video Scope",
+        price: "Custom Quote",
+        idealFor: "A single approved track or release",
+        features: ["One song / agreed duration", "Lyrics and audio supplied by client", "One visual direction", "One primary export format", "Two consolidated revision rounds"],
+        isPopular: true
+      }
+    ],
+    features: ["Lyric timing and readable typography", "Music-responsive visual treatment", "Brand or channel identity integration", "Platform-ready export settings"],
+    addOns: [{ name: "Additional aspect ratio or language", price: "Custom Quote" }, { name: "Extended duration or alternate cut", price: "Custom Quote" }],
+    process: [
+      { title: "Scope & asset check", description: "Confirm audio, approved lyrics, duration, aspect ratio and usage rights." },
+      { title: "Visual direction", description: "Agree on typography, colours, motion approach and reference mood." },
+      { title: "Edit & synchronise", description: "Build the visual sequence and synchronise lyric timing to the track." },
+      { title: "Review & delivery", description: "Apply the included revision rounds and deliver the approved export." }
+    ],
+    faqs: [
+      { question: "What should I provide?", answer: "Supply the final audio, approved lyrics, logo or cover artwork if relevant, and any visual references." },
+      { question: "Can you correct or write lyrics?", answer: "Lyric correction, translation and writing are not included unless expressly added to the quote." },
+      { question: "How is pricing calculated?", answer: "The quote depends on track duration, visual complexity, formats, languages and asset readiness." }
+    ],
+    seo: {
+      title: "Lyric Videos & Music Visualisers | NSD Creations",
+      description: "Custom-scoped lyric videos and music visualisers for artists and creators. Share your track and visual direction for a clear quote.",
+      keywords: ["lyric video editing", "music visualiser", "karaoke video production", "artist video design"]
+    }
+  },
+  {
+    id: "corporate-digital-greeting-cards",
+    slug: "corporate-digital-greeting-cards",
+    name: "Corporate Digital Greeting Cards",
+    shortDescription: "Branded digital greeting cards for employees, clients, celebrations and corporate campaigns.",
+    longDescription: "Personalised digital greeting cards combine approved company branding with recipient-specific messages for employee milestones, festivals, client appreciation and team celebrations. A project starts with the recipient data, message tone, brand kit, output format and privacy requirements; printing and physical fulfilment are not included.",
+    category: "Graphic Design & Branding",
+    categoryGroup: "Creative",
+    startingPrice: "",
+    currency: "",
+    pricingPrefix: "Custom Quote",
+    pricingPeriod: "",
+    iconName: "mail",
+    billingUnit: "per card design or defined recipient batch",
+    targetCustomer: "HR teams, corporate communications, schools, event organisers and small businesses",
+    deliverables: ["One approved card template or a defined mixed collection", "Recipient-specific English copy from supplied data", "Digital export for email or messaging", "Brand-colour and logo alignment"],
+    revisionPolicy: "Two consolidated design/copy revision rounds on the approved concept; changes to recipient data after final approval may require a revised quote.",
+    deliveryEstimate: "Turnaround is confirmed after recipient count, card variation, copy inputs and approval workflow are known.",
+    exclusions: ["Printing, courier, physical hampers, paid fonts/assets, and third-party messaging fees are excluded unless quoted.", "The client must verify the recipient list and approve data handling and final copy before distribution."],
+    packages: [
+      {
+        name: "Corporate Greeting Card Scope",
+        price: "Custom Quote",
+        idealFor: "A single card, seasonal collection or recipient batch",
+        features: ["Branded digital card design", "Personalised copy from supplied recipient fields", "Approved digital export format", "Two consolidated revision rounds"],
+        isPopular: true
+      }
+    ],
+    features: ["Employee and client personalisation", "Consistent corporate brand styling", "Festival, onboarding and milestone use cases", "Digital-only delivery"],
+    addOns: [{ name: "Additional template variations", price: "Custom Quote" }, { name: "Additional language", price: "Custom Quote" }],
+    process: [
+      { title: "Recipient data & brief", description: "Confirm field names, brand assets, tone, occasion and delivery format." },
+      { title: "Copy & concept", description: "Prepare a message pattern and sample layout for approval." },
+      { title: "Template & personalisation", description: "Apply the approved design and supplied recipient-specific values." },
+      { title: "Quality review", description: "Check names and output consistency before final digital delivery." }
+    ],
+    faqs: [
+      { question: "Can each employee receive a different message?", answer: "Yes, provided the recipient list and required message fields are supplied in an agreed format and approved before delivery." },
+      { question: "Is printing included?", answer: "No. This listing is for digital artwork and exports; print production is quoted separately if available." },
+      { question: "What is the price per card?", answer: "Pricing depends on the number of recipients, number of distinct templates, personalisation rules, and turnaround." }
+    ],
+    seo: {
+      title: "Corporate Digital Greeting Cards | NSD Creations",
+      description: "Branded, personalised digital greeting cards for employee milestones, festive notes and client appreciation. Digital delivery with custom scope.",
+      keywords: ["corporate greeting cards", "personalised employee greeting cards", "digital Diwali cards", "corporate festive cards"]
+    }
+  },
+  {
+    id: "educational-worksheet-design",
+    slug: "educational-worksheet-design",
+    name: "Educational Worksheet Design",
+    shortDescription: "Print-ready learning worksheets for phonics, early learning and classroom practice.",
+    longDescription: "Build consistent educational worksheet packs for children, learners and teaching teams. Each project defines the learner level, curriculum or learning goals, page count, language, school branding and final print specifications before quotation. Educational accuracy and school-specific content require client review and approval.",
+    category: "Education & Digital Learning",
+    categoryGroup: "Education & Digital Learning",
+    startingPrice: "",
+    currency: "",
+    pricingPrefix: "Custom Quote",
+    pricingPeriod: "",
+    iconName: "book-open",
+    billingUnit: "per defined worksheet pack",
+    targetCustomer: "Schools, preschools, tutors, phonics providers and learning-content creators",
+    deliverables: ["A defined set of worksheet pages", "Consistent instructions and page hierarchy", "Print-ready PDF in the agreed page size", "School name/logo styling when supplied and approved"],
+    revisionPolicy: "Two consolidated revision rounds on the approved page style; curriculum changes or additions to the agreed page count are quoted separately.",
+    deliveryEstimate: "Delivery timing is confirmed after page count, difficulty level, content sources and branding are approved.",
+    exclusions: ["Printing, curriculum certification, translation, paid illustrations, and specialist assessment are excluded unless included in the quote.", "The customer is responsible for approving educational correctness and rights to supplied material."],
+    packages: [
+      {
+        name: "Defined Worksheet Pack",
+        price: "Custom Quote",
+        idealFor: "A school or learning programme with a clearly defined learning goal",
+        features: ["Agreed page count and learner level", "Consistent visual system", "Print-ready PDF", "Two consolidated revision rounds"],
+        isPopular: true
+      }
+    ],
+    features: ["Early-learning and phonics-friendly layouts", "Age-appropriate visual hierarchy", "School or programme branding", "Print-ready and digital PDF output"],
+    addOns: [{ name: "Editable source files", price: "Custom Quote" }, { name: "Additional language or level", price: "Custom Quote" }],
+    process: [
+      { title: "Learning brief", description: "Confirm age group, objectives, curriculum references and pack size." },
+      { title: "Worksheet system", description: "Define typography, instructions, activity layouts and visual consistency." },
+      { title: "Page production", description: "Design the agreed pages using supplied or approved learning content." },
+      { title: "Review & export", description: "Resolve included review notes and deliver print-ready PDF files." }
+    ],
+    faqs: [
+      { question: "Do you provide a complete curriculum?", answer: "The default service is worksheet design from an agreed brief and supplied or explicitly approved content; curriculum development must be scoped separately." },
+      { question: "Can school branding be added?", answer: "Yes. Supply the authorised logo, school name, colours and any required footer or watermark." },
+      { question: "How is the pack priced?", answer: "The quote depends on page count, activity complexity, supplied content, languages and editable-file requirements." }
+    ],
+    seo: {
+      title: "Educational Worksheet Design | NSD Creations",
+      description: "Custom-scoped phonics and classroom worksheet design for schools, preschools and learning providers. Print-ready PDF delivery.",
+      keywords: ["educational worksheet design", "phonics worksheets", "school worksheet design", "printable learning materials"]
+    }
+  }
+
 ];
+
+function completeServiceScope(service: ServiceDetail): ServiceDetail {
+  const primaryPackage = service.packages.find((pkg) => pkg.isPopular) ?? service.packages[0];
+  const revisionFeature = primaryPackage?.features.find((feature) => /revision/i.test(feature));
+  const deliveryFaq = service.faqs.find((faq) => /how long|delivery|turnaround|take\?/i.test(faq.question));
+  return {
+    ...service,
+    billingUnit: service.billingUnit ?? (service.pricingPeriod === "/month" ? "per month" : "per defined project"),
+    deliverables: service.deliverables ?? (primaryPackage?.features ?? service.features).filter((feature) => !/\brevision/i.test(feature)),
+    targetCustomer: service.targetCustomer ?? primaryPackage?.idealFor?.replace(/^best for\s+/i, "") ?? "Customers with an approved project brief",
+    revisionPolicy: service.revisionPolicy ?? (revisionFeature
+      ? `${revisionFeature}; additional scope changes are quoted separately.`
+      : "Included revision rounds and change-request rules are confirmed in the written quote."),
+    deliveryEstimate: service.deliveryEstimate ?? deliveryFaq?.answer ?? "Delivery timing is confirmed in the written quote after the project scope is approved.",
+    exclusions: service.exclusions ?? [
+      "Third-party fees, paid media spend, domain/hosting and commercial licences are excluded unless explicitly listed in the quote.",
+      "Work outside the agreed deliverables is quoted separately."
+    ],
+  };
+}
+
+export const servicesData: ServiceDetail[] = rawServicesData.map(completeServiceScope);
