@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
 import { getSupabaseAdmin } from "@/lib/supabase-admin";
+import { WHATSAPP_URL } from "@/lib/whatsapp";
 
 export const dynamic = "force-dynamic";
 export const revalidate = 0;
@@ -7,7 +8,6 @@ export const revalidate = 0;
 // Only explicitly public-facing keys may leave the server. Never expose every
 // row in site_settings because the admin uses the same table for settings.
 const PUBLIC_SETTING_KEYS = [
-  "whatsapp_url",
   "contact_email",
   "contact_phone",
   "instagram_url",
@@ -34,12 +34,12 @@ export async function GET() {
     if (error) {
       console.error("[public/site-settings] read failed:", { message: error.message, code: error.code });
       return NextResponse.json(
-        { settings: {} },
+        { settings: { whatsapp_url: WHATSAPP_URL } },
         { headers: { "Cache-Control": "no-store, max-age=0, must-revalidate" } },
       );
     }
 
-    const settings: Record<string, string> = {};
+    const settings: Record<string, string> = { whatsapp_url: WHATSAPP_URL };
     for (const item of data || []) {
       if (PUBLIC_SETTING_KEYS.includes(item.key as (typeof PUBLIC_SETTING_KEYS)[number]) &&
           typeof item.value === "string") {
@@ -54,7 +54,7 @@ export async function GET() {
   } catch (error) {
     console.error("[public/site-settings] unavailable:", error);
     return NextResponse.json(
-      { settings: {} },
+      { settings: { whatsapp_url: WHATSAPP_URL } },
       { headers: { "Cache-Control": "no-store, max-age=0, must-revalidate" } },
     );
   }
