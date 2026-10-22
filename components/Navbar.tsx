@@ -25,10 +25,19 @@ export function Navbar() {
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
-  // Close mobile menu when page changes
+  // Close mobile menu after navigation and support keyboard dismissal.
   useEffect(() => {
     setIsOpen(false);
   }, [pathname]);
+
+  useEffect(() => {
+    if (!isOpen) return;
+    const handleKeyDown = (event: KeyboardEvent) => {
+      if (event.key === "Escape") setIsOpen(false);
+    };
+    window.addEventListener("keydown", handleKeyDown);
+    return () => window.removeEventListener("keydown", handleKeyDown);
+  }, [isOpen]);
 
   const navLinks = [
     { name: "Home", href: "/" },
@@ -81,7 +90,7 @@ export function Navbar() {
         </Link>
 
         {/* Desktop Nav Links */}
-        <nav className="hidden lg:flex items-center space-x-1">
+        <nav aria-label="Primary navigation" className="hidden lg:flex items-center space-x-1">
           {navLinks.map((link) => {
             const isActive = pathname === link.href;
             return (
@@ -196,7 +205,10 @@ export function Navbar() {
           <button
             onClick={() => setIsOpen(!isOpen)}
             className="p-2 rounded-xl border border-zinc-200 dark:border-zinc-800 text-zinc-600 dark:text-zinc-400 hover:bg-zinc-100 dark:hover:bg-zinc-900 transition-colors"
-            aria-label="Toggle Menu"
+            aria-label={isOpen ? "Close navigation menu" : "Open navigation menu"}
+            aria-expanded={isOpen}
+            aria-controls="nsd-mobile-navigation"
+            type="button"
           >
             {isOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
           </button>
@@ -207,6 +219,9 @@ export function Navbar() {
       <AnimatePresence>
         {isOpen && (
           <motion.div
+            id="nsd-mobile-navigation"
+            role="region"
+            aria-label="Mobile navigation"
             initial={{ opacity: 0, height: 0 }}
             animate={{ opacity: 1, height: "auto" }}
             exit={{ opacity: 0, height: 0 }}
