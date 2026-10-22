@@ -6,6 +6,7 @@ import { Navbar } from "@/components/Navbar";
 import { Footer } from "@/components/Footer";
 import { servicesData } from "@/lib/services-data";
 import { getServicesWithOverrides } from "@/lib/service-catalog";
+import { SITE_URL } from "@/lib/site-config";
 import { ScrollReveal } from "@/components/ScrollReveal";
 import { Metadata } from "next";
 import {
@@ -29,6 +30,8 @@ import {
   Zap,
   Layers,
   Code2,
+  Music,
+  BookOpen,
 } from "lucide-react";
 
 export const dynamic = "force-dynamic";
@@ -36,7 +39,7 @@ export const dynamic = "force-dynamic";
 export const metadata: Metadata = {
   title: "Pricing | NSD Creations — AI Creative Studio & Digital Agency",
   description:
-    "Transparent pricing for all 16 NSD Creations services — AI video production, branding, digital marketing, automation, website and app development. Services starting from ₹299.",
+    "Transparent pricing across the NSD Creations catalogue, covering creative production, branding, marketing, automation, software and digital learning.",
   keywords: [
     "NSD Creations pricing",
     "AI video advertisement cost",
@@ -50,8 +53,8 @@ export const metadata: Metadata = {
   openGraph: {
     title: "Pricing | NSD Creations",
     description:
-      "Transparent pricing for AI creative, branding, marketing, automation and technology services. Starting from ₹299.",
-    url: "https://nsdcreations.vercel.app/pricing",
+      "Explore defined packages and request a custom quote when project scope or delivery costs require individual assessment.",
+    url: `${SITE_URL}/pricing`,
     siteName: "NSD Creations",
     type: "website",
   },
@@ -62,7 +65,7 @@ export const metadata: Metadata = {
       "Transparent pricing for AI creative, branding, marketing, automation and technology services. Starting from ₹299.",
   },
   alternates: {
-    canonical: "https://nsdcreations.vercel.app/pricing",
+    canonical: `${SITE_URL}/pricing`,
   },
 };
 
@@ -146,6 +149,26 @@ const categoryMeta = [
     color: "sky",
     anchor: "technology",
   },
+  {
+    id: "Music & Creator",
+    label: "Music & Creator",
+    title: "Music & Creator Services",
+    subtitle: "Lyric Videos + Music Visualisers",
+    description: "Music-led visual production for artists and creator channels, quoted against the track, duration and required formats.",
+    icon: <Music className="w-5 h-5" />,
+    color: "violet",
+    anchor: "music-creator",
+  },
+  {
+    id: "Education & Digital Learning",
+    label: "Education & Digital Learning",
+    title: "Education & Digital Learning",
+    subtitle: "Worksheets + Learning Materials",
+    description: "Scoped print-ready learning materials and educational assets for schools, tutors and learning providers.",
+    icon: <BookOpen className="w-5 h-5" />,
+    color: "emerald",
+    anchor: "education-learning",
+  },
 ];
 
 const structuredData = {
@@ -153,9 +176,9 @@ const structuredData = {
   "@graph": [
     {
       "@type": "Organization",
-      "@id": "https://nsdcreations.vercel.app/#organization",
+      "@id": `${SITE_URL}/#organization`,
       name: "NSD Creations",
-      url: "https://nsdcreations.vercel.app",
+      url: SITE_URL,
       description:
         "AI Creative Studio & Digital Agency offering video production, branding, marketing, automation and technology solutions.",
       contactPoint: {
@@ -171,13 +194,13 @@ const structuredData = {
           "@type": "ListItem",
           position: 1,
           name: "Home",
-          item: "https://nsdcreations.vercel.app",
+          item: SITE_URL,
         },
         {
           "@type": "ListItem",
           position: 2,
           name: "Pricing",
-          item: "https://nsdcreations.vercel.app/pricing",
+          item: `${SITE_URL}/pricing`,
         },
       ],
     },
@@ -191,6 +214,8 @@ export default async function PricingPage() {
     "Brand & Marketing": [],
     Automation: [],
     Technology: [],
+    "Music & Creator": [],
+    "Education & Digital Learning": [],
   };
 
   services.forEach((service) => {
