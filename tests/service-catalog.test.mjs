@@ -125,3 +125,41 @@ test("minimum-quote math rejects unsafe or invalid margin assumptions", () => {
     paymentFeeRatePct: 30, targetGrossMarginPct: 70,
   }), /below 100%/);
 });
+
+test("all seven service families are represented in both discovery and pricing UIs", () => {
+  const expected = [
+    "AI Creative & Video Production",
+    "Graphic Design & Branding",
+    "Digital Marketing",
+    "AI & Business Automation",
+    "Websites, Apps & Software",
+    "Music & Creator",
+    "Education & Digital Learning",
+  ];
+  const groups = [...new Set(services.map((service) => service.categoryGroup))].sort();
+  assert.deepEqual(groups, [...expected].sort());
+  assert.ok(services.every((service) => service.category === service.categoryGroup), "category labels and groups should use the same taxonomy");
+
+  const directory = readRepoFile("app/services/page.tsx");
+  const pricing = readRepoFile("app/pricing/page.tsx");
+  for (const group of expected) {
+    assert.ok(directory.includes(`"${group}"`), `missing directory filter for ${group}`);
+    assert.ok(pricing.includes(`id: "${group}"`), `missing pricing group for ${group}`);
+    assert.ok(pricing.includes(`"${group}": []`), `missing pricing data bucket for ${group}`);
+  }
+});
+
+test("public contact helper points only to the official business WhatsApp destination", () => {
+  const helper = readRepoFile("lib/whatsapp.ts");
+  assert.match(helper, /WHATSAPP_NUMBER\s*=\s*"919492651908"/);
+  assert.match(helper, /https:\/\/wa\.me\/\$\{WHATSAPP_NUMBER\}/);
+  const publicSource = [
+    readRepoFile("app/page.tsx"),
+    readRepoFile("app/services/[slug]/page.tsx"),
+    readRepoFile("app/pricing/[servicename]/page.tsx"),
+    readRepoFile("app/contact/page.tsx"),
+    readRepoFile("app/portfolio/page.tsx"),
+  ].join("\n");
+  assert.ok(!publicSource.includes("wa.me/6303849852"));
+  assert.ok(!publicSource.includes("api.whatsapp.com/send?phone=6303849852"));
+});
