@@ -16,35 +16,61 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
   if (slugSegments.length === 1) {
     const rawParam = slugSegments[0].toLowerCase();
     const matchingCategory = categories.find((cat) => cat === rawParam);
+
     if (matchingCategory) {
+      const title = `${matchingCategory.charAt(0).toUpperCase() + matchingCategory.slice(1)} Strategies | NSD Creations`;
+      const description = `Explore our top ${matchingCategory} strategies and actionable tips from NSD Creations to accelerate your business growth.`;
+      const canonical = `${SITE_URL}/tips/${matchingCategory}`;
       return {
-        title: `${matchingCategory.charAt(0).toUpperCase() + matchingCategory.slice(1)} Strategies | NSD Creations`,
-        description: `Explore our top ${matchingCategory} strategies and actionable tips from NSD Creations to accelerate your business growth.`,
+        title,
+        description,
+        alternates: { canonical },
+        openGraph: { title, description, url: canonical, siteName: "NSD Creations", type: "website" },
+        twitter: { card: "summary_large_image", title, description },
       };
     }
 
-    const tip = tipsData.find((t) => t.slug.toLowerCase() === rawParam);
+    let tip = tipsData.find((item) => item.slug.toLowerCase() === rawParam);
+    if (!tip) {
+      try { tip = await getCmsTipBySlug(rawParam); } catch { /* fall through to the not-found metadata */ }
+    }
     if (tip) {
+      const title = `${tip.title} | NSD Creations`;
+      const description = tip.excerpt;
+      const canonical = `${SITE_URL}/tips/${tip.category.toLowerCase()}/${tip.slug}`;
       return {
-        title: `${tip.title} | NSD Creations`,
-        description: tip.excerpt,
+        title,
+        description,
+        alternates: { canonical },
+        openGraph: { title, description, url: canonical, siteName: "NSD Creations", type: "article" },
+        twitter: { card: "summary_large_image", title, description },
       };
     }
   }
 
   if (slugSegments.length === 2) {
     const tipSlug = slugSegments[1].toLowerCase();
-    const tip = tipsData.find((t) => t.slug.toLowerCase() === tipSlug);
+    let tip = tipsData.find((item) => item.slug.toLowerCase() === tipSlug);
+    if (!tip) {
+      try { tip = await getCmsTipBySlug(tipSlug); } catch { /* fall through to the not-found metadata */ }
+    }
     if (tip) {
+      const title = `${tip.title} | NSD Creations`;
+      const description = tip.excerpt;
+      const canonical = `${SITE_URL}/tips/${tip.category.toLowerCase()}/${tip.slug}`;
       return {
-        title: `${tip.title} | NSD Creations`,
-        description: tip.excerpt,
+        title,
+        description,
+        alternates: { canonical },
+        openGraph: { title, description, url: canonical, siteName: "NSD Creations", type: "article" },
+        twitter: { card: "summary_large_image", title, description },
       };
     }
   }
 
   return {
     title: "Tips & Strategies | NSD Creations",
+    robots: { index: false, follow: false },
   };
 }
 
