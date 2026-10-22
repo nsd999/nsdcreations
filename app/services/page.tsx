@@ -28,7 +28,7 @@ import {
   Search,
 } from "lucide-react";
 
-const CATEGORIES = ["All", "Creative", "Branding", "Marketing", "Automation", "Technology", "Music & Creator", "Education & Digital Learning"];
+const CATEGORIES = ["All", "AI Creative & Video Production", "Graphic Design & Branding", "Digital Marketing", "AI & Business Automation", "Websites, Apps & Software", "Music & Creator", "Education & Digital Learning"];
 
 export default function ServicesPage() {
   const [activeCategory, setActiveCategory] = useState("All");
@@ -100,22 +100,7 @@ export default function ServicesPage() {
     let result = services;
 
     if (activeCategory !== "All") {
-      if (activeCategory === "Branding") {
-        result = services.filter(
-          (s) =>
-            s.slug === "branding-brand-identity" ||
-            s.slug === "poster-designing" ||
-            s.slug === "graphic-designing",
-        );
-      } else if (activeCategory === "Marketing") {
-        result = services.filter(
-          (s) =>
-            s.slug === "social-media-management" ||
-            s.slug === "digital-marketing",
-        );
-      } else {
-        result = services.filter((s) => s.categoryGroup === activeCategory);
-      }
+      result = services.filter((service) => service.categoryGroup === activeCategory);
     }
 
     if (searchQuery.trim()) {
