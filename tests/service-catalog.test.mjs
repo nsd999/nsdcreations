@@ -155,6 +155,7 @@ test("public contact helper points only to the official business WhatsApp destin
   assert.match(helper, /https:\/\/wa\.me\/\$\{WHATSAPP_NUMBER\}/);
   const publicSource = [
     readRepoFile("app/page.tsx"),
+    readRepoFile("components/HomePageClient.tsx"),
     readRepoFile("app/services/[slug]/page.tsx"),
     readRepoFile("app/pricing/[servicename]/page.tsx"),
     readRepoFile("app/contact/page.tsx"),
@@ -162,4 +163,27 @@ test("public contact helper points only to the official business WhatsApp destin
   ].join("\n");
   assert.ok(!publicSource.includes("wa.me/6303849852"));
   assert.ok(!publicSource.includes("api.whatsapp.com/send?phone=6303849852"));
+});
+
+test("homepage has a server-rendered canonical and metrics fail closed without owner data", () => {
+  const home = readRepoFile("app/page.tsx");
+  assert.doesNotMatch(home, /^["']use client["']/);
+  assert.match(home, /alternates:\s*\{\s*canonical:\s*SITE_URL\s*\}/);
+  assert.match(home, /HomePageClient/);
+
+  const statsRoute = readRepoFile("app/api/public/stats/route.ts");
+  assert.doesNotMatch(statsRoute, /projectsCompleted:\s*50|happyClients:\s*30|source:\s*"baseline"/);
+  assert.match(statsRoute, /source:\s*"unavailable"/);
+
+  const animation = readRepoFile("components/AnimatedStats.tsx");
+  assert.doesNotMatch(animation, /projectsCompleted:\s*50|happyClients:\s*30|\|\|\s*50|\|\|\s*30/);
+  assert.match(animation, /next\.source === "cms"/);
+});
+
+test("founder and review copy avoids unverifiable client metrics and verification labels", () => {
+  const founder = readRepoFile("app/meet-the-founder/page.tsx");
+  assert.doesNotMatch(founder, /50\+ Projects|30\+ Happy|30\+ happy clients/i);
+  const testimonials = readRepoFile("components/Testimonials.tsx");
+  assert.doesNotMatch(testimonials, /Verified Client|industry leaders and creators/i);
+  assert.match(testimonials, /Approved Review/);
 });
