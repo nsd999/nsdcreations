@@ -1,12 +1,13 @@
 "use client";
 import { WHATSAPP_URL } from "@/lib/whatsapp";
 
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import Link from "next/link";
 import { Navbar } from "@/components/Navbar";
 import { Footer } from "@/components/Footer";
 import { ScrollReveal } from "@/components/ScrollReveal";
 import { PhoneInput } from "@/components/PhoneInput";
+import { servicesData } from "@/lib/services-data";
 import { 
   Mail, 
   Phone, 
@@ -26,6 +27,29 @@ export default function ContactPage() {
     service: "website-development",
     message: ""
   });
+
+  useEffect(() => {
+    const params = new URLSearchParams(window.location.search);
+    const requestedService = (params.get("service") || "").trim().toLowerCase();
+    const requestedPackage = (params.get("package") || "").trim();
+    if (!requestedService && !requestedPackage) return;
+
+    const selectedService = servicesData.find((service) =>
+      service.slug.toLowerCase() === requestedService ||
+      service.name.toLowerCase() === requestedService
+    );
+    if (!selectedService) return;
+
+    setFormData((current) => ({
+      ...current,
+      service: selectedService.slug,
+      message: current.message || [
+        `I'm interested in ${selectedService.name}.`,
+        requestedPackage ? `Package/scope: ${requestedPackage}.` : "",
+        "Please share the scope, price and expected delivery timeline.",
+      ].filter(Boolean).join(" "),
+    }));
+  }, []);
 
   const [loading, setLoading] = useState(false);
   const [submitted, setSubmitted] = useState(false);
@@ -222,22 +246,16 @@ export default function ContactPage() {
                 <label htmlFor="service" className="block text-[11px] font-mono font-bold tracking-wider text-zinc-400 dark:text-zinc-500 uppercase mb-2">
                   Service Required
                 </label>
-                <select
+                        <select
                   id="service"
                   value={formData.service}
                   onChange={handleChange}
-                  className="w-full px-4.5 py-3.5 rounded-2xl bg-zinc-50 dark:bg-zinc-950/60 border border-zinc-200 dark:border-zinc-900/60 text-xs md:text-sm text-zinc-900 dark:text-zinc-100 placeholder-zinc-400 focus:outline-none focus:border-indigo-500"
+                  className="w-full px-4.5 py-3.5 rounded-2xl bg-zinc-50 dark:bg-zinc-950/60 border border-zinc-200 dark:border-zinc-900/60 text-xs md:text-sm text-zinc-900 dark:text-zinc-100 focus:outline-none focus:border-indigo-500"
                 >
-                  <option value="website-development">Website Development (Next.js)</option>
-                  <option value="ai-video-advertisements">AI Video Advertisements</option>
-                  <option value="ai-product-commercials">AI Product Commercials</option>
-                  <option value="tribute-videos">AI Memorial Tribute Videos</option>
-                  <option value="poster-designing">Poster Designing</option>
-                  <option value="graphic-designing">Graphic Designing</option>
-                  <option value="mobile-app-development">Mobile App Development</option>
-                  <option value="ai-automation">AI & Workflow Automation</option>
-                  <option value="whatsapp-automation">WhatsApp Automation</option>
-                  <option value="branding">Brand Identity Creation</option>
+                  {servicesData.map((service) => (
+                    <option key={service.slug} value={service.slug}>{service.name}</option>
+                  ))}
+                  <option value="other">Other / Not Listed</option>
                 </select>
               </div>
 
