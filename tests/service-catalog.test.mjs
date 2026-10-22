@@ -187,3 +187,21 @@ test("founder and review copy avoids unverifiable client metrics and verificatio
   assert.doesNotMatch(testimonials, /Verified Client|industry leaders and creators/i);
   assert.match(testimonials, /Approved Review/);
 });
+
+test("tips directory and article metadata use canonical URLs and safe fallback metadata", () => {
+  const directoryLayout = readRepoFile("app/tips/layout.tsx");
+  assert.match(directoryLayout, /alternates:\s*\{\s*canonical:\s*`\$\{SITE_URL\}\/tips`\s*\}/);
+  const dynamicTips = readRepoFile("app/tips/[...slug]/page.tsx");
+  assert.match(dynamicTips, /alternates:\s*\{\s*canonical\s*\}/);
+  assert.match(dynamicTips, /const canonical = `\$\{SITE_URL\}\/tips\/\$\{tip\.category\.toLowerCase\(\)\}\/\$\{tip\.slug\}`/);
+  assert.match(dynamicTips, /robots:\s*\{\s*index:\s*false,\s*follow:\s*false\s*\}/);
+});
+
+test("public site settings cannot override the official business WhatsApp destination", () => {
+  const settingsRoute = readRepoFile("app/api/public/site-settings/route.ts");
+  assert.match(settingsRoute, /import \{ WHATSAPP_URL \} from "@\/lib\/whatsapp"/);
+  assert.match(settingsRoute, /settings:\s*\{\s*whatsapp_url:\s*WHATSAPP_URL\s*\}/);
+  assert.doesNotMatch(settingsRoute, /"whatsapp_url",\s*\n\s*"contact_email"/);
+  const adminShell = readRepoFile("app/nsdtheadmin/components/AdminShell.tsx");
+  assert.doesNotMatch(adminShell, /"whatsapp_url",\s*"contact_email"/);
+});
