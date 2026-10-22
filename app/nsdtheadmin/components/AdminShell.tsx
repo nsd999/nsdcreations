@@ -1163,7 +1163,7 @@ function SettingsView({ mode }: { mode: string }) {
   const [error,setError]=useState("");
   const [success,setSuccess]=useState("");
   const publicKeys = [
-    "whatsapp_url", "contact_email", "contact_phone",
+    "contact_email", "contact_phone",
     "instagram_url", "youtube_url", "linkedin_url", "facebook_url",
     "footer_headline", "footer_description",
     "home_badge", "home_title_line1", "home_title_highlight", "home_subtitle",
@@ -1201,7 +1201,7 @@ function SettingsView({ mode }: { mode: string }) {
         <div className="font-semibold text-zinc-300 mb-1">Live public keys</div>
         <p>Home hero: <code>home_badge</code>, <code>home_title_line1</code>, <code>home_title_highlight</code>, <code>home_subtitle</code>.</p>
         <p className="mt-1">Footer: <code>footer_headline</code>, <code>footer_description</code>, <code>pricing_footer_text</code>.</p>
-        <p className="mt-1">Contact/social URLs: <code>whatsapp_url</code>, <code>contact_email</code>, <code>contact_phone</code>, <code>instagram_url</code>, <code>youtube_url</code>, <code>linkedin_url</code>, <code>facebook_url</code>.</p>
+        <p className="mt-1">Contact/social URLs: <code>contact_email</code>, <code>contact_phone</code>, <code>instagram_url</code>, <code>youtube_url</code>, <code>linkedin_url</code>, <code>facebook_url</code>. Public WhatsApp CTAs always use the official business destination in <code>lib/whatsapp.ts</code>; legacy <code>whatsapp_url</code> values are not published.</p>
         <p className="mt-2">Enter text and URLs as JSON strings (include quotation marks). Only the allowlisted keys are public; other settings remain server-side.</p>
       </div>
       {error&&<p role="alert" className="mt-3 text-xs text-red-300">{error}</p>}
