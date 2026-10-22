@@ -3,6 +3,7 @@ import { notFound } from "next/navigation";
 import { Metadata } from "next";
 import { tipsData } from "@/lib/tips-data";
 import { getCmsTipBySlug } from "@/lib/public-cms";
+import { SITE_URL } from "@/lib/site-config";
 import TipsPage from "@/app/tips/page";
 import TipDetailsClient from "./TipDetailsClient";
 
@@ -81,17 +82,17 @@ export default async function DynamicTipsPage({ params }: { params: Promise<{ sl
       "author": {
         "@type": "Organization",
         "name": "NSD Creations",
-        "url": "https://nsdcreations.vercel.app/"
+        "url": `${SITE_URL}/`
       },
       "publisher": {
         "@type": "Organization",
         "name": "NSD Creations",
         "logo": {
           "@type": "ImageObject",
-          "url": "https://nsdcreations.vercel.app/icons/icon-512.png"
+          "url": `${SITE_URL}/icons/icon-512.png`
         }
       },
-      "url": `https://nsdcreations.vercel.app/tips/${tip.category.toLowerCase()}/${tip.slug}`
+      "url": `${SITE_URL}/tips/${tip.category.toLowerCase()}/${tip.slug}`
     };
 
     return (
