@@ -1,9 +1,10 @@
-import { Metadata } from "next";
+import type { Metadata } from "next";
+import { SITE_URL } from "@/lib/site-config";
 
 export const metadata: Metadata = {
-  title: "Services | NSD Creations — AI Creative Studio & Digital Agency",
+  title: "Creative Technology Services | NSD Creations",
   description:
-    "Explore 16 specialized services from NSD Creations — AI video production, poster design, branding, social media management, digital marketing, WhatsApp automation, website development, mobile app and custom software development.",
+    "Explore creative production, branding, marketing, automation, websites, software, music visuals and digital learning services from NSD Creations.",
   keywords: [
     "NSD Creations services",
     "AI video production India",
