@@ -218,3 +218,14 @@ test("service CTA query parameters preselect the enquiry form", () => {
   assert.match(contact, /value=\{service\.slug\}/);
   assert.match(contact, /fetch\("\/api\/contact"/);
 });
+
+test("service detail pages publish scoped Service and BreadcrumbList JSON-LD", () => {
+  const page = readRepoFile("app/services/[slug]/page.tsx");
+  assert.match(page, /"@type": "Service"/);
+  assert.match(page, /"@type": "BreadcrumbList"/);
+  assert.match(page, /serviceType: service\.category/);
+  assert.match(page, /name: service\.name/);
+  assert.match(page, /url: `\$\{SITE_URL\}\/services\/\$\{service\.slug\}`/);
+  assert.ok((page.match(/type="application\/ld\+json"/g) || []).length >= 2);
+  assert.doesNotMatch(page, /aggregateRating|reviewCount|ratingValue/);
+});
