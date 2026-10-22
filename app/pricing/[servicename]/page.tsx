@@ -54,7 +54,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
       description: service.seo.description,
     },
     alternates: {
-      canonical: `https://nsdcreations.vercel.app/pricing/${service.slug}`,
+      canonical: `${SITE_URL}/pricing/${service.slug}`,
     },
   };
 }
@@ -97,7 +97,7 @@ export default async function ServicePricingPage({ params }: Props) {
             "@type": "ListItem",
             position: 3,
             name: service.name,
-            item: `https://nsdcreations.vercel.app/pricing/${service.slug}`,
+            item: `${SITE_URL}/pricing/${service.slug}`,
           },
         ],
       },
@@ -108,7 +108,7 @@ export default async function ServicePricingPage({ params }: Props) {
         provider: {
           "@type": "Organization",
           name: "NSD Creations",
-          url: "https://nsdcreations.vercel.app",
+          url: SITE_URL,
         },
         offers: service.packages
           .filter((pkg) => /^(?:₹)?[\d,]+(?:\.\d{1,2})?$/.test(pkg.price.replace(/\s/g, "")))
