@@ -45,6 +45,8 @@ export const metadata = {
   manifest: "/manifest.json",
   icons: {
     icon: [
+      { url: "/icon-dark.png", media: "(prefers-color-scheme: dark)", type: "image/png" },
+      { url: "/icon-light.png", media: "(prefers-color-scheme: light)", type: "image/png" },
       { url: "/favicon.ico", sizes: "32x32", type: "image/x-icon" },
       { url: "/icons/icon-48.png", sizes: "48x48", type: "image/png" },
       { url: "/icon.png", sizes: "192x192", type: "image/png" },
@@ -148,6 +150,12 @@ export default function RootLayout({
   }
 })();`}
         </Script>
+        <link rel="icon" href="/icon-dark.png" type="image/png" media="(prefers-color-scheme: dark)" />
+        <link rel="icon" href="/icon-light.png" type="image/png" media="(prefers-color-scheme: light)" />
+        <link rel="alternate icon" href="/favicon-dark.ico" media="(prefers-color-scheme: dark)" />
+        <link rel="alternate icon" href="/favicon-light.ico" media="(prefers-color-scheme: light)" />
+        <link rel="preload" href="/nsdlogo-dark.png" as="image" type="image/png" />
+        <link rel="preload" href="/nsdlogo-light.png" as="image" type="image/png" />
         <link rel="preload" href="/nsdlogo.png" as="image" type="image/png" />
         <link rel="preload" href="/founder.png" as="image" type="image/png" />
       </head>

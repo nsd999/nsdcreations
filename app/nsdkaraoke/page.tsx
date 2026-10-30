@@ -1,16 +1,33 @@
 import type { Metadata } from "next";
+import Image from "next/image";
 
 export const metadata: Metadata = {
   title: "NSD Karaoke | Official Artist Page",
   description:
     "Official NSD Karaoke artist page by NSD Creations. Discover Otami Vachina Adugu Aapaku and Idhi Mana Sound, and follow NSD Karaoke across music and social platforms.",
   alternates: { canonical: "https://nsdcreations.vercel.app/nsdkaraoke" },
+  icons: {
+    icon: [
+      { url: "/nsdkaraoke-icon.png", type: "image/png" },
+      { url: "/icons/nsdkaraoke-48.png", sizes: "48x48", type: "image/png" },
+    ],
+    apple: [{ url: "/nsdkaraoke-icon.png", sizes: "180x180", type: "image/png" }],
+    shortcut: ["/nsdkaraoke-icon.png"],
+  },
   openGraph: {
     title: "NSD Karaoke — Official Artist Page",
     description:
       "Original music from NSD Creations. Listen to the latest releases and follow NSD Karaoke.",
     url: "https://nsdcreations.vercel.app/nsdkaraoke",
     siteName: "NSD Creations",
+    images: [
+      {
+        url: "/nsdkaraoke-logo.png",
+        width: 1024,
+        height: 1024,
+        alt: "NSD Karaoke Official Logo",
+      },
+    ],
     type: "website",
   },
 };
@@ -48,8 +65,16 @@ export default function NSDKaraokePage() {
       </div>
 
       <header className="relative mx-auto flex max-w-6xl items-center justify-between px-5 py-6 sm:px-8">
-        <a href="#home" className="flex items-center gap-3" aria-label="NSD Karaoke home">
-          <span className="grid h-11 w-11 place-items-center rounded-2xl border border-white/15 bg-white/5 text-lg font-black text-orange-300">NSD</span>
+        <a href="#home" className="flex items-center gap-3.5 group" aria-label="NSD Karaoke home">
+          <div className="relative h-11 w-11 shrink-0 overflow-hidden rounded-full shadow-md shadow-amber-500/20 group-hover:scale-105 transition-transform duration-300">
+            <Image
+              src="/nsdkaraoke-logo.png"
+              alt="NSD Karaoke Official Logo"
+              fill
+              className="object-contain"
+              priority
+            />
+          </div>
           <span>
             <span className="block text-sm font-bold tracking-[0.16em]">NSD KARAOKE</span>
             <span className="block text-xs text-white/50">by NSD Creations</span>
@@ -87,8 +112,16 @@ export default function NSDKaraokePage() {
           <div className="relative overflow-hidden rounded-[2rem] border border-white/15 bg-gradient-to-br from-[#29201a] via-[#17151d] to-[#12121a] p-5 shadow-2xl shadow-black/50">
             <div className="flex items-center justify-between text-[10px] font-bold tracking-[0.25em] text-white/45"><span>NSD CREATIONS</span><span>ARTIST / 001</span></div>
             <div className="my-8 grid aspect-square place-items-center overflow-hidden rounded-[1.5rem] border border-white/10 bg-[radial-gradient(circle_at_50%_35%,rgba(251,146,60,.35),transparent_45%),linear-gradient(145deg,#28212a,#101015)]">
-              <div className="px-5 text-center">
-                <div className="mx-auto mb-5 grid h-24 w-24 place-items-center rounded-full border border-orange-200/40 bg-black/25 text-3xl font-black text-orange-200 shadow-[0_0_60px_rgba(251,146,60,.18)]">NSD</div>
+              <div className="px-5 text-center flex flex-col items-center">
+                <div className="relative mx-auto mb-5 h-28 w-28 shrink-0 overflow-hidden rounded-full border-2 border-amber-300/40 shadow-[0_0_50px_rgba(252,217,115,0.35)] hover:scale-105 transition-transform duration-300">
+                  <Image
+                    src="/nsdkaraoke-logo.png"
+                    alt="NSD Karaoke Official Logo"
+                    fill
+                    className="object-contain"
+                    priority
+                  />
+                </div>
                 <p className="text-xs font-bold tracking-[0.4em] text-orange-200">MUSIC • MOTIVATION • ENERGY</p>
                 <p className="mt-3 text-3xl font-black tracking-tight">NSD KARAOKE</p>
                 <p className="mt-2 text-sm text-white/45">A sound of our own.</p>
@@ -150,8 +183,24 @@ export default function NSDKaraokePage() {
 
       <footer className="relative border-t border-white/10 px-5 py-8 sm:px-8">
         <div className="mx-auto flex max-w-6xl flex-col gap-4 text-xs text-white/45 sm:flex-row sm:items-center sm:justify-between">
-          <div><p className="font-bold tracking-[0.15em] text-white/75">NSD KARAOKE</p><p className="mt-1">An independent music identity by NSD Creations.</p></div>
-          <div className="sm:text-right"><p>Artist / Brand: NSD Creations</p><a className="mt-1 inline-block text-orange-200 hover:text-orange-100" href="mailto:nsdkaraoke@gmail.com">nsdkaraoke@gmail.com</a></div>
+          <div className="flex items-center gap-3">
+            <div className="relative h-8 w-8 shrink-0 overflow-hidden rounded-full">
+              <Image
+                src="/nsdkaraoke-logo.png"
+                alt="NSD Karaoke Logo"
+                fill
+                className="object-contain"
+              />
+            </div>
+            <div>
+              <p className="font-bold tracking-[0.15em] text-white/75">NSD KARAOKE</p>
+              <p className="mt-0.5">An independent music identity by NSD Creations.</p>
+            </div>
+          </div>
+          <div className="sm:text-right">
+            <p>Artist / Brand: NSD Creations</p>
+            <a className="mt-1 inline-block text-orange-200 hover:text-orange-100" href="mailto:nsdkaraoke@gmail.com">nsdkaraoke@gmail.com</a>
+          </div>
           <a href="https://www.instagram.com/nsdkaraoke/" target="_blank" rel="noreferrer" className="hover:text-white">Instagram ↗</a>
         </div>
       </footer>

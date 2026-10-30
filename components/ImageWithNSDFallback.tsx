@@ -31,6 +31,18 @@ export function ImageWithNSDFallback({
 }: ImageWithNSDFallbackProps) {
   // Map specific images to their correct public path sources and back up with official Cloudinary fallbacks
   const getSourcesList = (initialSrc: string): string[] => {
+    if (initialSrc.includes("nsdlogo-dark")) {
+      return ["/nsdlogo-dark.png", "/nsdlogo.png"];
+    }
+    if (initialSrc.includes("nsdlogo-light")) {
+      return ["/nsdlogo-light.png", "/nsdlogo.png"];
+    }
+    if (initialSrc.includes("nsdlogo-4k")) {
+      return ["/nsdlogo-4k.png", "/nsdlogo.png"];
+    }
+    if (initialSrc.includes("nsdlogo-original")) {
+      return ["/nsdlogo-original.jpg", "/nsdlogo.png"];
+    }
     if (initialSrc.includes("nsdlogo") || initialSrc.includes("logo") || initialSrc.includes("input_file_0")) {
       return [
         "/nsdlogo.png",
@@ -160,7 +172,7 @@ export function ImageWithNSDFallback({
           height={!fill ? height : undefined}
           priority={priority}
           sizes={sizes}
-          className={`w-full h-full object-cover transition-all duration-500 ${
+          className={`w-full h-full ${isLogo ? "object-contain" : "object-cover"} transition-all duration-500 ${
             (isLoading && !priority && !isLogo && !isFounder) ? "opacity-0 scale-95" : "opacity-100 scale-100"
           }`}
           loading={priority || isLogo || isFounder ? "eager" : undefined}
