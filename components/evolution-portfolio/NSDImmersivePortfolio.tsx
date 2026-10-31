@@ -1,6 +1,7 @@
 "use client";
 
 import Image from "next/image";
+import Link from "next/link";
 import { AnimatePresence, motion, useMotionValue, useSpring } from "motion/react";
 import {
   ArrowDown, ArrowRight, ArrowUp, ArrowUpRight, ChevronLeft, ChevronRight,
@@ -155,10 +156,10 @@ export default function NSDImmersivePortfolio() {
       </AnimatePresence>
 
       <header className="nsd-header">
-        <a href="/" className="nsd-header-brand" aria-label="NSD Creations home">
+        <Link href="/" className="nsd-header-brand" aria-label="NSD Creations home">
           <span className="nsd-header-logo"><NsdLogo className="h-full w-full" /></span>
           <span className="nsd-header-wordmark"><strong>NSD CREATIONS</strong><small>CREATIVE TECHNOLOGY STUDIO</small></span>
-        </a>
+        </Link>
         <nav className="nsd-desktop-nav" aria-label="Main portfolio navigation">
           {NAV_LINKS.map((link) => <a key={link.href} href={link.href}>{link.label}</a>)}
         </nav>
@@ -188,7 +189,7 @@ export default function NSDImmersivePortfolio() {
                 </a>
               ))}
             </div>
-            <div className="nsd-menu-bottom"><span>HYDERABAD, INDIA</span><a href="mailto:nsd.creations.official@gmail.com">LET'S TALK ↗</a></div>
+            <div className="nsd-menu-bottom"><span>HYDERABAD, INDIA</span><a href="mailto:nsd.creations.official@gmail.com">LET’S TALK ↗</a></div>
           </motion.div>
         )}
       </AnimatePresence>
@@ -356,16 +357,16 @@ export default function NSDImmersivePortfolio() {
 
       <footer className="nsd-footer">
         <div className="nsd-footer-main">
-          <a href="/" className="nsd-footer-brand" aria-label="NSD Creations home">
+          <Link href="/" className="nsd-footer-brand" aria-label="NSD Creations home">
             <span className="nsd-footer-logo"><NsdLogo className="h-full w-full" /></span>
             <span><strong>NSD CREATIONS</strong><small>CREATIVE TECHNOLOGY STUDIO</small></span>
-          </a>
+          </Link>
           <p>Where cinematic creativity<br />meets futuristic technology.</p>
           <button type="button" onClick={() => setDialogOpen(true)}>Have a project? <ArrowUpRight size={15} /></button>
         </div>
         <div className="nsd-footer-links">
-          <div><span className="nsd-footer-label">EXPLORE</span><a href="/">Home</a><a href="#disciplines">Disciplines</a><a href="#story">My story</a><a href="#engineering-work">Selected work</a></div>
-          <div><span className="nsd-footer-label">SERVICES</span><a href="/services/website-development">Web development</a><a href="/services">App development</a><a href="/services/ai-automation">AI & automation</a><a href="/services/graphic-designing">Creative design</a></div>
+          <div><span className="nsd-footer-label">EXPLORE</span><Link href="/">Home</Link><a href="#disciplines">Disciplines</a><a href="#story">My story</a><a href="#engineering-work">Selected work</a></div>
+          <div><span className="nsd-footer-label">SERVICES</span><Link href="/services/website-development">Web development</Link><Link href="/services">App development</Link><Link href="/services/ai-automation">AI & automation</Link><Link href="/services/graphic-designing">Creative design</Link></div>
           <div><span className="nsd-footer-label">CONNECT</span><a href="mailto:nalkarisaidheeraj@gmail.com">Tech email</a><a href="mailto:nsd.creations.official@gmail.com">Studio email</a><a href="tel:+916303849852">+91 63038 49852</a><span>Hyderabad, India · {localTime} IST</span></div>
         </div>
         <div className="nsd-footer-bottom">
