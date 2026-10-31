@@ -11,7 +11,7 @@ import {
   ArrowRight,
   ExternalLink
 } from "lucide-react";
-import { supabase } from "@/lib/supabase";
+import { getSupabaseBrowser } from "@/lib/supabase-browser";
 
 interface GlobalReviewContextType {
   openReviewModal: (contextSlug?: string) => void;
@@ -148,6 +148,14 @@ export function GlobalReviewProvider({ children }: { children: ReactNode }) {
     }
 
     try {
+      // Use the same configured browser client as the rest of the app. The legacy
+      // client only recognised NEXT_PUBLIC_SUPABASE_ANON_KEY and could silently
+      // fall back to a mock client when production uses the publishable key.
+      const supabase = getSupabaseBrowser();
+      if (!supabase) {
+        throw new Error("Supabase is not configured. Check the public Supabase URL and publishable/anon key in Vercel.");
+      }
+
       const { data: createdReview, error } = await supabase.from("testimonials").insert([
         {
           name: cleanName,
