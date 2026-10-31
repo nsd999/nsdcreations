@@ -311,7 +311,7 @@ export default function HomePageClient() {
                 <ArrowRight className="w-4 h-4 ml-2" />
               </Link>
               <Link
-                href="#portfolio"
+                href="/portfolio"
                 className="inline-flex items-center justify-center text-xs font-bold tracking-widest uppercase text-zinc-600 dark:text-zinc-400 hover:text-indigo-600 dark:hover:text-indigo-400 transition-colors group"
               >
                 Explore Portfolio
