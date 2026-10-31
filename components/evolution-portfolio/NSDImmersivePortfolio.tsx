@@ -79,6 +79,7 @@ export default function NSDImmersivePortfolio() {
   const [cardFlipped, setCardFlipped] = useState(false);
   const [dialogOpen, setDialogOpen] = useState(false);
   const [heroAssetReady, setHeroAssetReady] = useState(false);
+  const [loaderProgress, setLoaderProgress] = useState(0);
   const menuPanelRef = useRef<HTMLDivElement>(null);
   const menuButtonRef = useRef<HTMLButtonElement>(null);
   const doorRailRef = useRef<HTMLDivElement>(null);
@@ -95,6 +96,7 @@ export default function NSDImmersivePortfolio() {
   useEffect(() => {
     if (!menuOpen) return;
     const previousOverflow = document.body.style.overflow;
+    const menuButton = menuButtonRef.current;
     document.body.style.overflow = "hidden";
     const frame = window.requestAnimationFrame(() => menuPanelRef.current?.querySelector<HTMLAnchorElement>("a")?.focus());
     const onKeyDown = (event: globalThis.KeyboardEvent) => {
@@ -116,7 +118,7 @@ export default function NSDImmersivePortfolio() {
       window.cancelAnimationFrame(frame);
       window.removeEventListener("keydown", onKeyDown);
       document.body.style.overflow = previousOverflow;
-      menuButtonRef.current?.focus();
+      menuButton?.focus();
     };
   }, [menuOpen]);
 
@@ -149,8 +151,8 @@ export default function NSDImmersivePortfolio() {
           >
             <div className="nsd-entrance-lockup"><span className="nsd-entrance-mark">NSD</span><span>CREATIONS</span></div>
             <p>CREATIVE TECHNOLOGIST · AI BUILDER · VISUAL CREATOR</p>
-            <div className="nsd-entrance-bottom"><span>Opening up the work...</span><span>000%</span></div>
-            <div className="nsd-entrance-track"><span /></div>
+            <div className="nsd-entrance-bottom"><span>Opening up the work...</span><span>{String(loaderProgress).padStart(3, "0")}%</span></div>
+            <div className="nsd-entrance-track"><span style={{ width: loaderProgress + "%" }} /></div>
           </motion.div>
         )}
       </AnimatePresence>
@@ -215,7 +217,7 @@ export default function NSDImmersivePortfolio() {
           </div>
           <div className="nsd-hero-visual">
             <div className="nsd-hero-image-frame">
-              <Image src="/founder.png" alt="Sai Dheeraj Nalkari, founder of NSD Creations" fill priority quality={84} sizes="(max-width: 760px) 82vw, (max-width: 1100px) 44vw, 40vw" onLoad={() => setHeroAssetReady(true)} onError={() => setHeroAssetReady(true)} className="nsd-hero-image" />
+              <Image src="/founder.png" alt="Sai Dheeraj Nalkari, founder of NSD Creations" fill priority quality={84} sizes="(max-width: 760px) 82vw, (max-width: 1100px) 44vw, 40vw" onLoad={() => { setLoaderProgress(100); setHeroAssetReady(true); }} onError={() => { setLoaderProgress(100); setHeroAssetReady(true); }} className="nsd-hero-image" />
               <div className="nsd-image-index">NSD — 001</div>
             </div>
             <div className="nsd-hero-stamp" aria-hidden="true"><span>DESIGN</span><i>×</i><span>BUILD</span><i>×</i><span>CREATE</span></div>
