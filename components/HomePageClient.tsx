@@ -105,7 +105,7 @@ export default function HomePageClient() {
       type: "Promotional & Marketing Videos",
       image: "/portfolio/daycare-promo.png",
       description: "High-retention promotional and marketing commercial video produced for Keerthy's Daycare & Kindergarten to boost enrollment and community engagement.",
-      link: "https://tinyurl.com/portfoliobynsd"
+      link: ""
     },
     {
       id: 2,
@@ -116,7 +116,7 @@ export default function HomePageClient() {
       type: "Nutrition & Wellness Video",
       image: "/portfolio/nutrition-wellness.png",
       description: "Professional introduction video highlighting personalized nutrition and wellness advice, styled with clean layouts and visual guides.",
-      link: "https://tinyurl.com/portfoliobynsd"
+      link: ""
     },
     {
       id: 3,
@@ -127,7 +127,7 @@ export default function HomePageClient() {
       type: "AI Memorial Tribute Video",
       image: "/portfolio/tribute-memorial.png",
       description: "Deeply emotional tribute and legacy video utilizing AI-enhanced restored photographs and historical family records synchronized to custom soundscapes.",
-      link: "https://tinyurl.com/portfoliobynsd"
+      link: ""
     },
     {
       id: 4,
@@ -138,7 +138,7 @@ export default function HomePageClient() {
       type: "E-Commerce Website",
       image: "/portfolio/ecommerce-web.png",
       description: "Hand-coded, lightning-fast storefront styled with professional, sleek layout structures and seamless navigation.",
-      link: "https://tinyurl.com/portfoliobynsd"
+      link: ""
     },
     {
       id: 5,
@@ -149,7 +149,7 @@ export default function HomePageClient() {
       type: "Brand Guidelines",
       image: "/portfolio/branding-identity.png",
       description: "Premium vector graphics, core typography pairs, and standard color guidelines book.",
-      link: "https://tinyurl.com/portfoliobynsd"
+      link: ""
     },
     {
       id: 6,
@@ -160,7 +160,7 @@ export default function HomePageClient() {
       type: "Poster Design",
       image: "/portfolio/poster-design.png",
       description: "Bold layout, structured visual grid hierarchy, and print-optimized graphic design.",
-      link: "https://tinyurl.com/portfoliobynsd"
+      link: ""
     },
     {
       id: 7,
@@ -171,7 +171,7 @@ export default function HomePageClient() {
       type: "AI & API Automation",
       image: "/portfolio/whatsapp-automation.png",
       description: "Automated direct customer query triggers linking WhatsApp Business API with digital data sheets.",
-      link: "https://tinyurl.com/portfoliobynsd"
+      link: ""
     }
   ];
 
@@ -192,7 +192,7 @@ export default function HomePageClient() {
       type: item.category || "Project",
       image: item.coverImage || item.image || "/nsdlogo.png",
       description: item.description || "",
-      link: item.liveUrl || item.link || "#",
+      link: item.liveUrl || item.link || "",
     };
   });
   const allPortfolioWorks = [...portfolioWorks, ...cmsWorks];
@@ -311,7 +311,7 @@ export default function HomePageClient() {
                 <ArrowRight className="w-4 h-4 ml-2" />
               </Link>
               <Link
-                href="#portfolio"
+                href="/portfolio"
                 className="inline-flex items-center justify-center text-xs font-bold tracking-widest uppercase text-zinc-600 dark:text-zinc-400 hover:text-indigo-600 dark:hover:text-indigo-400 transition-colors group"
               >
                 Explore Portfolio
@@ -583,13 +583,11 @@ export default function HomePageClient() {
               </h2>
             </div>
             <Link
-              href="https://tinyurl.com/portfoliobynsd"
-              target="_blank"
-              rel="noopener noreferrer"
+              href="/portfolio"
               className="inline-flex items-center px-5 py-2.5 rounded-full text-xs font-bold tracking-wider uppercase bg-zinc-900 dark:bg-white text-white dark:text-black hover:scale-102 transition-all shadow-sm"
             >
               View Full Portfolio
-              <ExternalLink className="w-3.5 h-3.5 ml-2" />
+              <ArrowRight className="w-3.5 h-3.5 ml-2" />
             </Link>
           </ScrollReveal>
 
@@ -673,8 +671,8 @@ export default function HomePageClient() {
                       </span>
                       {work.status === "Client work private" ? (
                         <span className="text-xs font-semibold text-zinc-400">Private client work</span>
-                      ) : (
-                        <Link
+                      ) : /^https?:\/\//i.test(work.link || "") ? (
+                        <a
                           href={work.link}
                           target="_blank"
                           rel="noopener noreferrer"
@@ -682,7 +680,15 @@ export default function HomePageClient() {
                         >
                           View Project
                           <ExternalLink className="w-3.5 h-3.5 ml-1" />
+                        </a>
+                      ) : work.link?.startsWith("/") ? (
+                        <Link href={work.link} className="inline-flex items-center text-xs font-bold text-zinc-800 hover:text-indigo-600 dark:text-zinc-200 dark:hover:text-indigo-400 transition-colors">
+                          View Project <ArrowRight className="w-3.5 h-3.5 ml-1" />
                         </Link>
+                      ) : (
+                        <span className="text-xs font-semibold text-zinc-400">
+                          {work.status === "Concept/demo not commissioned" ? "Concept preview" : "Details on request"}
+                        </span>
                       )}
                     </div>
                   </div>
