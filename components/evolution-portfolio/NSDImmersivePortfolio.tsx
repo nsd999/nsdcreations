@@ -148,7 +148,7 @@ export default function NSDImmersivePortfolio() {
         <nav className="npe-nav" aria-label="Portfolio navigation">
           {NAV_ITEMS.map((item) => <a key={item.href} href={item.href}>{item.label}</a>)}
         </nav>
-        <a className="npe-header-cta" href="#contact">Let's talk <ArrowUpRight size={15} /></a>
+        <a className="npe-header-cta" href="#contact">Let’s talk <ArrowUpRight size={15} /></a>
         <button className="npe-mobile-toggle" type="button" aria-label={menuOpen ? "Close navigation" : "Open navigation"} aria-expanded={menuOpen} aria-controls="npe-mobile-nav" onClick={() => setMenuOpen((open) => !open)}>
           {menuOpen ? <X size={20} /> : <Menu size={20} />}
         </button>
